@@ -1,24 +1,10 @@
 {
-    "name": "apy/datagrid-bundle",
+    "name": "northernco/datagrid-bundle",
     "description": "Symfony Datagrid Bundle",
     "keywords": ["Symfony", "datagrid"],
-    "homepage": "https://github.com/apy/APYDataGridBundle",
+    "homepage": "https://github.com/northernco/APYDataGridBundle",
     "type": "symfony-bundle",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Yoann Petit",
-            "email": "abhoryo@free.fr"
-        },
-        {
-            "name": "Stanislav Turza",
-            "email": "stanislav.turza@gmail.com"
-        },
-        {
-            "name": "Evan Owens",
-            "email": "eaowens@gmail.com"
-        }
-    ],
     "require": {
         "php": ">=5.6",
         "symfony/form": "~2.8|~3.0|^4.0",
