@@ -16,10 +16,10 @@ use APY\DataGridBundle\Grid\Grid;
 use Pagerfanta\Adapter\NullAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Routing\RouterInterface;
-use \Twig\Extension\AbstractExtension;
-use \Twig\Extension\GlobalsInterface;
-use \Twig\TwigFunction;
-use \Twig\Template;
+use Twig\Extension\AbstractExtension;
+use Twig\Extension\GlobalsInterface;
+use Twig\TwigFunction;
+use Twig\Template;
 
 /**
  * DataGrid Twig Extension.
