@@ -18,8 +18,8 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\Routing\RouterInterface;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
+use Twig\TemplateWrapper;
 use Twig\TwigFunction;
-use Twig\Template;
 
 /**
  * DataGrid Twig Extension.
@@ -34,7 +34,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
     const DEFAULT_TEMPLATE = 'APYDataGridBundle::blocks.html.twig';
 
     /**
-     * @var Template[]
+     * @var TemplateWrapper[]
      */
     protected $templates = [];
 
@@ -89,7 +89,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
     /**
      * @return array
      */
-    public function getGlobals() :array
+    public function getGlobals(): array
     {
         return [
             'grid'           => null,
@@ -404,7 +404,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
     protected function hasBlock(\Twig\Environment $environment, $name)
     {
         foreach ($this->getTemplates($environment) as $template) {
-            /** @var $template Template */
+            /** @var $template TemplateWrapper */
             if ($template->hasBlock($name, [])) {
                 return true;
             }
@@ -420,12 +420,12 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
      *
      * @throws \Exception
      *
-     * @return Template[]
+     * @return TemplateWrapper[]
      */
     protected function getTemplates(\Twig\Environment $environment)
     {
         if (empty($this->templates)) {
-            if ($this->theme instanceof Template) {
+            if ($this->theme instanceof TemplateWrapper) {
                 $this->templates[] = $this->theme;
                 $this->templates[] = $environment->load($this->defaultTemplate);
             } elseif (is_string($this->theme)) {
@@ -442,9 +442,9 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
 
     /**
      * @param \Twig\Environment $environment
-     * @param unknown          $theme
+     * @param string            $theme
      *
-     * @return array|Template[]
+     * @return array
      */
     protected function getTemplatesFromString(\Twig\Environment $environment, $theme)
     {
