@@ -177,7 +177,7 @@ class GridTest extends TestCase
         $this
             ->router
             ->method('generate')
-            ->with($route, null)
+            ->with($route, [])
             ->willReturn($url);
 
         $this->grid->initialize();
@@ -739,7 +739,7 @@ class GridTest extends TestCase
         $templateName = 'templateName';
 
         $template = $this
-            ->getMockBuilder(\Twig_Template::class)
+            ->getMockBuilder(\Twig\TemplateWrapper::class)
             ->disableOriginalConstructor()
             ->getMock();
         $template
@@ -800,7 +800,7 @@ class GridTest extends TestCase
         $templateName = 'templateName';
 
         $template = $this
-            ->getMockBuilder(\Twig_Template::class)
+            ->getMockBuilder(\Twig\TemplateWrapper::class)
             ->disableOriginalConstructor()
             ->getMock();
         $template
