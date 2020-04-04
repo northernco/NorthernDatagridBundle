@@ -416,7 +416,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      *
      * @throws \Exception
      *
-     * @return \Twig_TemplateInterface[]
+     * @return \Twig\TemplateWrapper[]
      */
     protected function getTemplates()
     {
@@ -430,7 +430,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     /**
      * set template.
      *
-     * @param \Twig_TemplateInterface|string $template
+     * @param \Twig\TemplateWrapper|string $template
      *
      * @throws \Exception
      *
@@ -459,7 +459,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         $templates = [];
 
         $template = $this->twig->load($theme);
-        while ($template instanceof \Twig_Template) {
+        while ($template instanceof \Twig\TemplateWrapper) {
             $templates[] = $template;
             $template = $template->getParent([]);
         }
