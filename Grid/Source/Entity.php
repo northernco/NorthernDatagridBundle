@@ -28,6 +28,8 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class Entity extends Source
 {
+    public const HINT_QUERY_HAS_FETCH_JOIN = 'grid.hasFetchJoin';
+
     const DOT_DQL_ALIAS_PH = '__dot__';
     const COLON_DQL_ALIAS_PH = '__col__';
 
@@ -872,6 +874,10 @@ class Entity extends Source
      */
     protected function checkIfQueryHasFetchJoin(QueryBuilder $qb)
     {
+        if (isset($this->hints[self::HINT_QUERY_HAS_FETCH_JOIN])) {
+            return $this->hints[self::HINT_QUERY_HAS_FETCH_JOIN];
+        }
+
         $join = $qb->getDqlPart('join');
         if (empty($join)) {
             return false;
