@@ -2136,21 +2136,34 @@ class Grid implements GridInterface
         if ($isReadyForRedirect) {
             return new RedirectResponse($this->getRouteUrl());
         } else {
-            if (is_array($param1) || $param1 === null) {
-                $parameters = (array) $param1;
-                $view = $param2;
-            } else {
-                $parameters = (array) $param2;
-                $view = $param1;
-            }
+            return $this->getContentResponse($param1, $param2, $response);
+        }
+    }
 
-            $parameters = array_merge(['grid' => $this], $parameters);
+    /**
+     * @param string|array|null                               $param1
+     * @param string|array|null                               $param2
+     * @param \Symfony\Component\HttpFoundation\Response|null $response
+     *
+     * @return \Symfony\Component\HttpFoundation\Response|array
+     * @throws \Exception
+     */
+    public function getContentResponse($param1 = null, $param2 = null, ?Response $response = null)
+    {
+        if (is_array($param1) || $param1 === null) {
+            $parameters = (array)$param1;
+            $view       = $param2;
+        } else {
+            $parameters = (array)$param2;
+            $view       = $param1;
+        }
 
-            if ($view === null) {
-                return $parameters;
-            } else {
-                return $this->container->get('templating')->renderResponse($view, $parameters, $response);
-            }
+        $parameters = array_merge(['grid' => $this], $parameters);
+
+        if ($view === null) {
+            return $parameters;
+        } else {
+            return $this->container->get('templating')->renderResponse($view, $parameters, $response);
         }
     }
 
