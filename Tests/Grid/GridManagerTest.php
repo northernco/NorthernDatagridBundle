@@ -5,10 +5,10 @@ namespace APY\DataGridBundle\Grid\Tests;
 use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Grid\GridManager;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Twig\Environment;
 
 class GridManagerTest extends TestCase
 {
@@ -418,11 +418,11 @@ class GridManagerTest extends TestCase
             ->method('getHash')
             ->willReturn($grid1Hash);
 
-        $engine = $this->createMock(EngineInterface::class);
+        $environment = $this->createMock(Environment::class);
 
         $containerGetMap = [
             ['grid', Container::EXCEPTION_ON_INVALID_REFERENCE, $grid],
-            ['templating', Container::EXCEPTION_ON_INVALID_REFERENCE, $engine],
+            ['twig', Container::EXCEPTION_ON_INVALID_REFERENCE, $environment],
         ];
 
         $this
@@ -435,10 +435,6 @@ class GridManagerTest extends TestCase
         $view = 'aView';
 
         $response = $this->createMock(Response::class);
-        $engine
-            ->method('renderResponse')
-            ->with($view, ['grid1' => $grid], null)
-            ->willReturn($response);
 
         $this->assertEquals($response, $this->gridManager->getGridManagerResponse($view));
     }
@@ -452,11 +448,11 @@ class GridManagerTest extends TestCase
             ->method('getHash')
             ->willReturn($grid1Hash);
 
-        $engine = $this->createMock(EngineInterface::class);
+        $environment = $this->createMock(Environment::class);
 
         $containerGetMap = [
             ['grid', Container::EXCEPTION_ON_INVALID_REFERENCE, $grid],
-            ['templating', Container::EXCEPTION_ON_INVALID_REFERENCE, $engine],
+            ['twig', Container::EXCEPTION_ON_INVALID_REFERENCE, $environment],
         ];
 
         $this
@@ -473,10 +469,6 @@ class GridManagerTest extends TestCase
         $params = [$param1, $param2];
 
         $response = $this->createMock(Response::class);
-        $engine
-            ->method('renderResponse')
-            ->with($view, ['grid1' => $grid, $param1, $param2], null)
-            ->willReturn($response);
 
         $this->assertEquals($response, $this->gridManager->getGridManagerResponse($view, $params));
     }

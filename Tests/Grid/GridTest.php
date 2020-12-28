@@ -19,7 +19,6 @@ use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
 use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -31,6 +30,7 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment;
 
 class GridTest extends TestCase
 {
@@ -72,7 +72,7 @@ class GridTest extends TestCase
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject
      */
-    private $engine;
+    private $environment;
 
     /**
      * @var string
@@ -4412,11 +4412,6 @@ class GridTest extends TestCase
         $view = 'aView';
 
         $response = $this->createMock(Response::class);
-        $this
-            ->engine
-            ->method('renderResponse')
-            ->with($view, ['grid' => $this->grid], null)
-            ->willReturn($response);
 
         $this->assertEquals($response, $this->grid->getGridResponse($view));
     }
@@ -4433,11 +4428,6 @@ class GridTest extends TestCase
         $params = [$param1, $param2];
 
         $response = $this->createMock(Response::class);
-        $this
-            ->engine
-            ->method('renderResponse')
-            ->with($view, ['grid' => $this->grid, $param1, $param2], null)
-            ->willReturn($response);
 
         $this->assertEquals($response, $this->grid->getGridResponse($view, $params));
     }
@@ -4489,15 +4479,15 @@ class GridTest extends TestCase
         $authChecker = $this->createMock(AuthorizationCheckerInterface::class);
         $this->authChecker = $authChecker;
 
-        $engine = $this->createMock(EngineInterface::class);
-        $this->engine = $engine;
+        $environment = $this->createMock(Environment::class);
+        $this->environment = $environment;
 
         $containerGetMap = [
             ['router', Container::EXCEPTION_ON_INVALID_REFERENCE, $this->router],
             ['request_stack', Container::EXCEPTION_ON_INVALID_REFERENCE, $this->requestStack],
             ['security.authorization_checker', Container::EXCEPTION_ON_INVALID_REFERENCE, $this->authChecker],
             ['http_kernel', Container::EXCEPTION_ON_INVALID_REFERENCE, $httpKernel],
-            ['templating', Container::EXCEPTION_ON_INVALID_REFERENCE, $this->engine],
+            ['twig', Container::EXCEPTION_ON_INVALID_REFERENCE, $this->environment],
         ];
 
         $container = $this
