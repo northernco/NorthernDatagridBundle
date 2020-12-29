@@ -42,7 +42,7 @@ grid(grid, 'MyProjectMyBundle::my_grid_template.html.twig', '', {'imgDir': 'img/
 
 ```janjo
 <!-- MyProjectMyBundle::my_grid_template.html.twig -->
-{% extends 'APYDataGridBundle::blocks.html.twig' %}
+{% extends '@APYDataGrid/blocks.html.twig' %}
 
 {% block grid_column_type_boolean_cell %}
     <img src="{{ assets(imgDir ~ value ~ '.jpg')}}" alt="{{ value }}" />
@@ -57,7 +57,7 @@ grid(grid, 'MyProjectMyBundle::my_grid_template.html.twig', '', {'imgDir': 'img/
 
 ```janjo
 <!-- MyProjectMyBundle::my_grid_template.html.twig -->
-{% extends 'APYDataGridBundle::blocks.html.twig' %}
+{% extends '@APYDataGrid/blocks.html.twig' %}
 
 {% block grid_column_type_boolean_cell %}
     {% set value = '<img src="'~assets(imgDir ~ value ~ '.jpg')~'" alt="~value~" />' %}

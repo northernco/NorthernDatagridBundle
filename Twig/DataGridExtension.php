@@ -31,7 +31,7 @@ use Twig\TwigFunction;
  */
 class DataGridExtension extends AbstractExtension implements GlobalsInterface
 {
-    const DEFAULT_TEMPLATE = 'APYDataGridBundle::blocks.html.twig';
+    const DEFAULT_TEMPLATE = '@APYDataGrid/blocks.html.twig';
 
     /**
      * @var TemplateWrapper[]

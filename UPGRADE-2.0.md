@@ -19,7 +19,7 @@ Then in your files change all your `APY` use statements to `APY`
 Change your include block template.
 
 Before: `SorienDataGridBundle::blocks.html.twig`  
-After: `'APYDataGridBundle::blocks.html.twig`
+After: `'@APYDataGrid/blocks.html.twig`
 
 Example:
 
