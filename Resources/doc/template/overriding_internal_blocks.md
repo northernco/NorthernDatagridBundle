@@ -7,7 +7,7 @@ If you want to override blocks of the grid you can use a extended template of th
 
 ```twig
 <!-- MyProjectMyBundle::my_page_grid.html.twig -->
-{% extends 'APYDataGridBundle::blocks.html.twig' %}
+{% extends '@APYDataGrid/blocks.html.twig' %}
 
 {% block grid_pager %}{% endblock %}
 
@@ -33,7 +33,7 @@ apy_data_grid:
 ## _self template
 
 If you want to override blocks inside the current template you can use the `_self` parameter in grid template definition.
-Current template will automatically extended from the base block template (APYDataGridBundle::blocks.html.twig)
+Current template will automatically extended from the base block template (@APYDataGrid/blocks.html.twig)
 
 ```twig
 <!-- MyProjectMyBundle::my_grid.html.twig -->

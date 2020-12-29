@@ -113,7 +113,7 @@ In your twig template:
 
 ```janjo
 <!-- MyProjectMyBundle::my_grid_template.html.twig -->
-{% extends 'APYDataGridBundle::blocks.html.twig' %}
+{% extends '@APYDataGrid/blocks.html.twig' %}
 
 {% block grid_column_type_video_cell %}
     {# Show your player with the file path store in the variable {{ value }} #}
