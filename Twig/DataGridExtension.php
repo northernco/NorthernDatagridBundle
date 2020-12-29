@@ -450,7 +450,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
     {
         $this->templates = [];
         $template = $environment->load($theme);
-        while ($template instanceof \Twig\TemplateWrapper) {
+        while ($template instanceof TemplateWrapper) {
             $template = $template->unwrap();
             $this->templates[] = $template;
             $template = $template->getParent([]);

@@ -152,11 +152,11 @@ class GridManager implements \IteratorAggregate, \Countable
     /**
      * Renders a view.
      *
-     * @param string|array $param1   The view name or an array of parameters to pass to the view
-     * @param string|array $param2   The view name or an array of parameters to pass to the view
-     * @param Response     $response A response instance
+     * @param string|array|null $param1   The view name or an array of parameters to pass to the view
+     * @param string|array|null $param2   The view name or an array of parameters to pass to the view
+     * @param Response|null     $response A response instance
      *
-     * @return Response A Response instance
+     * @return Response|array A Response instance
      */
     public function getGridManagerResponse($param1 = null, $param2 = null, Response $response = null)
     {
@@ -193,7 +193,13 @@ class GridManager implements \IteratorAggregate, \Countable
                 return $parameters;
             }
 
-            return $this->container->get('templating')->renderResponse($view, $parameters, $response);
+            if (null === $response) {
+                $response = new Response();
+            }
+
+            $response->setContent($this->container->get('twig')->render($view, $parameters));
+
+            return $response;
         }
     }
 
