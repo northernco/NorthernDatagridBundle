@@ -191,7 +191,7 @@ abstract class Column
         $this->setTranslationDomain($this->getParam('translation_domain'));
     }
 
-    protected function getParam($id, $default = null)
+    public function getParam($id, $default = null)
     {
         return isset($this->params[$id]) ? $this->params[$id] : $default;
     }
