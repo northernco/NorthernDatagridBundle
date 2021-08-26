@@ -83,6 +83,11 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     protected $groupBy;
 
     /**
+     * @var bool
+     */
+    protected $massActionsInNewTab;
+
+    /**
      * @var array
      */
     protected $actions;
@@ -422,6 +427,24 @@ class GridConfigBuilder implements GridConfigBuilderInterface
         $this->groupBy = $groupBy;
 
         return $this;
+    }
+
+    /**
+     * @param $massActionsInNewTab
+     *
+     * @return $this
+     */
+    public function setMassActionsInNewTab($massActionsInNewTab) {
+        $this->massActionsInNewTab = (bool)$massActionsInNewTab;
+
+        return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getMassActionsInNewTab() {
+        return (bool)$this->massActionsInNewTab;
     }
 
     /**

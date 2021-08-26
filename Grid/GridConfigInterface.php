@@ -134,4 +134,11 @@ interface GridConfigInterface
      * @return string|array
      */
     public function getGroupBy();
+
+    /**
+     * Returns whether or not mass actions should be opened in a new tab.
+     *
+     * @return bool
+     */
+    public function getMassActionsInNewTab();
 }
