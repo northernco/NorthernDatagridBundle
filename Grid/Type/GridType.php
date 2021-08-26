@@ -58,7 +58,7 @@ class GridType extends AbstractType
             'mass_actions_in_new_tab' => false,
         ]);
 
-        $allowedTypes  = [
+        $allowedTypes = [
             'source'           => ['null', 'APY\DataGridBundle\Grid\Source\Source'],
             'group_by'         => ['null', 'string', 'array'],
             'route_parameters' => 'array',
