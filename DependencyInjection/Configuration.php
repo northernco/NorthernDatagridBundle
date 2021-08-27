@@ -50,6 +50,7 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
+             ->booleanNode('mass_actions_in_new_tab')->defaultFalse()->end()
              ->end();
 
         return $treeBuilder;

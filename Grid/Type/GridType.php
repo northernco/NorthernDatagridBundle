@@ -29,7 +29,8 @@ class GridType extends AbstractType
             ->setSortable($options['sortable'])
             ->setSortBy($options['sort_by'])
             ->setOrder($options['order'])
-            ->setGroupBy($options['group_by']);
+            ->setGroupBy($options['group_by'])
+            ->setMassActionsInNewTab($options['mass_actions_in_new_tab']);
 
         if (!empty($options['source'])) {
             $builder->setSource($options['source']);
@@ -42,18 +43,19 @@ class GridType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            'source'           => null,
-            'group_by'         => null,
-            'sort_by'          => null,
-            'order'            => 'asc',
-            'page'             => 1,
-            'route'            => '',
-            'route_parameters' => [],
-            'persistence'      => false,
-            'max_per_page'     => 10,
-            'max_results'      => null,
-            'filterable'       => true,
-            'sortable'         => true,
+            'source'                  => null,
+            'group_by'                => null,
+            'sort_by'                 => null,
+            'order'                   => 'asc',
+            'page'                    => 1,
+            'route'                   => '',
+            'route_parameters'        => [],
+            'persistence'             => false,
+            'max_per_page'            => 10,
+            'max_results'             => null,
+            'filterable'              => true,
+            'sortable'                => true,
+            'mass_actions_in_new_tab' => false,
         ]);
 
         $allowedTypes = [
