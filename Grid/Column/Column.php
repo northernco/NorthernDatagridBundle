@@ -430,6 +430,16 @@ abstract class Column
     }
 
     /**
+     * get default column order.
+     *
+     * @return string asc|desc
+     */
+    public function getDefaultOrder()
+    {
+        return 'asc';
+    }
+
+    /**
      * set column order.
      *
      * @param string $order asc|desc

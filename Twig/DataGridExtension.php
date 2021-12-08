@@ -320,7 +320,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
                 if ($param->isSorted()) {
                     return $prefix . Grid::REQUEST_QUERY_ORDER . ']=' . $param->getId() . '|' . ($param->getOrder() == 'asc' ? 'desc' : 'asc');
                 } else {
-                    return $prefix . Grid::REQUEST_QUERY_ORDER . ']=' . $param->getId() . '|asc';
+                    return $prefix . Grid::REQUEST_QUERY_ORDER . ']=' . $param->getId() . '|' . $param->getDefaultOrder();
                 }
             case 'page':
                 return $prefix . Grid::REQUEST_QUERY_PAGE . ']=' . $param;
