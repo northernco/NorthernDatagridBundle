@@ -118,6 +118,7 @@ abstract class Column
     protected $export;
     protected $class;
     protected $isManualField;
+    protected $useHaving;
     protected $isAggregate;
     protected $usePrefixTitle;
     protected $translationDomain;
@@ -156,6 +157,7 @@ abstract class Column
         $this->setValues($this->getParam('values', []));
         $this->setOperatorsVisible($this->getParam('operatorsVisible', true));
         $this->setIsManualField($this->getParam('isManualField', false));
+        $this->setUseHaving($this->getParam('useHaving', false));
         $this->setIsAggregate($this->getParam('isAggregate', false));
         $this->setUsePrefixTitle($this->getParam('usePrefixTitle', true));
 
@@ -1008,6 +1010,16 @@ abstract class Column
     public function getIsManualField()
     {
         return $this->isManualField;
+    }
+
+    public function setUseHaving($useHaving)
+    {
+        $this->useHaving = $useHaving;
+    }
+
+    public function getUseHaving()
+    {
+        return $this->useHaving;
     }
 
     public function setIsAggregate($isAggregate)
