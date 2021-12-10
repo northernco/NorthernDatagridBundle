@@ -427,7 +427,7 @@ class Entity extends Source
                 $isDisjunction = $column->getDataJunction() === Column::DATA_DISJUNCTION;
 
                 $dqlMatches = [];
-                $hasHavingClause = $column->hasDQLFunction($dqlMatches) || $column->getIsAggregate();
+                $hasHavingClause = $column->hasDQLFunction($dqlMatches) || $column->getIsAggregate() || $column->getUseHaving();
                 if(isset($dqlMatches['function']) && $dqlMatches['function'] == 'translation_agg'){
                     $hasHavingClause = false;
                 }
