@@ -1033,7 +1033,7 @@ class DocumentTest extends TestCase
         $builder
             ->method('getQuery')
             ->willReturn($query);
-        
+
         $this
             ->manager
             ->method('createQueryBuilder')

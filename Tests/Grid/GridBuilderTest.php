@@ -12,6 +12,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -34,6 +35,46 @@ class GridBuilderTest extends TestCase
      * @var GridBuilder
      */
     private $builder;
+
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp()
+    {
+        $self = $this;
+
+        $this->container = $this->createMock(Container::class);
+        $this->container->expects($this->any())
+                        ->method('get')
+                        ->will($this->returnCallback(function ($param) use ($self) {
+                            switch ($param) {
+                                case 'router':
+                                    return $self->createMock(RouterInterface::class);
+                                    break;
+                                case 'request_stack':
+                                    $request = new Request([], [], ['key' => 'value']);
+                                    $session = new Session();
+                                    $request->setSession($session);
+                                    $requestStack = new RequestStack();
+                                    $requestStack->push($request);
+
+                                    return $requestStack;
+                                    break;
+                                case 'security.authorization_checker':
+                                    return $self->createMock(AuthorizationCheckerInterface::class);
+                                    break;
+                            }
+                        }));
+
+        $this->factory = $this->createMock(GridFactoryInterface::class);
+        $this->builder = new GridBuilder($this->container, $this->factory, 'name');
+    }
+
+    protected function tearDown()
+    {
+        $this->factory = null;
+        $this->builder = null;
+    }
 
     public function testAddUnexpectedType()
     {
@@ -138,43 +179,5 @@ class GridBuilderTest extends TestCase
     public function testGetGrid()
     {
         $this->assertInstanceOf(Grid::class, $this->builder->getGrid());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
-    {
-        $self = $this;
-
-        $this->container = $this->createMock(Container::class);
-        $this->container->expects($this->any())
-            ->method('get')
-            ->will($this->returnCallback(function ($param) use ($self) {
-                switch ($param) {
-                    case 'router':
-                        return $self->createMock(RouterInterface::class);
-                        break;
-                    case 'request_stack':
-                        $request = new Request([], [], ['key' => 'value']);
-                        $requestStack = new RequestStack();
-                        $requestStack->push($request);
-
-                        return $requestStack;
-                        break;
-                    case 'security.authorization_checker':
-                        return $self->createMock(AuthorizationCheckerInterface::class);
-                        break;
-                }
-            }));
-
-        $this->factory = $this->createMock(GridFactoryInterface::class);
-        $this->builder = new GridBuilder($this->container, $this->factory, 'name');
-    }
-
-    protected function tearDown()
-    {
-        $this->factory = null;
-        $this->builder = null;
     }
 }

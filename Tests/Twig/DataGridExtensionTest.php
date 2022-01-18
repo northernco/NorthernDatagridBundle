@@ -29,7 +29,7 @@ class DataGridExtensionTest extends TestCase
 
     public function testGetGridUrl()
     {
-        $baseUrl = 'http://localhost';
+        $baseUrl = 'https://localhost';
         $gridHash = 'my_grid';
 
         // Creates grid

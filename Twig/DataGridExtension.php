@@ -16,6 +16,7 @@ use APY\DataGridBundle\Grid\Grid;
 use Pagerfanta\Adapter\NullAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Routing\RouterInterface;
+use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\GlobalsInterface;
 use Twig\TemplateWrapper;
@@ -170,14 +171,14 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
     /**
      * Render grid block.
      *
-     * @param \Twig\Environment              $environment
+     * @param \Twig\Environment             $environment
      * @param \APY\DataGridBundle\Grid\Grid $grid
      * @param string                        $theme
      * @param string                        $id
      *
      * @return string
      */
-    public function getGrid(\Twig\Environment $environment, $grid, $theme = null, $id = '', array $params = [], $withjs = true)
+    public function getGrid(Environment $environment, $grid, $theme = null, $id = '', array $params = [], $withjs = true)
     {
         $this->initGrid($grid, $theme, $id, $params);
 
@@ -190,37 +191,37 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
     /**
      * Render grid block (html only).
      *
-     * @param \Twig\Environment              $environment
+     * @param \Twig\Environment             $environment
      * @param \APY\DataGridBundle\Grid\Grid $grid
      * @param string                        $theme
      * @param string                        $id
      *
      * @return string
      */
-    public function getGridHtml(\Twig\Environment $environment, $grid, $theme = null, $id = '', array $params = [])
+    public function getGridHtml(Environment $environment, $grid, $theme = null, $id = '', array $params = [])
     {
         return $this->getGrid($environment, $grid, $theme, $id, $params, false);
     }
 
     /**
      * @param \Twig\Environment $environment
-     * @param string           $name
-     * @param unknown          $grid
+     * @param string            $name
+     * @param unknown           $grid
      *
      * @return string
      */
-    public function getGrid_(\Twig\Environment $environment, $name, $grid)
+    public function getGrid_(Environment $environment, $name, $grid)
     {
         return $this->renderBlock($environment, 'grid_' . $name, ['grid' => $grid]);
     }
 
     /**
      * @param \Twig\Environment $environment
-     * @param unknown          $grid
+     * @param unknown           $grid
      *
      * @return string
      */
-    public function getGridPager(\Twig\Environment $environment, $grid)
+    public function getGridPager(Environment $environment, $grid)
     {
         return $this->renderBlock($environment, 'grid_pager', ['grid' => $grid, 'pagerfanta' => $this->pagerFantaDefs['enable']]);
     }
@@ -228,14 +229,14 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
     /**
      * Cell Drawing override.
      *
-     * @param \Twig\Environment                       $environment
+     * @param \Twig\Environment                      $environment
      * @param \APY\DataGridBundle\Grid\Column\Column $column
      * @param \APY\DataGridBundle\Grid\Row           $row
      * @param \APY\DataGridBundle\Grid\Grid          $grid
      *
      * @return string
      */
-    public function getGridCell(\Twig\Environment $environment, $column, $row, $grid)
+    public function getGridCell(Environment $environment, $column, $row, $grid)
     {
         $value = $column->renderCell($row->getField($column->getId()), $row, $this->router);
 
@@ -263,13 +264,13 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
     /**
      * Filter Drawing override.
      *
-     * @param \Twig\Environment                       $environment
+     * @param \Twig\Environment                      $environment
      * @param \APY\DataGridBundle\Grid\Column\Column $column
      * @param \APY\DataGridBundle\Grid\Grid          $grid
      *
      * @return string
      */
-    public function getGridFilter(\Twig\Environment $environment, $column, $grid, $submitOnChange = true)
+    public function getGridFilter(Environment $environment, $column, $grid, $submitOnChange = true)
     {
         $id = $this->names[$grid->getHash()];
 
@@ -293,13 +294,13 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
     /**
      * Column Operator Drawing override.
      *
-     * @param \Twig\Environment                       $environment
+     * @param \Twig\Environment                      $environment
      * @param \APY\DataGridBundle\Grid\Column\Column $column
      * @param \APY\DataGridBundle\Grid\Grid          $grid
      *
      * @return string
      */
-    public function getGridColumnOperator(\Twig\Environment $environment, $column, $grid, $operator, $submitOnChange = true)
+    public function getGridColumnOperator(Environment $environment, $column, $grid, $operator, $submitOnChange = true)
     {
         return $this->renderBlock($environment, 'grid_column_operator', ['grid' => $grid, 'column' => $column, 'submitOnChange' => $submitOnChange, 'op' => $operator]);
     }
@@ -335,14 +336,14 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
 
     /**
      * @param \Twig\Environment $environment
-     * @param unknown          $grid
-     * @param unknown          $theme
-     * @param string           $id
-     * @param array            $params
+     * @param unknown           $grid
+     * @param unknown           $theme
+     * @param string            $id
+     * @param array             $params
      *
      * @return string
      */
-    public function getGridSearch(\Twig\Environment $environment, $grid, $theme = null, $id = '', array $params = [])
+    public function getGridSearch(Environment $environment, $grid, $theme = null, $id = '', array $params = [])
     {
         $this->initGrid($grid, $theme, $id, $params);
 
@@ -375,14 +376,13 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
      * Render block.
      *
      * @param \Twig\Environment $environment
-     * @param string           $name
-     * @param array            $parameters
-     *
-     * @throws \InvalidArgumentException If the block could not be found
+     * @param string            $name
+     * @param array             $parameters
      *
      * @return string
+     * @throws \InvalidArgumentException If the block could not be found
      */
-    protected function renderBlock(\Twig\Environment $environment, $name, $parameters)
+    protected function renderBlock(Environment $environment, $name, $parameters)
     {
         foreach ($this->getTemplates($environment) as $template) {
             if ($template->hasBlock($name, [])) {
@@ -397,11 +397,11 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
      * Has block.
      *
      * @param \Twig\Environment $environment
-     * @param $name string
+     * @param                   $name string
      *
      * @return bool
      */
-    protected function hasBlock(\Twig\Environment $environment, $name)
+    protected function hasBlock(Environment $environment, $name)
     {
         foreach ($this->getTemplates($environment) as $template) {
             /** @var $template TemplateWrapper */
@@ -418,11 +418,10 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
      *
      * @param \Twig\Environment $environment
      *
-     * @throws \Exception
-     *
      * @return TemplateWrapper[]
+     * @throws \Exception
      */
-    protected function getTemplates(\Twig\Environment $environment)
+    protected function getTemplates(Environment $environment)
     {
         if (empty($this->templates)) {
             if ($this->theme instanceof TemplateWrapper) {
@@ -446,15 +445,12 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return array
      */
-    protected function getTemplatesFromString(\Twig\Environment $environment, $theme)
+    protected function getTemplatesFromString(Environment $environment, $theme)
     {
         $this->templates = [];
+
         $template = $environment->load($theme);
-        while ($template instanceof TemplateWrapper) {
-            $template = $template->unwrap();
-            $this->templates[] = $template;
-            $template = $template->getParent([]);
-        }
+        $this->templates[] = $template;
 
         return $this->templates;
     }

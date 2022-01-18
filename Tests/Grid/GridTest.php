@@ -31,6 +31,7 @@ use Symfony\Component\HttpKernel\HttpKernel;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Twig\Environment;
+use Twig\TemplateWrapper;
 
 class GridTest extends TestCase
 {
@@ -734,47 +735,44 @@ class GridTest extends TestCase
         $this->assertEquals([$colId => [$rowAction]], $this->grid->getRowActions());
     }
 
-    /**
-     * FIXME: Restore this test with Symfony 5 update
-     */
-    // public function testSetExportTwigTemplateInstance()
-    // {
-    //     $templateName = 'templateName';
-    //
-    //     $template = $this
-    //         ->getMockBuilder(\Twig\TemplateWrapper::class)
-    //         ->disableOriginalConstructor()
-    //         ->getMock();
-    //     $template
-    //         ->method('getTemplateName')
-    //         ->willReturn($templateName);
-    //
-    //     $result = '__SELF__' . $templateName;
-    //
-    //     $this
-    //         ->session
-    //         ->expects($this->once())
-    //         ->method('set')
-    //         ->with($this->anything(), [Grid::REQUEST_QUERY_TEMPLATE => $result]);
-    //
-    //     $this->grid->setTemplate($template);
-    // }
+    public function testSetExportTwigTemplateInstance()
+    {
+        $templateName = 'templateName';
 
-    /**
-     * FIXME: Restore this test with Symfony 5 update
-     */
-    // public function testSetExportStringTemplate()
-    // {
-    //     $template = 'templateString';
-    //
-    //     $this
-    //         ->session
-    //         ->expects($this->once())
-    //         ->method('set')
-    //         ->with($this->anything(), [Grid::REQUEST_QUERY_TEMPLATE => $template]);
-    //
-    //     $this->grid->setTemplate($template);
-    // }
+        $template = $this
+            ->getMockBuilder(TemplateWrapper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $template
+            ->method('getTemplateName')
+            ->willReturn($templateName);
+
+        $result = '__SELF__' . $templateName;
+
+        $this
+            ->session
+            ->expects($this->once())
+            ->method('set')
+            ->with($this->anything(), [Grid::REQUEST_QUERY_TEMPLATE => $result]);
+
+        $this->grid->setTemplate($template);
+    }
+
+    public function testSetExportStringTemplate()
+    {
+        $template = 'templateString';
+
+        $this
+            ->session
+            ->expects($this->once())
+            ->method('set')
+            ->with($this->anything(), [Grid::REQUEST_QUERY_TEMPLATE => $template]);
+
+        $this->arrangeGridSourceDataLoadedWithEmptyRows();
+        $this->arrangeGridPrimaryColumn();
+        $this->grid->handleRequest($this->request);
+        $this->grid->setTemplate($template);
+    }
 
     public function testRaiseExceptionIfSetTemplateWithNoValidValue()
     {
@@ -801,27 +799,24 @@ class GridTest extends TestCase
         $this->grid->setTemplate(null);
     }
 
-    /**
-     * FIXME: Restore this test with Symfony 5 update
-     */
-    // public function testReturnTwigTemplate()
-    // {
-    //     $templateName = 'templateName';
-    //
-    //     $template = $this
-    //         ->getMockBuilder(\Twig\TemplateWrapper::class)
-    //         ->disableOriginalConstructor()
-    //         ->getMock();
-    //     $template
-    //         ->method('getTemplateName')
-    //         ->willReturn($templateName);
-    //
-    //     $result = '__SELF__' . $templateName;
-    //
-    //     $this->grid->setTemplate($template);
-    //
-    //     $this->assertEquals($result, $this->grid->getTemplate());
-    // }
+    public function testReturnTwigTemplate()
+    {
+        $templateName = 'templateName';
+
+        $template = $this
+            ->getMockBuilder(TemplateWrapper::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $template
+            ->method('getTemplateName')
+            ->willReturn($templateName);
+
+        $result = '__SELF__' . $templateName;
+
+        $this->grid->setTemplate($template);
+
+        $this->assertEquals($result, $this->grid->getTemplate());
+    }
 
     public function testReturnStringTemplate()
     {
@@ -2602,6 +2597,9 @@ class GridTest extends TestCase
         $tweakId = 'aValidTweakId';
         $tweak = ['filters' => [], 'order' => 'columnId', 'page' => 1, 'limit' => 50, 'export' => 1, 'massAction' => 1];
 
+        $routeUrl = 'https://www.foo.com';
+        $this->grid->setRouteUrl($routeUrl);
+
         $this->grid->addTweak('title', $tweak, $tweakId, 'group');
 
         $this->grid->getTweak($nonExistentTweak);
@@ -2612,8 +2610,12 @@ class GridTest extends TestCase
         $title = 'aTweak';
         $id = 'aValidTweakId';
         $group = 'tweakGroup';
+
+        $routeUrl = 'http://www.foo.com';
+        $this->grid->setRouteUrl($routeUrl);
+
         $tweak = ['filters' => [], 'order' => 'columnId', 'page' => 1, 'limit' => 50, 'export' => 1, 'massAction' => 1];
-        $tweakUrl = sprintf('?[%s]=%s', Grid::REQUEST_QUERY_TWEAK, $id);
+        $tweakUrl = $routeUrl . sprintf('?[%s]=%s', Grid::REQUEST_QUERY_TWEAK, $id);
 
         $this->grid->addTweak($title, $tweak, $id, $group);
 
@@ -2627,8 +2629,12 @@ class GridTest extends TestCase
         $title = 'aTweak';
         $id = 'aValidTweakId';
         $group = 'tweakGroup';
+
+        $routeUrl = 'http://www.foo.com';
+        $this->grid->setRouteUrl($routeUrl);
+
         $tweak = ['filters' => [], 'order' => 'columnId', 'page' => 1, 'limit' => 50, 'export' => 1, 'massAction' => 1];
-        $tweakUrl = sprintf('?[%s]=%s', Grid::REQUEST_QUERY_TWEAK, $id);
+        $tweakUrl = $routeUrl . sprintf('?[%s]=%s', Grid::REQUEST_QUERY_TWEAK, $id);
         $tweakResult = [$id => array_merge(['title' => $title, 'id' => $id, 'group' => $group, 'url' => $tweakUrl], $tweak)];
 
         $this->grid->addTweak($title, $tweak, $id, $group);
@@ -3681,7 +3687,7 @@ class GridTest extends TestCase
         $col5From = 'foo';
         $col5To = 'bar';
 
-        list($column1, $column2, $column3, $column4, $column5) = $this->arrangeColumnsFilters(
+        [$column1, $column2, $column3, $column4, $column5] = $this->arrangeColumnsFilters(
             $col1Id,
             $col2Id,
             $col3Id,
@@ -3764,7 +3770,7 @@ class GridTest extends TestCase
         $col5From = 'foo';
         $col5To = 'bar';
 
-        list($column1, $column2, $column3, $column4, $column5) = $this->arrangeColumnsFilters(
+        [$column1, $column2, $column3, $column4, $column5] = $this->arrangeColumnsFilters(
             $col1Id,
             $col2Id,
             $col3Id,
@@ -3834,7 +3840,7 @@ class GridTest extends TestCase
         $col5From = 'foo';
         $col5To = 'bar';
 
-        list($column1, $column2, $column3, $column4, $column5) = $this->arrangeColumnsFilters(
+        [$column1, $column2, $column3, $column4, $column5] = $this->arrangeColumnsFilters(
             $col1Id,
             $col2Id,
             $col3Id,
@@ -4265,7 +4271,7 @@ class GridTest extends TestCase
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
 
-        list($group, $tweakId) = $this->arrangeDefaultTweaks(1);
+        [$group, $tweakId] = $this->arrangeDefaultTweaks(1);
 
         $this
             ->session
@@ -4282,7 +4288,7 @@ class GridTest extends TestCase
         $this->arrangeGridPrimaryColumn();
 
         $tweakPage = 1;
-        list($group, $tweakId) = $this->arrangeDefaultTweaks($tweakPage);
+        [$group, $tweakId] = $this->arrangeDefaultTweaks($tweakPage);
 
         $requestPage = 2;
         $this
@@ -5599,7 +5605,7 @@ class GridTest extends TestCase
         $col5From = 'foo';
         $col5To = 'bar';
 
-        list($column1, $column2, $column3, $column4, $column5) = $this->arrangeColumnsFilters(
+        [$column1, $column2, $column3, $column4, $column5] = $this->arrangeColumnsFilters(
             $col1Id,
             $col2Id,
             $col3Id,

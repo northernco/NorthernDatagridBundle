@@ -7,7 +7,6 @@ use APY\DataGridBundle\Grid\GridManager;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\HttpFoundation\RedirectResponse;
 use Twig\Environment;
 
 class GridManagerTest extends TestCase
