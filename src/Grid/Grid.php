@@ -1411,6 +1411,11 @@ class Grid implements GridInterface
             }
 
             $this->set(self::REQUEST_QUERY_TEMPLATE, $template);
+
+            if ($this->hash === null) {
+                $this->createHash();
+            }
+
             $this->saveSession();
         }
 
