@@ -29,17 +29,17 @@ class DocumentTest extends TestCase
     private $document;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $manager;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $odmMetadata;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $metadata;
 
@@ -1115,7 +1115,7 @@ class DocumentTest extends TestCase
     /**
      * @param array $elements
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function mockColumnsIterator(array $elements)
     {
@@ -1153,7 +1153,7 @@ class DocumentTest extends TestCase
     /**
      * @param array $resources
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function mockCursor(array $resources)
     {
@@ -1191,7 +1191,7 @@ class DocumentTest extends TestCase
     /**
      * @param array $resources
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function mockHelperCursor(array $resources)
     {

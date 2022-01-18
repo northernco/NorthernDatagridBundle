@@ -4,8 +4,9 @@ namespace APY\DataGridBundle\Tests\Grid\Action;
 
 use APY\DataGridBundle\Grid\Action\RowAction;
 use APY\DataGridBundle\Grid\Row;
+use PHPUnit\Framework\TestCase;
 
-class RowActionTest extends \PHPUnit_Framework_TestCase
+class RowActionTest extends TestCase
 {
     /** @var string */
     private $title = 'title';
@@ -31,7 +32,7 @@ class RowActionTest extends \PHPUnit_Framework_TestCase
     /** @var RowAction */
     private $rowAction;
 
-    /** @var \PHPUnit_Framework_MockObject_MockObject */
+    /** @var \PHPUnit\Framework\MockObject\MockObject */
     private $row;
 
     public function testSetTitle()

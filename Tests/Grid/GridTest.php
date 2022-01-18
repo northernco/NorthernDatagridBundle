@@ -41,37 +41,37 @@ class GridTest extends TestCase
     private $grid;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $router;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $container;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $authChecker;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $request;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $requestStack;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $session;
 
     /**
-     * @var \PHPUnit_Framework_MockObject_MockObject
+     * @var \PHPUnit\Framework\MockObject\MockObject
      */
     private $environment;
 
@@ -4442,7 +4442,7 @@ class GridTest extends TestCase
     /**
      * @param $gridConfigInterface
      * @param string                                   $id
-     * @param \PHPUnit_Framework_MockObject_MockObject $httpKernel
+     * @param \PHPUnit\Framework\MockObject\MockObject $httpKernel
      */
     private function arrange($gridConfigInterface = null, $id = 'id', $httpKernel = null)
     {
@@ -4708,7 +4708,7 @@ class GridTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function mockMassActionCallbackResponse()
     {
@@ -4739,7 +4739,7 @@ class GridTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function mockMassActionControllerResponse()
     {
@@ -4820,7 +4820,7 @@ class GridTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function mockExports()
     {
@@ -5493,7 +5493,7 @@ class GridTest extends TestCase
      * @param string $columnId
      * @param string $order
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function mockOrderRequestData($columnId, $order)
     {
@@ -5780,7 +5780,7 @@ class GridTest extends TestCase
      * @param int    $totalCount
      * @param string $sourceHash
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function arrangeGridSourceDataLoadedWithEmptyRows($totalCount = 0, $sourceHash = null)
     {
@@ -5826,7 +5826,7 @@ class GridTest extends TestCase
     /**
      * @param int $totalCount
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function arrangeGridSourceDataLoadedWithoutRowsReturned($totalCount = 0)
     {
@@ -5844,7 +5844,7 @@ class GridTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function arrangeGridSourceDataNotLoadedWithoutRowsReturned()
     {
@@ -5864,7 +5864,7 @@ class GridTest extends TestCase
     /**
      * @param int $totalCount
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function arrangeGridSourceDataNotLoadedWithEmptyRows($totalCount = 0)
     {
@@ -5885,7 +5885,7 @@ class GridTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function arrangeGridPrimaryColumn()
     {
@@ -5896,7 +5896,7 @@ class GridTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function stubPrimaryColumn()
     {
@@ -5914,7 +5914,7 @@ class GridTest extends TestCase
     /**
      * @param string $columnId
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function stubFilteredColumn($columnId = null)
     {
@@ -5929,7 +5929,7 @@ class GridTest extends TestCase
     /**
      * @param mixed $columnId
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function stubTitledColumn($columnId = null)
     {
@@ -5945,7 +5945,7 @@ class GridTest extends TestCase
      * @param string $type
      * @param mixed  $columnId
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function stubFilterableColumn($type, $columnId = null)
     {
@@ -5964,7 +5964,7 @@ class GridTest extends TestCase
      * @param string $defaultOp
      * @param mixed  $columnId
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function stubColumnWithDefaultOperator($defaultOp, $columnId = null)
     {
@@ -5979,7 +5979,7 @@ class GridTest extends TestCase
     /**
      * @param mixed $columnId
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function stubColumn($columnId = null)
     {
@@ -5995,7 +5995,7 @@ class GridTest extends TestCase
     }
 
     /**
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function arrangeGridWithColumnsIterator()
     {
@@ -6026,7 +6026,7 @@ class GridTest extends TestCase
      * @param mixed $aCallback
      * @param array $params
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function stubMassActionWithCallback($aCallback, array $params = [])
     {
@@ -6044,7 +6044,7 @@ class GridTest extends TestCase
     /**
      * @param string $role
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function stubMassAction($role = null)
     {
@@ -6064,7 +6064,7 @@ class GridTest extends TestCase
      * @param string $role
      * @param mixed  $colId
      *
-     * @return \PHPUnit_Framework_MockObject_MockObject
+     * @return \PHPUnit\Framework\MockObject\MockObject
      */
     private function stubRowAction($role = null, $colId = null)
     {

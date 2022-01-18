@@ -210,7 +210,7 @@ class ColumnsTest extends TestCase
     /**
      * @param int $number
      *
-     * @return array|\PHPUnit_Framework_MockObject_MockObject[]|\PHPUnit_Framework_MockObject_MockObject
+     * @return array|\PHPUnit\Framework\MockObject\MockObject[]|\PHPUnit\Framework\MockObject\MockObject
      */
     private function buildColumnMocks($number)
     {
