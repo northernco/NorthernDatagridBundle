@@ -9,7 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TextColumnTest extends WebTestCase
 {
-    /** @var TextColumn */
+    /**
+     * @var TextColumn
+     */
     private $column;
 
     public function setUp(): void
@@ -32,30 +34,41 @@ class TextColumnTest extends WebTestCase
     public function testNullOperatorFilters()
     {
         $this->column->setData(['operator' => Column::OPERATOR_ISNULL]);
-        $this->assertEquals([
-            new Filter(Column::OPERATOR_ISNULL),
-            new Filter(Column::OPERATOR_EQ, ''),
-        ], $this->column->getFilters('asource'));
-        $this->assertAttributeEquals(Column::DATA_DISJUNCTION, 'dataJunction', $this->column);
+
+        $this->assertEquals(
+            [
+                new Filter(Column::OPERATOR_ISNULL),
+                new Filter(Column::OPERATOR_EQ, ''),
+            ],
+            $this->column->getFilters('asource')
+        );
+
+        $this->assertEquals(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
     public function testNotNullOperatorFilters()
     {
         $this->column->setData(['operator' => Column::OPERATOR_ISNOTNULL]);
-        $this->assertEquals([
-            new Filter(Column::OPERATOR_ISNOTNULL),
-            new Filter(Column::OPERATOR_NEQ, ''),
-        ], $this->column->getFilters('asource'));
+
+        $this->assertEquals(
+            [
+                new Filter(Column::OPERATOR_ISNOTNULL),
+                new Filter(Column::OPERATOR_NEQ, ''),
+            ],
+            $this->column->getFilters('asource')
+        );
     }
 
     public function testOtherOperatorFilters()
     {
         $operators = array_flip(Column::getAvailableOperators());
+
         unset($operators[Column::OPERATOR_ISNOTNULL]);
         unset($operators[Column::OPERATOR_ISNULL]);
 
         foreach (array_keys($operators) as $operator) {
             $this->column->setData(['operator' => $operator]);
+
             $this->assertEmpty($this->column->getFilters('asource'));
         }
     }

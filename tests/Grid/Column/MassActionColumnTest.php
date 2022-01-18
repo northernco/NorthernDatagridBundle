@@ -8,7 +8,9 @@ use PHPUnit\Framework\TestCase;
 
 class MassActionColumnTest extends TestCase
 {
-    /** @var MassActionColumn */
+    /**
+     * @var MassActionColumn
+     */
     private $column;
 
     public function setUp(): void
@@ -34,14 +36,17 @@ class MassActionColumnTest extends TestCase
 
     public function testInitialize()
     {
-        $this->assertAttributeEquals([
-            'id'         => MassActionColumn::ID,
-            'title'      => '',
-            'size'       => 15,
-            'filterable' => true,
-            'sortable'   => false,
-            'source'     => false,
-            'align'      => Column::ALIGN_CENTER,
-        ], 'params', $this->column);
+        $this->assertEquals(
+            [
+                'id'         => MassActionColumn::ID,
+                'title'      => '',
+                'size'       => 15,
+                'filterable' => true,
+                'sortable'   => false,
+                'source'     => false,
+                'align'      => Column::ALIGN_CENTER,
+            ],
+            $this->column->getParams()
+        );
     }
 }

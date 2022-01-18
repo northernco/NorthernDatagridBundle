@@ -65,21 +65,21 @@ class SimpleArrayColumn extends Column
         return $filters;
     }
 
-    public function renderCell($values, $row, $router)
+    public function renderCell($value, $row, $router)
     {
         if (is_callable($this->callback)) {
-            return call_user_func($this->callback, $values, $row, $router);
+            return call_user_func($this->callback, $value, $row, $router);
         }
 
         // @todo: when it has an array as value?
         $return = [];
-        if (is_array($values) || $values instanceof \Traversable) {
-            foreach ($values as $key => $value) {
-                if (!is_array($value) && isset($this->values[(string) $value])) {
-                    $value = $this->values[$value];
+        if (is_array($value) || $value instanceof \Traversable) {
+            foreach ($value as $key => $itemValue) {
+                if (!is_array($itemValue) && isset($this->values[(string) $itemValue])) {
+                    $itemValue = $this->values[$itemValue];
                 }
 
-                $return[$key] = $value;
+                $return[$key] = $itemValue;
             }
         }
 

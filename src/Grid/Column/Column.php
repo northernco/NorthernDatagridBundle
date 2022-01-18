@@ -193,6 +193,11 @@ abstract class Column
         $this->setTranslationDomain($this->getParam('translation_domain'));
     }
 
+    public function getParams()
+    {
+        return $this->params;
+    }
+
     public function getParam($id, $default = null)
     {
         return isset($this->params[$id]) ? $this->params[$id] : $default;
@@ -201,7 +206,7 @@ abstract class Column
     /**
      * Draw cell.
      *
-     * @param string $value
+     * @param mixed  $value
      * @param Row    $row
      * @param $router
      *

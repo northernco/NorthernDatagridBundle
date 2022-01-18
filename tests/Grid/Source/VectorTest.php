@@ -24,7 +24,7 @@ class VectorTest extends TestCase
 
     public function testCreateVectorWithEmptyData()
     {
-        $this->assertAttributeEmpty('data', $this->vector);
+        $this->assertEmpty($this->vector->getData());
     }
 
     public function testRaiseExceptionDuringVectorCreationWhenDataIsNotAVector()
@@ -195,15 +195,7 @@ class VectorTest extends TestCase
         $this->assertEquals('APY\DataGridBundle\Grid\Source\Vector' . md5($idCol1.$idCol2), $vector->getHash());
     }
 
-    public function testSetId()
-    {
-        $id = 'id';
-        $this->vector->setId($id);
-
-        $this->assertAttributeEquals($id, 'id', $this->vector);
-    }
-
-    public function testGetId()
+    public function testId()
     {
         $id = 'id';
         $this->vector->setId($id);
@@ -248,8 +240,4 @@ class VectorTest extends TestCase
             'Date and time' => [[['c1Id' => '2017-07-22'], ['c1Id' => '2017-07-22 11:00:00']], $uc, 'datetime']
         ];
     }
-}
-
-class VectorObj
-{
 }

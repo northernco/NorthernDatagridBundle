@@ -15,16 +15,6 @@ class UntypedColumnTest extends TestCase
         $this->assertEquals($params, $column->getParams());
     }
 
-    public function testSetType()
-    {
-        $type = 'text';
-
-        $column = new UntypedColumn();
-        $column->setType($type);
-
-        $this->assertAttributeEquals($type, 'type', $column);
-    }
-
     public function getType()
     {
         $type = 'text';
