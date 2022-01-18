@@ -1,12 +1,4 @@
-nbproject/
-catalog.xml
-/vendor
+/vendor/
+/.phpunit.result.cache
 /composer.lock
 /phpunit.xml
-/composer.phar
-*~
-*.orig
-.buildpath
-.project
-.settings/
-.idea
