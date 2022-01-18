@@ -439,7 +439,7 @@ class GridManagerTest extends TestCase
 
         $view = 'aView';
 
-        $this->assertEquals(Response::class, get_class($this->gridManager->getGridManagerResponse($view)));
+        $this->assertInstanceOf(Response::class, $this->gridManager->getGridManagerResponse($view));
     }
 
     public function testGetGridWithViewWithViewAndParams()
@@ -471,7 +471,7 @@ class GridManagerTest extends TestCase
         $param2 = 'bar';
         $params = [$param1, $param2];
 
-        $this->assertEquals(Response::class, get_class($this->gridManager->getGridManagerResponse($view, $params)));
+        $this->assertInstanceOf(Response::class, $this->gridManager->getGridManagerResponse($view, $params));
     }
 
     /**

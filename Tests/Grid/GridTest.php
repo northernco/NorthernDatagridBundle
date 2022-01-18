@@ -4422,7 +4422,7 @@ class GridTest extends TestCase
 
         $view = 'aView';
 
-        $this->assertSame(Response::class, get_class($this->grid->getGridResponse($view)));
+        $this->assertInstanceOf(Response::class, $this->grid->getGridResponse($view));
     }
 
     public function testGetGridWithViewWithViewAndParams()
@@ -4436,7 +4436,7 @@ class GridTest extends TestCase
         $param2 = 'bar';
         $params = [$param1, $param2];
 
-        $this->assertSame(Response::class, get_class($this->grid->getGridResponse($view, $params)));
+        $this->assertInstanceOf(Response::class, $this->grid->getGridResponse($view, $params));
     }
 
     /**
