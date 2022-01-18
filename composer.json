@@ -20,6 +20,7 @@
     "require-dev": {
         "ext-intl": "*",
         "ext-mongodb": "*",
+        "dg/bypass-finals": "^1.2",
         "symfony/framework-bundle": "^4.4|^5.2",
         "symfony/expression-language": "^4.4|^5.2",
         "symfony/phpunit-bridge": "^4.4|^5.2",
