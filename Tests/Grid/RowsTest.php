@@ -14,6 +14,12 @@ class RowsTest extends TestCase
     /** @var array */
     private $rows;
 
+    public function setUp(): void
+    {
+        $this->rows = [$this->createMock(Row::class), $this->createMock(Row::class), $this->createMock(Row::class)];
+        $this->rowsSUT = new Rows($this->rows);
+    }
+
     public function testAddRowsOnConstruct()
     {
         $this->assertEquals(3, $this->rowsSUT->count());
@@ -33,11 +39,5 @@ class RowsTest extends TestCase
     public function testToArray()
     {
         $this->assertEquals($this->rows, $this->rowsSUT->toArray());
-    }
-
-    public function setUp()
-    {
-        $this->rows = [$this->createMock(Row::class), $this->createMock(Row::class), $this->createMock(Row::class)];
-        $this->rowsSUT = new Rows($this->rows);
     }
 }

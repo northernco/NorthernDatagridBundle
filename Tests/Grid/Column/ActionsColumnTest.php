@@ -14,6 +14,16 @@ class ActionsColumnTest extends TestCase
     /** @var ActionsColumn */
     private $column;
 
+    public function setUp(): void
+    {
+        $rowAction1 = $this->createMock(RowAction::class);
+        $rowAction2 = $this->createMock(RowAction::class);
+        $this->column = new ActionsColumn('columnId', 'columnTitle', [
+            $rowAction1,
+            $rowAction2,
+        ]);
+    }
+
     public function testConstructor()
     {
         $columnId = 'columnId';
@@ -160,15 +170,5 @@ class ActionsColumnTest extends TestCase
             'fooBar'       => 'testValue',
             'aName'        => 'aValue',
         ], $this->column->getRouteParameters($row, $rowAction));
-    }
-
-    public function setUp()
-    {
-        $rowAction1 = $this->createMock(RowAction::class);
-        $rowAction2 = $this->createMock(RowAction::class);
-        $this->column = new ActionsColumn('columnId', 'columnTitle', [
-            $rowAction1,
-            $rowAction2,
-        ]);
     }
 }

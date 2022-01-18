@@ -11,6 +11,11 @@ class MassActionColumnTest extends TestCase
     /** @var MassActionColumn */
     private $column;
 
+    public function setUp(): void
+    {
+        $this->column = new MassActionColumn();
+    }
+
     public function testGetType()
     {
         $this->assertEquals('massaction', $this->column->getType());
@@ -38,10 +43,5 @@ class MassActionColumnTest extends TestCase
             'source'     => false,
             'align'      => Column::ALIGN_CENTER,
         ], 'params', $this->column);
-    }
-
-    public function setUp()
-    {
-        $this->column = new MassActionColumn();
     }
 }

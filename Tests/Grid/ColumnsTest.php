@@ -16,6 +16,12 @@ class ColumnsTest extends TestCase
     /** @var AuthorizationCheckerInterface */
     private $authChecker;
 
+    public function setUp(): void
+    {
+        $this->authChecker = $this->createMock(AuthorizationCheckerInterface::class);
+        $this->columns = new Columns($this->authChecker);
+    }
+
     public function testGetIterator()
     {
         $iterator = $this->columns->getIterator();
@@ -230,11 +236,5 @@ class ColumnsTest extends TestCase
         }
 
         return $mocks;
-    }
-
-    public function setUp()
-    {
-        $this->authChecker = $this->createMock(AuthorizationCheckerInterface::class);
-        $this->columns = new Columns($this->authChecker);
     }
 }

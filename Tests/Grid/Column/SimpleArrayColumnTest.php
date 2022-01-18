@@ -14,14 +14,14 @@ class SimpleArrayColumnTest extends TestCase
     /** @var SimpleArrayColumn */
     private $column;
 
+    public function setUp(): void
+    {
+        $this->column = new SimpleArrayColumn();
+    }
+
     public function testGetType()
     {
         $this->assertEquals('simple_array', $this->column->getType());
-    }
-
-    public function setUp()
-    {
-        $this->column = new SimpleArrayColumn();
     }
 
     public function testInitializeDefaultParams()

@@ -13,6 +13,11 @@ class BooleanColumnTest extends TestCase
     /** @var BooleanColumn */
     private $column;
 
+    public function setUp(): void
+    {
+        $this->column = new BooleanColumn();
+    }
+
     public function testGetType()
     {
         $this->assertEquals('boolean', $this->column->getType());
@@ -127,10 +132,5 @@ class BooleanColumnTest extends TestCase
         $this->assertEquals('false', $this->column->renderCell(
             1, $this->createMock(Row::class), $this->createMock(Router::class)
         ));
-    }
-
-    public function setUp()
-    {
-        $this->column = new BooleanColumn();
     }
 }

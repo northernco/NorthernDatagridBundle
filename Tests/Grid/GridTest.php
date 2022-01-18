@@ -85,6 +85,11 @@ class GridTest extends TestCase
      */
     private $gridHash;
 
+    public function setUp(): void
+    {
+        $this->arrange($this->createMock(GridConfigInterface::class));
+    }
+
     public function testInitializeWithoutAnyConfiguration()
     {
         $this->arrange();
@@ -4432,11 +4437,6 @@ class GridTest extends TestCase
         $params = [$param1, $param2];
 
         $this->assertSame(Response::class, get_class($this->grid->getGridResponse($view, $params)));
-    }
-
-    public function setUp()
-    {
-        $this->arrange($this->createMock(GridConfigInterface::class));
     }
 
     /**

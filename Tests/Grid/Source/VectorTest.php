@@ -17,6 +17,11 @@ class VectorTest extends TestCase
      */
     private $vector;
 
+    public function setUp(): void
+    {
+        $this->vector = new Vector([], []);
+    }
+
     public function testCreateVectorWithEmptyData()
     {
         $this->assertAttributeEmpty('data', $this->vector);
@@ -242,11 +247,6 @@ class VectorTest extends TestCase
             'Date and not date time' => [[['c1Id' => '2017-07-22'], ['c1Id' => 20]], $uc, 'text'],
             'Date and time' => [[['c1Id' => '2017-07-22'], ['c1Id' => '2017-07-22 11:00:00']], $uc, 'datetime']
         ];
-    }
-
-    public function setUp()
-    {
-        $this->vector = new Vector([], []);
     }
 }
 

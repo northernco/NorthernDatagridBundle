@@ -43,6 +43,59 @@ class DocumentTest extends TestCase
      */
     private $metadata;
 
+    public function setUp(): void
+    {
+        $name = 'name';
+        $this->document = new Document($name);
+
+        $reflectionClassName = 'aName';
+        $reflectionClass = $this->createMock(\ReflectionClass::class);
+        $reflectionClass
+            ->method('getName')
+            ->willReturn($reflectionClassName);
+
+        $odmMetadata = $this->createMock(ClassMetadata::class);
+        $odmMetadata
+            ->method('getReflectionClass')
+            ->willReturn($reflectionClass);
+
+        $this->odmMetadata = $odmMetadata;
+
+        $documentManager = $this->createMock(DocumentManager::class);
+        $documentManager
+            ->method('getClassMetadata')
+            ->with($name)
+            ->willReturn($odmMetadata);
+
+        $this->manager = $documentManager;
+
+        $metadata = $this->createMock(Metadata::class);
+        $this->metadata = $metadata;
+
+        $mapping = $this->createMock(Manager::class);
+        $mapping
+            ->method('getMetadata')
+            ->with($reflectionClassName, 'default')
+            ->willReturn($metadata);
+
+        $containerGetMap = [
+            ['doctrine.odm.mongodb.document_manager', Container::EXCEPTION_ON_INVALID_REFERENCE, $documentManager],
+            ['grid.mapping.manager', Container::EXCEPTION_ON_INVALID_REFERENCE, $mapping]
+        ];
+
+        $container = $this->createMock(Container::class);
+        $container
+            ->method('get')
+            ->will($this->returnValueMap($containerGetMap));
+
+        $mapping
+            ->expects($this->once())
+            ->method('addDriver')
+            ->with($this->document, -1);
+
+        $this->document->initialise($container);
+    }
+
     public function testConstructedWithDefaultGroup()
     {
         $name = 'name';
@@ -965,59 +1018,6 @@ class DocumentTest extends TestCase
     public function testPopulateSelectFilters()
     {
         // @todo Don't know how to move on with __clone method on stubs / mocks
-    }
-
-    public function setUp()
-    {
-        $name = 'name';
-        $this->document = new Document($name);
-
-        $reflectionClassName = 'aName';
-        $reflectionClass = $this->createMock(\ReflectionClass::class);
-        $reflectionClass
-            ->method('getName')
-            ->willReturn($reflectionClassName);
-
-        $odmMetadata = $this->createMock(ClassMetadata::class);
-        $odmMetadata
-            ->method('getReflectionClass')
-            ->willReturn($reflectionClass);
-
-        $this->odmMetadata = $odmMetadata;
-
-        $documentManager = $this->createMock(DocumentManager::class);
-        $documentManager
-            ->method('getClassMetadata')
-            ->with($name)
-            ->willReturn($odmMetadata);
-
-        $this->manager = $documentManager;
-
-        $metadata = $this->createMock(Metadata::class);
-        $this->metadata = $metadata;
-
-        $mapping = $this->createMock(Manager::class);
-        $mapping
-            ->method('getMetadata')
-            ->with($reflectionClassName, 'default')
-            ->willReturn($metadata);
-
-        $containerGetMap = [
-            ['doctrine.odm.mongodb.document_manager', Container::EXCEPTION_ON_INVALID_REFERENCE, $documentManager],
-            ['grid.mapping.manager', Container::EXCEPTION_ON_INVALID_REFERENCE, $mapping]
-        ];
-
-        $container = $this->createMock(Container::class);
-        $container
-            ->method('get')
-            ->will($this->returnValueMap($containerGetMap));
-
-        $mapping
-            ->expects($this->once())
-            ->method('addDriver')
-            ->with($this->document, -1);
-
-        $this->document->initialise($container);
     }
 
     private function stubBuilder(array $documents = [])

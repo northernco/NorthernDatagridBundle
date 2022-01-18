@@ -12,6 +12,11 @@ class TextColumnTest extends WebTestCase
     /** @var TextColumn */
     private $column;
 
+    public function setUp(): void
+    {
+        $this->column = new TextColumn();
+    }
+
     public function testGetType()
     {
         $this->assertEquals('text', $this->column->getType());
@@ -53,10 +58,5 @@ class TextColumnTest extends WebTestCase
             $this->column->setData(['operator' => $operator]);
             $this->assertEmpty($this->column->getFilters('asource'));
         }
-    }
-
-    public function setUp()
-    {
-        $this->column = new TextColumn();
     }
 }

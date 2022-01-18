@@ -12,6 +12,11 @@ class JoinColumnTest extends TestCase
     /** @var JoinColumn */
     private $column;
 
+    public function setUp(): void
+    {
+        $this->column = new JoinColumn();
+    }
+
     public function testGetType()
     {
         $this->assertEquals('join', $this->column->getType());
@@ -86,10 +91,5 @@ class JoinColumnTest extends TestCase
             new Filter(Column::OPERATOR_ISNOTNULL, null, $col2),
             new Filter(Column::OPERATOR_NEQ, null, $col2),
         ], $column->getFilters('asource'));
-    }
-
-    public function setUp()
-    {
-        $this->column = new JoinColumn();
     }
 }

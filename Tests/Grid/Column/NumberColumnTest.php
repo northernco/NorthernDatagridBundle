@@ -16,6 +16,11 @@ class NumberColumnTest extends TestCase
      */
     private $column;
 
+    public function setUp(): void
+    {
+        $this->column = new NumberColumn();
+    }
+
     public function testGetType()
     {
         $this->assertEquals('number', $this->column->getType());
@@ -305,10 +310,5 @@ class NumberColumnTest extends TestCase
     {
         $column = new NumberColumn(['maxFractionDigits' => 3]);
         $this->assertEquals(3, $column->getMaxFractionDigits());
-    }
-
-    public function setUp()
-    {
-        $this->column = new NumberColumn();
     }
 }

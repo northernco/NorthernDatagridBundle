@@ -25,6 +25,11 @@ class MassActionTest extends TestCase
     /** @var string */
     private $role = 'ROLE_FOO';
 
+    public function setUp(): void
+    {
+        $this->massAction = new MassAction($this->title, $this->callback, $this->confirm, $this->parameters, $this->role);
+    }
+
     public function testMassActionConstruct()
     {
         $this->assertAttributeEquals($this->title, 'title', $this->massAction);
@@ -133,10 +138,5 @@ class MassActionTest extends TestCase
         $this->massAction->setRole($role);
 
         $this->assertEquals($role, $this->massAction->getRole());
-    }
-
-    public function setUp()
-    {
-        $this->massAction = new MassAction($this->title, $this->callback, $this->confirm, $this->parameters, $this->role);
     }
 }

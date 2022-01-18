@@ -45,6 +45,38 @@ class GridFactoryTest extends TestCase
      */
     private $factory;
 
+    protected function setUp(): void
+    {
+        $self = $this;
+
+        $this->container = $this->createMock(Container::class);
+        $this->container->expects($this->any())
+                        ->method('get')
+                        ->will($this->returnCallback(function ($param) use ($self) {
+                            switch ($param) {
+                                case 'router':
+                                    return $self->createMock(RouterInterface::class);
+                                    break;
+                                case 'request_stack':
+                                    $request = new Request([], [], ['key' => 'value']);
+                                    $session = new Session();
+                                    $request->setSession($session);
+                                    $requestStack = new RequestStack();
+                                    $requestStack->push($request);
+
+                                    return $requestStack;
+                                    break;
+                                case 'security.authorization_checker':
+                                    return $self->createMock(AuthorizationCheckerInterface::class);
+                                    break;
+                            }
+                        }));
+
+        $this->registry = $this->createMock(GridRegistryInterface::class);
+        $this->builder = $this->createMock(GridBuilderInterface::class);
+        $this->factory = new GridFactory($this->container, $this->registry);
+    }
+
     public function testCreateWithUnexpectedType()
     {
         $this->expectException(UnexpectedTypeException::class);
@@ -157,37 +189,5 @@ class GridFactoryTest extends TestCase
         $this->assertEmpty($column->getTitle());
         $this->assertNull($column->getField());
         $this->assertFalse($column->isVisibleForSource());
-    }
-
-    protected function setUp()
-    {
-        $self = $this;
-
-        $this->container = $this->createMock(Container::class);
-        $this->container->expects($this->any())
-            ->method('get')
-            ->will($this->returnCallback(function ($param) use ($self) {
-                switch ($param) {
-                    case 'router':
-                        return $self->createMock(RouterInterface::class);
-                        break;
-                    case 'request_stack':
-                        $request = new Request([], [], ['key' => 'value']);
-                        $session = new Session();
-                        $request->setSession($session);
-                        $requestStack = new RequestStack();
-                        $requestStack->push($request);
-
-                        return $requestStack;
-                        break;
-                    case 'security.authorization_checker':
-                        return $self->createMock(AuthorizationCheckerInterface::class);
-                        break;
-                }
-            }));
-
-        $this->registry = $this->createMock(GridRegistryInterface::class);
-        $this->builder = $this->createMock(GridBuilderInterface::class);
-        $this->factory = new GridFactory($this->container, $this->registry);
     }
 }

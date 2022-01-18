@@ -13,6 +13,11 @@ class RankColumnTest extends TestCase
     /** @var RankColumn */
     private $column;
 
+    public function setUp(): void
+    {
+        $this->column = new RankColumn();
+    }
+
     public function testGetType()
     {
         $this->assertEquals('rank', $this->column->getType());
@@ -79,10 +84,5 @@ class RankColumnTest extends TestCase
 
         $this->assertEquals(2, $this->column->renderCell(true, $this->createMock(Row::class), $this->createMock(Router::class)));
         $this->assertAttributeEquals(3, 'rank', $this->column);
-    }
-
-    public function setUp()
-    {
-        $this->column = new RankColumn();
     }
 }

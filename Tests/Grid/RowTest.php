@@ -11,6 +11,11 @@ class RowTest extends TestCase
     /** @var Row */
     private $row;
 
+    public function setUp(): void
+    {
+        $this->row = new Row();
+    }
+
     public function testSetRepository()
     {
         $repo = $this->createMock(EntityRepository::class);
@@ -201,10 +206,5 @@ class RowTest extends TestCase
         $this->row->setLegend($legend);
 
         $this->assertEquals($legend, $this->row->getLegend());
-    }
-
-    public function setUp()
-    {
-        $this->row = new Row();
     }
 }

@@ -39,7 +39,7 @@ class GridBuilderTest extends TestCase
     /**
      * {@inheritdoc}
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         $self = $this;
 
@@ -70,7 +70,7 @@ class GridBuilderTest extends TestCase
         $this->builder = new GridBuilder($this->container, $this->factory, 'name');
     }
 
-    protected function tearDown()
+    protected function tearDown(): void
     {
         $this->factory = null;
         $this->builder = null;

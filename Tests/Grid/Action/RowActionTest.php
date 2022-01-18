@@ -35,6 +35,14 @@ class RowActionTest extends TestCase
     /** @var \PHPUnit\Framework\MockObject\MockObject */
     private $row;
 
+    protected function setUp(): void
+    {
+        $this->rowAction = new RowAction(
+            $this->title, $this->route, $this->confirm, $this->target, $this->attributes, $this->role
+        );
+        $this->row = $this->createMock(Row::class);
+    }
+
     public function testSetTitle()
     {
         $title = 'foo_title';
@@ -326,13 +334,5 @@ class RowActionTest extends TestCase
         $this->rowAction->setEnabled($enabled);
 
         $this->assertTrue($this->rowAction->getEnabled());
-    }
-
-    protected function setUp()
-    {
-        $this->rowAction = new RowAction(
-            $this->title, $this->route, $this->confirm, $this->target, $this->attributes, $this->role
-        );
-        $this->row = $this->createMock(Row::class);
     }
 }

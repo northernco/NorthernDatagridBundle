@@ -12,6 +12,11 @@ class DateColumnTest extends TestCase
     /** @var DateColumn */
     private $column;
 
+    public function setUp(): void
+    {
+        $this->column = new DateColumn();
+    }
+
     public function testGetType()
     {
         $this->assertEquals('date', $this->column->getType());
@@ -117,10 +122,5 @@ class DateColumnTest extends TestCase
             [new Filter(Column::OPERATOR_LTE, new \DateTime($value . '23:59:59'))],
             $this->column->getFilters('asource')
         );
-    }
-
-    public function setUp()
-    {
-        $this->column = new DateColumn();
     }
 }

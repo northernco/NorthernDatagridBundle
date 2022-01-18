@@ -14,6 +14,11 @@ class ArrayColumnTest extends TestCase
     /** @var ArrayColumn */
     private $column;
 
+    public function setUp(): void
+    {
+        $this->column = new ArrayColumn();
+    }
+
     public function testGetType()
     {
         $this->assertEquals('array', $this->column->getType());
@@ -140,10 +145,5 @@ class ArrayColumnTest extends TestCase
         );
 
         $this->assertEquals($result, ['bar' => 'a', 'foo' => 'b']);
-    }
-
-    public function setUp()
-    {
-        $this->column = new ArrayColumn();
     }
 }

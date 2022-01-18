@@ -21,6 +21,11 @@ class GridRegistryTest extends TestCase
      */
     private $registry;
 
+    protected function setUp(): void
+    {
+        $this->registry = new GridRegistry();
+    }
+
     public function testAddTypeAlreadyExists()
     {
         $this->expectException(TypeAlreadyExistsException::class);
@@ -92,11 +97,6 @@ class GridRegistryTest extends TestCase
 
         $this->registry->addColumn($expectedColumnType);
         $this->assertSame($expectedColumnType, $this->registry->getColumn('type'));
-    }
-
-    protected function setUp()
-    {
-        $this->registry = new GridRegistry();
     }
 
     protected function createTypeMock()

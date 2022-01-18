@@ -19,6 +19,14 @@ class GridConfigBuilderTest extends TestCase
     /** @var GridConfigBuilder */
     private $gridConfigBuilder;
 
+    /**
+     * {@inheritdoc}
+     */
+    protected function setUp(): void
+    {
+        $this->gridConfigBuilder = new GridConfigBuilder($this->name, $this->options);
+    }
+
     public function testGetName()
     {
         $this->assertEquals($this->name, $this->gridConfigBuilder->getName());
@@ -272,13 +280,5 @@ class GridConfigBuilderTest extends TestCase
     public function testGetGridConfig()
     {
         $this->assertInstanceOf(GridConfigBuilder::class, $this->gridConfigBuilder->getGridConfig());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function setUp()
-    {
-        $this->gridConfigBuilder = new GridConfigBuilder($this->name, $this->options);
     }
 }
