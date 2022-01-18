@@ -35,9 +35,13 @@
         "doctrine/mongodb-odm": "If you want to use Document as source, please require doctrine/mongodb-odm"
     },
     "autoload": {
-        "psr-4": { "APY\\DataGridBundle\\": "" }
+        "psr-4": {
+            "APY\\DataGridBundle\\": ""
+        }
     },
-    "provide": {
-        "ext-mongo": "1.5"
+    "autoload-dev": {
+        "psr-4": {
+            "APY\\DataGridBundle\\Tests\\": "tests"
+        }
     }
 }

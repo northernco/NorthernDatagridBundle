@@ -15,7 +15,7 @@
 
     <testsuites>
         <testsuite name="APYDataGridBundle test suite">
-            <directory>Tests</directory>
+            <directory>tests</directory>
         </testsuite>
     </testsuites>
 
