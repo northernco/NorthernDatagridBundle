@@ -5,8 +5,8 @@ namespace APY\DataGridBundle\Tests\Grid;
 use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Grid\GridManager;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\BrowserKit\Response;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\Response;
 use Twig\Environment;
 
 class GridManagerTest extends TestCase
@@ -433,9 +433,7 @@ class GridManagerTest extends TestCase
 
         $view = 'aView';
 
-        $response = $this->createMock(Response::class);
-
-        $this->assertEquals($response, $this->gridManager->getGridManagerResponse($view));
+        $this->assertEquals(Response::class, get_class($this->gridManager->getGridManagerResponse($view)));
     }
 
     public function testGetGridWithViewWithViewAndParams()
@@ -467,9 +465,7 @@ class GridManagerTest extends TestCase
         $param2 = 'bar';
         $params = [$param1, $param2];
 
-        $response = $this->createMock(Response::class);
-
-        $this->assertEquals($response, $this->gridManager->getGridManagerResponse($view, $params));
+        $this->assertEquals(Response::class, get_class($this->gridManager->getGridManagerResponse($view, $params)));
     }
 
     public function setUp()

@@ -4417,9 +4417,7 @@ class GridTest extends TestCase
 
         $view = 'aView';
 
-        $response = $this->createMock(Response::class);
-
-        $this->assertEquals($response, $this->grid->getGridResponse($view));
+        $this->assertSame(Response::class, get_class($this->grid->getGridResponse($view)));
     }
 
     public function testGetGridWithViewWithViewAndParams()
@@ -4433,9 +4431,7 @@ class GridTest extends TestCase
         $param2 = 'bar';
         $params = [$param1, $param2];
 
-        $response = $this->createMock(Response::class);
-
-        $this->assertEquals($response, $this->grid->getGridResponse($view, $params));
+        $this->assertSame(Response::class, get_class($this->grid->getGridResponse($view, $params)));
     }
 
     public function setUp()

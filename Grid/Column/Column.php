@@ -175,6 +175,10 @@ abstract class Column
             self::OPERATOR_NLIKE,
             self::OPERATOR_RLIKE,
             self::OPERATOR_LLIKE,
+            self::OPERATOR_SLIKE,
+            self::OPERATOR_NSLIKE,
+            self::OPERATOR_RSLIKE,
+            self::OPERATOR_LSLIKE,
             self::OPERATOR_ISNULL,
             self::OPERATOR_ISNOTNULL,
         ]));

@@ -41,6 +41,7 @@ class DataGridExtensionTest extends TestCase
 
         // Creates column
         $column = $this->createMock(Column::class);
+        $column->expects($this->any())->method('getDefaultOrder')->willReturn('asc');
 
         // Limit
         $this->assertEquals($prefix . '[_limit]=', $this->extension->getGridUrl('limit', $grid, $column));
