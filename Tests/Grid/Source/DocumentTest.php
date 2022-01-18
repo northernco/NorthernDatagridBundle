@@ -957,7 +957,7 @@ class DocumentTest extends TestCase
         $columns
             ->expects($this->exactly(2))
             ->method('addColumn')
-            ->withConsecutive($column, $column2);
+            ->withConsecutive([$column], [$column2]);
 
         $this->document->getColumns($columns);
     }
