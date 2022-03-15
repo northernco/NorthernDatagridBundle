@@ -15,11 +15,12 @@
         "symfony/options-resolver": "^4.4|^5.2",
         "symfony/security-core": "^4.4|^5.2",
         "symfony/serializer": "^4.4|^5.2",
-        "twig/twig": "^2.4|^3.0"
+        "twig/twig": "^2.4|^3.0",
+        "ext-json": "*",
+        "ext-mongodb": "*"
     },
     "require-dev": {
         "ext-intl": "*",
-        "ext-mongodb": "*",
         "dg/bypass-finals": "^1.2",
         "symfony/framework-bundle": "^4.4|^5.2",
         "symfony/expression-language": "^4.4|^5.2",

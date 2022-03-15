@@ -8,16 +8,19 @@ use APY\DataGridBundle\Grid\Filter;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Metadata;
+use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Source\Document;
 use Doctrine\ODM\MongoDB\DocumentManager;
 use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\Mapping\MappingException;
 use Doctrine\ODM\MongoDB\Query\Builder;
 use Doctrine\ODM\MongoDB\Query\Expr;
 use Doctrine\ODM\MongoDB\Query\Query;
 use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
 use MongoDB\BSON\Regex;
-use MongoDB\Driver\Cursor;
+use MongoDB\Model\CachingIterator;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 
@@ -29,17 +32,17 @@ class DocumentTest extends TestCase
     private $document;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var MockObject
      */
     private $manager;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var MockObject
      */
     private $odmMetadata;
 
     /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
+     * @var MockObject
      */
     private $metadata;
 
@@ -101,8 +104,8 @@ class DocumentTest extends TestCase
         $name = 'name';
         $document = new Document($name);
 
-        $this->assertAttributeEquals($name, 'documentName', $document);
-        $this->assertAttributeEquals('default', 'group', $document);
+        $this->assertEquals($name, $document->getDocumentName());
+        $this->assertEquals('default', $document->getGroup());
     }
 
     public function testConstructedWithAGroup()
@@ -111,8 +114,8 @@ class DocumentTest extends TestCase
         $group = 'aGroup';
         $document = new Document($name, $group);
 
-        $this->assertAttributeEquals($name, 'documentName', $document);
-        $this->assertAttributeEquals($group, 'group', $document);
+        $this->assertEquals($name, $document->getDocumentName());
+        $this->assertEquals($group, $document->getGroup());
     }
 
     public function testInitQueryBuilder()
@@ -121,12 +124,13 @@ class DocumentTest extends TestCase
 
         $this->document->initQueryBuilder($qb);
 
-        $this->assertAttributeEquals($qb, 'query', $this->document);
-        $this->assertAttributeNotSame($qb, 'query', $this->document);
+        $this->assertEquals($qb, $this->document->getQuery());
+        $this->assertNotSame($qb, $this->document->getQuery());
     }
 
     /**
      * @dataProvider fieldsMetadataProvider
+     * @throws MappingException
      */
     public function testGetFieldsMetadataProv($name, array $fieldMapping, array $metadata, array $referenceMappings = [])
     {
@@ -147,7 +151,7 @@ class DocumentTest extends TestCase
 
         $this->assertEquals($metadata, $this->document->getFieldsMetadata('name', 'default'));
 
-        $this->assertAttributeEquals($referenceMappings, 'referencedMappings', $this->document);
+        $this->assertEquals($referenceMappings, $this->document->getReferencedMappings());
     }
 
     public function testGetFieldsMetadata()
@@ -352,6 +356,10 @@ class DocumentTest extends TestCase
         $this->assertEquals(new Rows(), $this->document->execute($columnsIterator, 0, 0, $maxResult));
     }
 
+    /**
+     * @throws MappingException
+     * @throws \Doctrine\ODM\MongoDB\MongoDBException
+     */
     public function testExecuteWithNoFilteredSubColumns()
     {
         $document = new DocumentEntity();
@@ -377,7 +385,10 @@ class DocumentTest extends TestCase
 
         $this->assertEquals(1, $result->count());
         foreach ($iterator as $row) {
-            $this->assertAttributeEquals([$colId => 'subColValue'], 'fields', $row);
+            /**
+             * @var $row Row
+             */
+            $this->assertEquals([$colId => 'subColValue'], $row->getFields());
         }
     }
 
@@ -461,10 +472,20 @@ class DocumentTest extends TestCase
             ->method('execute')
             ->willReturn($cursor);
 
+        $expr = $this->createMock(Expr::class);
+        $expr
+            ->method('field')
+            ->with($id)
+            ->willReturn($expr);
+        $expr
+            ->method('references')
+            ->with($subDoc)
+            ->willReturn($expr);
+
         $builder = $this->createMock(Builder::class);
         $builder
             ->method('expr')
-            ->willReturn($builder);
+            ->willReturn($expr);
         $builder
             ->method('field')
             ->with($id)
@@ -503,7 +524,7 @@ class DocumentTest extends TestCase
         $builder
             ->expects($this->once())
             ->method('addOr')
-            ->with($builder);
+            ->with($expr);
         $builder
             ->expects($this->never())
             ->method('select');
@@ -511,6 +532,10 @@ class DocumentTest extends TestCase
         $this->document->execute($columnsIterator);
     }
 
+    /**
+     * @throws \Doctrine\ODM\MongoDB\MongoDBException
+     * @throws MappingException
+     */
     public function testExecuteWithFiltersOnSubColumnsAndCursorWithMoreThanOneResult()
     {
         $document = new DocumentEntity();
@@ -535,10 +560,21 @@ class DocumentTest extends TestCase
             ->method('execute')
             ->willReturn($cursor);
 
+        $expr = $this->createMock(Expr::class);
+
+        $expr
+            ->method('field')
+            ->with($id)
+            ->willReturn($expr);
+        $expr
+            ->method('references')
+            ->withConsecutive([$subDoc1], [$subDoc2])
+            ->willReturn($expr);
+
         $builder = $this->createMock(Builder::class);
         $builder
             ->method('expr')
-            ->willReturn($builder);
+            ->willReturn($expr);
         $builder
             ->method('field')
             ->with($id)
@@ -577,7 +613,7 @@ class DocumentTest extends TestCase
         $builder
             ->expects($this->once())
             ->method('addOr')
-            ->with($builder);
+            ->with($expr);
         $builder
             ->expects($this->once())
             ->method('select')
@@ -908,6 +944,9 @@ class DocumentTest extends TestCase
         $this->document->execute($columnsIterator);
     }
 
+    /**
+     * @throws \Doctrine\ODM\MongoDB\MongoDBException
+     */
     public function testExecuteAddingCorrectFieldsToRow()
     {
         $document = new DocumentEntity();
@@ -926,7 +965,10 @@ class DocumentTest extends TestCase
 
         $this->assertEquals(1, $result->count());
         foreach ($columnsIterator as $row) {
-            $this->assertAttributeEquals([$colId => 'subColValue'], 'fields', $row);
+            /**
+             * @var $row Row
+             */
+            $this->assertEquals([$colId => 'subColValue'], $row->getFields());
         }
     }
 
@@ -1064,6 +1106,9 @@ class DocumentTest extends TestCase
             ->method('getId')
             ->willReturn($colId);
         $column
+            ->method('getField')
+            ->willReturn($colId);
+        $column
             ->method('isPrimary')
             ->willReturn($isPrimary);
         $column
@@ -1115,7 +1160,7 @@ class DocumentTest extends TestCase
     /**
      * @param array $elements
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @return MockObject|ColumnsIterator
      */
     private function mockColumnsIterator(array $elements)
     {
@@ -1153,20 +1198,20 @@ class DocumentTest extends TestCase
     /**
      * @param array $resources
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @return MockObject
      */
     private function mockCursor(array $resources)
     {
-        $cursor = $this->createMock(Cursor::class);
-
-        if (empty($resources)) {
-            return $cursor;
-        }
+        $cursor = $this->createMock(CachingIterator::class);
 
         $cursor
             ->expects($this->at(0))
             ->method('count')
             ->willReturn(count($resources));
+
+        if (empty($resources)) {
+            return $cursor;
+        }
 
         $cursor
             ->expects($this->at(1))
@@ -1191,11 +1236,11 @@ class DocumentTest extends TestCase
     /**
      * @param array $resources
      *
-     * @return \PHPUnit\Framework\MockObject\MockObject
+     * @return MockObject
      */
     private function mockHelperCursor(array $resources)
     {
-        $cursor = $this->createMock(Cursor::class);
+        $cursor = $this->createMock(CachingIterator::class);
 
         if (empty($resources)) {
             return $cursor;

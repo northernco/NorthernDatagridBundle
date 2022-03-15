@@ -13,20 +13,21 @@
 namespace APY\DataGridBundle\Grid;
 
 use Doctrine\ORM\EntityRepository;
+use InvalidArgumentException;
 
 class Row
 {
     /** @var array */
-    protected $fields;
+    protected array $fields;
 
     /** @var string */
-    protected $class;
+    protected string $class;
 
     /** @var string */
-    protected $color;
+    protected string $color;
 
     /** @var string|null */
-    protected $legend;
+    protected ?string $legend;
 
     /** @var mixed */
     protected $primaryField;
@@ -34,8 +35,8 @@ class Row
     /** @var mixed */
     protected $entity;
 
-    /** @var EntityRepository */
-    protected $repository;
+    /** @var EntityRepository|null */
+    protected ?EntityRepository $repository = null;
 
     public function __construct()
     {
@@ -51,10 +52,15 @@ class Row
         $this->repository = $repository;
     }
 
+    public function getRepository(): ?EntityRepository
+    {
+        return $this->repository;
+    }
+
     /**
      * @return null|object
      */
-    public function getEntity()
+    public function getEntity(): ?object
     {
         $primaryKeyValue = current($this->getPrimaryKeyValue());
 
@@ -64,7 +70,7 @@ class Row
     /**
      * @return array
      */
-    public function getPrimaryKeyValue()
+    public function getPrimaryKeyValue(): array
     {
         $primaryFieldValue = $this->getPrimaryFieldValue();
 
@@ -77,14 +83,14 @@ class Row
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      *
      * @return array|mixed
      */
     public function getPrimaryFieldValue()
     {
         if (null === $this->primaryField) {
-            throw new \InvalidArgumentException('Primary column must be defined');
+            throw new InvalidArgumentException('Primary column must be defined');
         }
 
         if (is_array($this->primaryField)) {
@@ -92,7 +98,7 @@ class Row
         }
 
         if (!isset($this->fields[$this->primaryField])) {
-            throw new \InvalidArgumentException('Primary field not added to fields');
+            throw new InvalidArgumentException('Primary field not added to fields');
         }
 
         return $this->fields[$this->primaryField];
@@ -103,7 +109,7 @@ class Row
      *
      * @return $this
      */
-    public function setPrimaryField($primaryField)
+    public function setPrimaryField($primaryField): Row
     {
         $this->primaryField = $primaryField;
 
@@ -124,7 +130,7 @@ class Row
      *
      * @return $this
      */
-    public function setField($columnId, $value)
+    public function setField($columnId, $value): Row
     {
         $this->fields[$columnId] = $value;
 
@@ -138,7 +144,12 @@ class Row
      */
     public function getField($columnId)
     {
-        return isset($this->fields[$columnId]) ? $this->fields[$columnId] : '';
+        return $this->fields[$columnId] ?? '';
+    }
+
+    public function getFields(): array
+    {
+        return $this->fields;
     }
 
     /**
@@ -146,7 +157,7 @@ class Row
      *
      * @return $this
      */
-    public function setClass($class)
+    public function setClass(string $class): Row
     {
         $this->class = $class;
 
@@ -156,7 +167,7 @@ class Row
     /**
      * @return string
      */
-    public function getClass()
+    public function getClass(): string
     {
         return $this->class;
     }
@@ -166,7 +177,7 @@ class Row
      *
      * @return $this
      */
-    public function setColor($color)
+    public function setColor(string $color): Row
     {
         $this->color = $color;
 
@@ -176,7 +187,7 @@ class Row
     /**
      * @return string
      */
-    public function getColor()
+    public function getColor(): string
     {
         return $this->color;
     }
@@ -186,7 +197,7 @@ class Row
      *
      * @return $this
      */
-    public function setLegend($legend)
+    public function setLegend(string $legend): Row
     {
         $this->legend = $legend;
 
@@ -196,7 +207,7 @@ class Row
     /**
      * @return string|null
      */
-    public function getLegend()
+    public function getLegend(): ?string
     {
         return $this->legend;
     }

@@ -459,6 +459,11 @@ class GridConfigBuilder implements GridConfigBuilderInterface
         return $this;
     }
 
+    public function getActions(): array
+    {
+        return $this->actions;
+    }
+
     /**
      * {@inheritdoc}
      */

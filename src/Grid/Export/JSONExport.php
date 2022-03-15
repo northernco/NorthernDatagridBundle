@@ -12,6 +12,8 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use APY\DataGridBundle\Grid\Grid;
+
 /**
  * JSON.
  */
@@ -19,7 +21,7 @@ class JSONExport extends Export
 {
     protected $fileExtension = 'json';
 
-    public function computeData($grid)
+    public function computeData(Grid $grid)
     {
         $this->content = json_encode($this->getGridData($grid));
     }

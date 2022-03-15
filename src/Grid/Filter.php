@@ -93,7 +93,7 @@ class Filter
     /**
      * @return string|null
      */
-    public function getColumnName()
+    public function getColumnName(): ?string
     {
         return $this->columnName;
     }

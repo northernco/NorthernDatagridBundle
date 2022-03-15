@@ -12,6 +12,7 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use APY\DataGridBundle\Grid\Grid;
 use Symfony\Component\Serializer\Encoder\XmlEncoder;
 use Symfony\Component\Serializer\Normalizer\GetSetMethodNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -25,10 +26,11 @@ class XMLExport extends Export
 
     protected $mimeType = 'application/xml';
 
-    public function computeData($grid)
+    public function computeData(Grid $grid)
     {
-        $xmlEncoder = new XmlEncoder();
-        $xmlEncoder->setRootNodeName('grid');
+        $xmlEncoder = new XmlEncoder([
+            XmlEncoder::ROOT_NODE_NAME => 'grid'
+        ]);
         $serializer = new Serializer([new GetSetMethodNormalizer()], ['xml' => $xmlEncoder]);
 
         $data = $this->getGridData($grid);

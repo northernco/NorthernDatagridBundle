@@ -16,20 +16,27 @@ namespace APY\DataGridBundle\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Metadata;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
+use Doctrine\ODM\MongoDB\DocumentManager;
+use Doctrine\ODM\MongoDB\Mapping\ClassMetadata;
+use Doctrine\ODM\MongoDB\Mapping\MappingException;
+use Doctrine\ODM\MongoDB\MongoDBException;
 use Doctrine\ODM\MongoDB\Query\Builder as QueryBuilder;
+use Doctrine\ODM\MongoDB\Repository\DocumentRepository;
+use Exception;
 use MongoDB\BSON\Regex;
 
 class Document extends Source
 {
     /**
-     * @var \Doctrine\ODM\MongoDB\Query\Builder;
+     * @var QueryBuilder|null
      */
-    protected $query;
+    protected ?QueryBuilder $query = null;
 
     /**
-     * @var \Doctrine\ODM\MongoDB\DocumentManager
+     * @var DocumentManager
      */
     protected $manager;
 
@@ -39,24 +46,24 @@ class Document extends Source
     protected $class;
 
     /**
-     * @var \Doctrine\ODM\MongoDB\Mapping\ClassMetadata
+     * @var ClassMetadata
      */
     protected $odmMetadata;
 
     /**
      * e.g. Cms:Page.
      */
-    protected $documentName;
+    protected string $documentName;
 
     /**
-     * @var \APY\DataGridBundle\Grid\Mapping\Metadata\Metadata
+     * @var Metadata
      */
     protected $metadata;
 
     /**
      * @var int Items count
      */
-    protected $count;
+    protected int $count;
 
     /**
      * @var string
@@ -66,20 +73,33 @@ class Document extends Source
     /**
      * @var array
      */
-    protected $referencedColumns = [];
+    protected array $referencedColumns = [];
 
     /**
      * @var array
      */
-    protected $referencedMappings = [];
+    protected array $referencedMappings = [];
 
     /**
      * @param string $documentName e.g. "Cms:Page"
      */
-    public function __construct($documentName, $group = 'default')
+    public function __construct(string $documentName, $group = 'default')
     {
         $this->documentName = $documentName;
         $this->group = $group;
+    }
+
+    public function getDocumentName(): string
+    {
+        return $this->documentName;
+    }
+
+    /**
+     * @return string
+     */
+    public function getGroup(): string
+    {
+        return $this->group;
     }
 
     public function initialise($container)
@@ -164,10 +184,15 @@ class Document extends Source
         $this->query = clone $queryBuilder;
     }
 
+    public function getQuery(): QueryBuilder
+    {
+        return $this->query;
+    }
+
     /**
      * @return QueryBuilder
      */
-    protected function getQueryBuilder()
+    protected function getQueryBuilder(): QueryBuilder
     {
         //If a custom QB has been provided, use that
         //Otherwise create our own basic one
@@ -182,13 +207,14 @@ class Document extends Source
 
     /**
      * @param ColumnsIterator $columns
-     * @param int                                      $page             Page Number
-     * @param int                                      $limit            Rows Per Page
-     * @param int                                      $gridDataJunction Grid data junction
+     * @param int $page Page Number
+     * @param int $limit Rows Per Page
+     * @param int $gridDataJunction Grid data junction
      *
-     * @return \APY\DataGridBundle\Grid\Rows
+     * @return Rows
+     * @throws MongoDBException
      */
-    public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
+    public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION): Rows
     {
         $this->query = $this->getQueryBuilder();
 
@@ -198,7 +224,7 @@ class Document extends Source
             //checks if exists '.' notation on referenced columns and build query if it's filtered
             $subColumn = explode('.', $column->getId());
             if (count($subColumn) > 1 && isset($this->referencedMappings[$subColumn[0]])) {
-                $this->addReferencedColumnn($subColumn, $column);
+                $this->addReferencedColumn($subColumn, $column);
 
                 continue;
             }
@@ -280,9 +306,10 @@ class Document extends Source
 
     /**
      * @param array $subColumn
-     * @param Column \APY\DataGridBundle\Grid\Column\Column
+     * @param Column $column
+     * @throws MongoDBException
      */
-    protected function addReferencedColumnn(array $subColumn, Column $column)
+    protected function addReferencedColumn(array $subColumn, Column $column)
     {
         $this->referencedColumns[$subColumn[0]][] = $subColumn[1];
 
@@ -315,14 +342,22 @@ class Document extends Source
     }
 
     /**
-     * @param \APY\DataGridBundle\Grid\Row $row
+     * @return array
+     */
+    public function getReferencedMappings(): array
+    {
+        return $this->referencedMappings;
+    }
+
+    /**
+     * @param Row $row
      * @param Document                     $resource
      *
-     * @throws \Exception if getter for field does not exists
+     * @return Row $row with referenced fields
+     *@throws Exception if getter for field does not exists
      *
-     * @return \APY\DataGridBundle\Grid\Row $row with referenced fields
      */
-    protected function addReferencedFields(Row $row, $resource)
+    protected function addReferencedFields(Row $row, $resource): Row
     {
         foreach ($this->referencedColumns as $parent => $subColumns) {
             $node = $this->getClassProperties($resource);
@@ -334,7 +369,7 @@ class Document extends Source
                     if (method_exists($node, $getter)) {
                         $row->setField($parent . '.' . $field, $node->$getter());
                     } else {
-                        throw new \Exception(sprintf('Method %s for Document %s not exists', $getter, $this->referencedMappings[$parent]));
+                        throw new Exception(sprintf('Method %s for Document %s not exists', $getter, $this->referencedMappings[$parent]));
                     }
                 }
             }
@@ -352,7 +387,7 @@ class Document extends Source
         return $this->count;
     }
 
-    protected function getClassProperties($obj)
+    protected function getClassProperties($obj): array
     {
         $reflect = new \ReflectionClass($obj);
         $props = $reflect->getProperties();
@@ -371,8 +406,9 @@ class Document extends Source
      * @param string $group
      *
      * @return array
+     * @throws MappingException
      */
-    public function getFieldsMetadata($class, $group = 'default')
+    public function getFieldsMetadata($class, $group = 'default'): array
     {
         $result = [];
         foreach ($this->odmMetadata->getReflectionProperties() as $property) {
@@ -415,6 +451,7 @@ class Document extends Source
                 case 'timestamp':
                     $values['type'] = 'date';
                     break;
+                case 'many':
                 case 'collection':
                     $values['type'] = 'array';
                     break;
@@ -423,9 +460,6 @@ class Document extends Source
                     if (isset($mapping['reference']) && $mapping['reference'] === true) {
                         $this->referencedMappings[$name] = $mapping['targetDocument'];
                     }
-                    break;
-                case 'many':
-                    $values['type'] = 'array';
                     break;
                 default:
                     $values['type'] = 'text';
@@ -437,6 +471,9 @@ class Document extends Source
         return $result;
     }
 
+    /**
+     * @throws MongoDBException
+     */
     public function populateSelectFilters($columns, $loop = false)
     {
         $queryFromSource = $this->getQueryBuilder();
@@ -515,7 +552,7 @@ class Document extends Source
     /**
      * @param array $ids
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function delete(array $ids)
     {
@@ -525,7 +562,7 @@ class Document extends Source
             $object = $repository->find($id);
 
             if (!$object) {
-                throw new \Exception(sprintf('No %s found for id %s', $this->documentName, $id));
+                throw new Exception(sprintf('No %s found for id %s', $this->documentName, $id));
             }
 
             $this->manager->remove($object);
@@ -535,7 +572,7 @@ class Document extends Source
     }
 
     /**
-     * @return \Doctrine\ODM\MongoDB\DocumentRepository
+     * @return DocumentRepository
      */
     public function getRepository()
     {

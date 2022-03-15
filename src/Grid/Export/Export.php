@@ -13,9 +13,14 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 use APY\DataGridBundle\Grid\Column\ArrayColumn;
+use APY\DataGridBundle\Grid\Grid;
+use Exception;
+use InvalidArgumentException;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Throwable;
+use Twig\TemplateWrapper;
 
 abstract class Export implements ExportInterface, ContainerAwareInterface
 {
@@ -56,7 +61,6 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      * @param string $charset  Charset of the exported data
      * @param string $role     Security role
      *
-     * @return \APY\DataGridBundle\Grid\Export\Export
      */
     public function __construct($title, $fileName = 'export', $params = [], $charset = 'UTF-8', $role = null)
     {
@@ -72,7 +76,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      *
      * @param ContainerInterface $container A ContainerInterface instance
      *
-     * @return \APY\DataGridBundle\Grid\Export\Export
+     * @return Export
      */
     public function setContainer(ContainerInterface $container = null)
     {
@@ -98,7 +102,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      *
      * @return Response
      */
-    public function getResponse()
+    public function getResponse() : Response
     {
         // Response
         $kernelCharset = $this->container->getParameter('kernel.charset');
@@ -250,6 +254,9 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         return array_merge($flatData, $data['rows']);
     }
 
+    /**
+     * @throws Exception
+     */
     protected function getGridTitles()
     {
         $titlesHTML = $this->renderBlock('grid_titles', ['grid' => $this->grid]);
@@ -261,7 +268,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         }
 
         if (empty($matches)) {
-            new \Exception('Table header (th or td) tags not found.');
+            throw new Exception('Table header (th or td) tags not found.');
         }
 
         $titlesClean = array_map([$this, 'cleanHTML'], $matches[0]);
@@ -396,11 +403,13 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      * Render block.
      *
      * @param $name string
-     * @param $parameters string
+     * @param $parameters array
      *
      * @return string
+     * @throws Exception
+     * @throws Throwable
      */
-    protected function renderBlock($name, $parameters)
+    protected function renderBlock($name, $parameters): string
     {
         foreach ($this->getTemplates() as $template) {
             if ($template->hasBlock($name, [])) {
@@ -408,15 +417,15 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
             }
         }
 
-        throw new \InvalidArgumentException(sprintf('Block "%s" doesn\'t exist in grid template "%s".', $name, 'ee'));
+        throw new InvalidArgumentException(sprintf('Block "%s" doesn\'t exist in grid template "%s".', $name, 'ee'));
     }
 
     /**
      * Template Loader.
      *
-     * @throws \Exception
+     * @throws Exception
      *
-     * @return \Twig\TemplateWrapper[]
+     * @return TemplateWrapper[]
      */
     protected function getTemplates()
     {
@@ -430,13 +439,13 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     /**
      * set template.
      *
-     * @param \Twig\TemplateWrapper|string $template
+     * @param TemplateWrapper|string $template
      *
-     * @throws \Exception
+     * @return Export
+     * @throws Exception
      *
-     * @return \APY\DataGridBundle\Grid\Export\Export
      */
-    public function setTemplate($template)
+    public function setTemplate($template): Export
     {
         if (is_string($template)) {
             if (substr($template, 0, 8) === '__SELF__') {
@@ -448,20 +457,23 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         } elseif ($this->templates === null) {
             $this->templates[] = $this->twig->load(static::DEFAULT_TEMPLATE);
         } else {
-            throw new \Exception('Unable to load template');
+            throw new Exception('Unable to load template');
         }
 
         return $this;
     }
 
-    protected function getTemplatesFromString($theme)
+    /**
+     * @throws \Twig\Error\LoaderError
+     */
+    protected function getTemplatesFromString($theme): array
     {
         $templates = [];
 
         $template = $this->twig->load($theme);
-        while ($template instanceof \Twig\TemplateWrapper) {
+        while ($template instanceof TemplateWrapper) {
             $templates[] = $template;
-            $template = $template->getParent([]);
+            $template = $template->unwrap()->getParent([]);
         }
 
         return $templates;
@@ -663,7 +675,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      * @param $name
      * @param $value
      *
-     * @return \APY\DataGridBundle\Grid\Export\Export
+     * @return Export
      */
     public function addParameter($name, $value)
     {
@@ -680,7 +692,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     public function getParameter($name)
     {
         if (!$this->hasParameter($name)) {
-            throw new \InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
+            throw new InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
         }
 
         return $this->parameters[$name];

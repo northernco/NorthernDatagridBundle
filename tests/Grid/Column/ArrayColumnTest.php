@@ -26,14 +26,14 @@ class ArrayColumnTest extends TestCase
 
     public function testInitializeDefaultParams()
     {
-        $this->assertAttributeEquals([
+        $this->assertEquals([
             Column::OPERATOR_LIKE,
             Column::OPERATOR_NLIKE,
             Column::OPERATOR_EQ,
             Column::OPERATOR_NEQ,
             Column::OPERATOR_ISNULL,
             Column::OPERATOR_ISNOTNULL,
-        ], 'operators', $this->column);
+        ], $this->column->getOperators());
     }
 
     public function testDocumentFilters()
@@ -104,7 +104,7 @@ class ArrayColumnTest extends TestCase
             new Filter(Column::OPERATOR_ISNULL),
             new Filter(Column::OPERATOR_EQ, 'a:0:{}'),
         ], $this->column->getFilters('asource'));
-        $this->assertAttributeEquals(Column::DATA_DISJUNCTION, 'dataJunction', $this->column);
+        $this->assertEquals(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
     public function testIsNotNullFilter()

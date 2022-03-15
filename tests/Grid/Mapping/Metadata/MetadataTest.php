@@ -5,10 +5,16 @@ namespace APY\DataGridBundle\Tests\Grid\Mapping\Metadata;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Columns;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Metadata;
+use Exception;
 use PHPUnit\Framework\TestCase;
 
 class MetadataTest extends TestCase
 {
+    /**
+     * @var Metadata
+     */
+    protected Metadata $metadata;
+
     public function setUp(): void
     {
         $this->metadata = new Metadata();
@@ -20,7 +26,7 @@ class MetadataTest extends TestCase
 
         $this->metadata->setFields($field);
 
-        $this->assertAttributeEquals($field, 'fields', $this->metadata);
+        $this->assertEquals($field, $this->metadata->getFields());
     }
 
     public function testGetFields()
@@ -63,7 +69,7 @@ class MetadataTest extends TestCase
 
         $this->metadata->setFieldsMappings($fieldMapping);
 
-        $this->assertAttributeEquals($fieldMapping, 'fieldsMappings', $this->metadata);
+        $this->assertEquals($fieldMapping, $this->metadata->getFieldMappings());
     }
 
     public function testGetterMappingFieldWithType()
@@ -81,8 +87,7 @@ class MetadataTest extends TestCase
         $groupBy = 'groupBy';
 
         $this->metadata->setGroupBy($groupBy);
-
-        $this->assertAttributeEquals($groupBy, 'groupBy', $this->metadata);
+        $this->assertEquals($groupBy, $this->metadata->getGroupBy());
     }
 
     public function testGetterGroupBy()
@@ -99,7 +104,7 @@ class MetadataTest extends TestCase
 
         $this->metadata->setName($name);
 
-        $this->assertAttributeEquals($name, 'name', $this->metadata);
+        $this->assertEquals($name, $this->metadata->getName());
     }
 
     public function testGetterName()
@@ -113,7 +118,7 @@ class MetadataTest extends TestCase
 
     public function testGetColumnsFromMappingWithoutTypeReturnException()
     {
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
 
         $field = 'foo';
         $value = 'bar';
@@ -129,6 +134,9 @@ class MetadataTest extends TestCase
         $this->metadata->getColumnsFromMapping($columnsMock);
     }
 
+    /**
+     * @throws Exception
+     */
     public function testGetColumnsFromMapping()
     {
         $field = 'foo';

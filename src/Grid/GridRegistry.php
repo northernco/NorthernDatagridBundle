@@ -98,7 +98,7 @@ class GridRegistry implements GridRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getColumn($type)
+    public function getColumn($type): Column
     {
         if (!$this->hasColumn($type)) {
             throw new ColumnNotFoundException($type);

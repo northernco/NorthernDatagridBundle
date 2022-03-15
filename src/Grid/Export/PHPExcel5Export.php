@@ -12,6 +12,8 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use APY\DataGridBundle\Grid\Grid;
+
 /**
  * PHPExcel 5 Export (97-2003) (.xls)
  * 52 columns maximum.
@@ -31,7 +33,7 @@ class PHPExcel5Export extends Export
         parent::__construct($tilte, $fileName, $params, $charset);
     }
 
-    public function computeData($grid)
+    public function computeData(Grid $grid)
     {
         $data = $this->getFlatGridData($grid);
 

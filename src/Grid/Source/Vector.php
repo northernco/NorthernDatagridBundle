@@ -20,6 +20,8 @@ use APY\DataGridBundle\Grid\Column\DateTimeColumn;
 use APY\DataGridBundle\Grid\Column\NumberColumn;
 use APY\DataGridBundle\Grid\Column\TextColumn;
 use APY\DataGridBundle\Grid\Column\UntypedColumn;
+use APY\DataGridBundle\Grid\Columns;
+use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
 
 /**
@@ -154,7 +156,7 @@ class Vector extends Source
     }
 
     /**
-     * @param \APY\DataGridBundle\Grid\Columns $columns
+     * @param Columns $columns
      */
     public function getColumns($columns)
     {
@@ -197,16 +199,21 @@ class Vector extends Source
         }
     }
 
+    public function getVectorColumns(): array
+    {
+        return $this->columns;
+    }
+
     /**
-     * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
-     * @param int                                      $page             Page Number
-     * @param int                                      $limit            Rows Per Page
-     * @param int                                      $maxResults       Max rows
-     * @param int                                      $gridDataJunction Grid data junction
+     * @param Column[] $columns
+     * @param int      $page             Page Number
+     * @param int      $limit            Rows Per Page
+     * @param int      $maxResults       Max rows
+     * @param int      $gridDataJunction Grid data junction
      *
      * @return Rows
      */
-    public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
+    public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION): Rows
     {
         return $this->executeFromData($columns, $page, $limit, $maxResults);
     }
@@ -216,12 +223,12 @@ class Vector extends Source
         $this->populateSelectFiltersFromData($columns, $loop);
     }
 
-    public function getTotalCount($maxResults = null)
+    public function getTotalCount($maxResults = null): int
     {
         return $this->getTotalCountFromData($maxResults);
     }
 
-    public function getHash()
+    public function getHash(): string
     {
         return __CLASS__ . md5(implode('', array_map(function ($c) { return $c->getId(); }, $this->columns)));
     }
@@ -282,7 +289,7 @@ class Vector extends Source
         $this->columns = $columns;
     }
 
-    protected function hasColumn($id)
+    protected function hasColumn($id): bool
     {
         foreach ($this->columns as $c) {
             if ($id === $c->getId()) {
