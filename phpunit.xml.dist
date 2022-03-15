@@ -19,8 +19,8 @@
         </testsuite>
     </testsuites>
 
-        <extensions>
-            <extension class="APY\DataGridBundle\Tests\Hook\BypassFinalHook" />
+    <extensions>
+        <extension class="APY\DataGridBundle\Tests\Hook\BypassFinalHook" />
     </extensions>
 
     <listeners>
