@@ -37,7 +37,7 @@ class GridConfigBuilderTest extends TestCase
         $source = $this->createMock(Source::class);
         $this->gridConfigBuilder->setSource($source);
 
-        $this->assertAttributeSame($source, 'source', $this->gridConfigBuilder);
+        $this->assertSame($source, $this->gridConfigBuilder->getSource());
     }
 
     public function testGetSource()
@@ -53,7 +53,7 @@ class GridConfigBuilderTest extends TestCase
         $type = $this->createMock(GridTypeInterface::class);
         $this->gridConfigBuilder->setType($type);
 
-        $this->assertAttributeSame($type, 'type', $this->gridConfigBuilder);
+        $this->assertSame($type, $this->gridConfigBuilder->getType());
     }
 
     public function testGetType()
@@ -69,7 +69,7 @@ class GridConfigBuilderTest extends TestCase
         $route = 'vendor.bundle.foo_route';
         $this->gridConfigBuilder->setRoute($route);
 
-        $this->assertAttributeEquals($route, 'route', $this->gridConfigBuilder);
+        $this->assertEquals($route, $this->gridConfigBuilder->getRoute());
     }
 
     public function testGetRoute()
@@ -85,7 +85,7 @@ class GridConfigBuilderTest extends TestCase
         $routeParams = ['foo' => 'foo', 'bar' => 'bar'];
         $this->gridConfigBuilder->setRouteParameters($routeParams);
 
-        $this->assertAttributeEquals($routeParams, 'routeParameters', $this->gridConfigBuilder);
+        $this->assertEquals($routeParams, $this->gridConfigBuilder->getRouteParameters());
     }
 
     public function testGetRouteParameters()
@@ -101,7 +101,7 @@ class GridConfigBuilderTest extends TestCase
         $persistence = true;
         $this->gridConfigBuilder->setPersistence($persistence);
 
-        $this->assertAttributeEquals($persistence, 'persistence', $this->gridConfigBuilder);
+        $this->assertTrue($this->gridConfigBuilder->isPersisted());
     }
 
     public function testIsPersited()
@@ -117,7 +117,7 @@ class GridConfigBuilderTest extends TestCase
         $page = 1;
         $this->gridConfigBuilder->setPage($page);
 
-        $this->assertAttributeEquals($page, 'page', $this->gridConfigBuilder);
+        $this->assertEquals($page, $this->gridConfigBuilder->getPage());
     }
 
     public function testGetPage()
@@ -151,7 +151,7 @@ class GridConfigBuilderTest extends TestCase
         $limit = 50;
         $this->gridConfigBuilder->setMaxPerPage($limit);
 
-        $this->assertAttributeEquals($limit, 'limit', $this->gridConfigBuilder);
+        $this->assertEquals($limit, $this->gridConfigBuilder->getMaxPerPage());
     }
 
     public function testGetMaxPerPage()
@@ -167,7 +167,7 @@ class GridConfigBuilderTest extends TestCase
         $maxResults = 50;
         $this->gridConfigBuilder->setMaxResults($maxResults);
 
-        $this->assertAttributeEquals($maxResults, 'maxResults', $this->gridConfigBuilder);
+        $this->assertEquals($maxResults, $this->gridConfigBuilder->getMaxResults());
     }
 
     public function testGetMaxResults()
@@ -183,7 +183,7 @@ class GridConfigBuilderTest extends TestCase
         $sortable = true;
         $this->gridConfigBuilder->setSortable($sortable);
 
-        $this->assertAttributeEquals(true, 'sortable', $this->gridConfigBuilder);
+        $this->assertTrue($this->gridConfigBuilder->isSortable());
     }
 
     public function testIsSortable()
@@ -199,7 +199,7 @@ class GridConfigBuilderTest extends TestCase
         $filterable = false;
         $this->gridConfigBuilder->setFilterable($filterable);
 
-        $this->assertAttributeEquals($filterable, 'filterable', $this->gridConfigBuilder);
+        $this->assertFalse($this->gridConfigBuilder->isFilterable());
     }
 
     public function testIsFilterable()
@@ -215,7 +215,7 @@ class GridConfigBuilderTest extends TestCase
         $order = 'asc';
         $this->gridConfigBuilder->setOrder($order);
 
-        $this->assertAttributeEquals($order, 'order', $this->gridConfigBuilder);
+        $this->assertEquals($order, $this->gridConfigBuilder->getOrder());
     }
 
     public function testGetOrder()
@@ -231,7 +231,7 @@ class GridConfigBuilderTest extends TestCase
         $sortBy = 'foo';
         $this->gridConfigBuilder->setSortBy($sortBy);
 
-        $this->assertAttributeEquals($sortBy, 'sortBy', $this->gridConfigBuilder);
+        $this->assertEquals($sortBy, $this->gridConfigBuilder->getSortBy());
     }
 
     public function testGetSortBy()
@@ -247,7 +247,7 @@ class GridConfigBuilderTest extends TestCase
         $groupBy = 'foo';
         $this->gridConfigBuilder->setGroupBy($groupBy);
 
-        $this->assertAttributeEquals($groupBy, 'groupBy', $this->gridConfigBuilder);
+        $this->assertEquals($groupBy, $this->gridConfigBuilder->getGroupBy());
     }
 
     public function testGetGroupBy()
@@ -274,7 +274,7 @@ class GridConfigBuilderTest extends TestCase
             ->addAction($action2)
             ->addAction($action3);
 
-        $this->assertAttributeEquals(['foo' => [$action1], 'bar' => [$action2, $action3]], 'actions', $this->gridConfigBuilder);
+        $this->assertEquals(['foo' => [$action1], 'bar' => [$action2, $action3]], $this->gridConfigBuilder->getActions());
     }
 
     public function testGetGridConfig()

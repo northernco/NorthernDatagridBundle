@@ -6,6 +6,7 @@ use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\UntypedColumn;
 use APY\DataGridBundle\Grid\Columns;
 use APY\DataGridBundle\Grid\Row;
+use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Source\Vector;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
@@ -49,14 +50,14 @@ class VectorTest extends TestCase
 
         $vector = new Vector([], $columns);
 
-        $this->assertAttributeEquals($columns, 'columns', $vector);
+        $this->assertEquals($columns, $vector->getVectorColumns());
     }
 
     public function testInitialiseWithoutData()
     {
         $this->vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEmpty('columns', $this->vector);
+        $this->assertEmpty($this->vector->getVectorColumns());
     }
 
     public function testInizialiseWithGuessedColumnsMergedToAlreadySettedColumns()
@@ -99,7 +100,7 @@ class VectorTest extends TestCase
 
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$column, $column2, $uc1, $uc2], 'columns', $vector);
+        $this->assertEquals([$column, $column2, $uc1, $uc2], $vector->getVectorColumns());
     }
 
     public function testInizialiseWithoutGuessedColumns()
@@ -120,7 +121,7 @@ class VectorTest extends TestCase
 
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$column, $column2], 'columns', $vector);
+        $this->assertEquals([$column, $column2], $vector->getVectorColumns());
     }
 
     /**
@@ -133,12 +134,12 @@ class VectorTest extends TestCase
         $vector = new Vector($vectorValue);
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$untypedColumn], 'columns', $vector);
+        $this->assertEquals([$untypedColumn], $vector->getVectorColumns());
     }
 
     public function testExecute()
     {
-        $rows = [new Row(), new Row()];
+        $rows = new Rows([new Row(), new Row()]);
         $columns = $this->createMock(Columns::class);
 
         $vector = $this->createPartialMock(Vector::class, ['executeFromData']);

@@ -12,6 +12,8 @@
 
 namespace APY\DataGridBundle\Grid\Export;
 
+use APY\DataGridBundle\Grid\Grid;
+
 /**
  * Excel (This export produces a warning with new Office Excel).
  */
@@ -21,7 +23,7 @@ class ExcelExport extends Export
 
     protected $mimeType = 'application/vnd.ms-excel';
 
-    public function computeData($grid)
+    public function computeData(Grid $grid)
     {
         $data = $this->getGridData($grid);
 

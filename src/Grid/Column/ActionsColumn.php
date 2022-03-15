@@ -14,7 +14,10 @@ namespace APY\DataGridBundle\Grid\Column;
 
 class ActionsColumn extends Column
 {
-    protected $rowActions;
+    /**
+     * @var array
+     */
+    protected array $rowActions;
 
      /**
      * ActionsColumn constructor.
@@ -23,7 +26,7 @@ class ActionsColumn extends Column
      * @param string $title      Title of the column
      * @param array  $rowActions Array of rowAction
      */
-    public function __construct($column, $title, array $rowActions = [])
+    public function __construct(string $column, string $title, array $rowActions = [])
     {
         $this->rowActions = $rowActions;
 
@@ -36,7 +39,7 @@ class ActionsColumn extends Column
         ]);
     }
 
-    public function getRouteParameters($row, $action)
+    public function getRouteParameters($row, $action): array
     {
         $actionParameters = $action->getRouteParameters();
 
@@ -70,19 +73,19 @@ class ActionsColumn extends Column
         return $name;
     }
 
-    public function getRowActions()
+    public function getRowActions(): array
     {
         return $this->rowActions;
     }
 
-    public function setRowActions(array $rowActions)
+    public function setRowActions(array $rowActions): ActionsColumn
     {
         $this->rowActions = $rowActions;
 
         return $this;
     }
 
-    public function isVisible($isExported = false)
+    public function isVisible($isExported = false): bool
     {
         if ($isExported) {
             return false;
@@ -91,7 +94,7 @@ class ActionsColumn extends Column
         return parent::isVisible();
     }
 
-    public function getFilterType()
+    public function getFilterType(): string
     {
         return $this->getType();
     }
@@ -103,7 +106,7 @@ class ActionsColumn extends Column
      *
      * @return array
      */
-    public function getActionsToRender($row)
+    public function getActionsToRender($row): array
     {
         $list = $this->rowActions;
         foreach ($list as $i => $a) {
@@ -117,7 +120,7 @@ class ActionsColumn extends Column
         return $list;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'actions';
     }

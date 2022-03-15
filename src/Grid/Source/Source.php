@@ -25,7 +25,7 @@ abstract class Source implements DriverInterface
     protected $prepareRowCallback = null;
     protected $data = null;
     protected $items = [];
-    protected $count;
+    protected int $count;
 
     /**
      * @param \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder

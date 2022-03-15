@@ -12,10 +12,18 @@
 
 namespace APY\DataGridBundle\Grid\Mapping\Metadata;
 
+use SplObjectStorage;
+
 class Metadata
 {
     protected $name;
+    /**
+     * @var array
+     */
     protected $fields;
+    /**
+     * @var array
+     */
     protected $fieldsMappings;
     protected $groupBy;
 
@@ -24,19 +32,19 @@ class Metadata
         $this->fields = $fields;
     }
 
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
     }
 
-    public function setFieldsMappings($fieldsMappings)
+    public function setFieldsMappings($fieldsMappings): Metadata
     {
         $this->fieldsMappings = $fieldsMappings;
 
         return $this;
     }
 
-    public function hasFieldMapping($field)
+    public function hasFieldMapping($field): bool
     {
         return isset($this->fieldsMappings[$field]);
     }
@@ -46,12 +54,17 @@ class Metadata
         return $this->fieldsMappings[$field];
     }
 
+    public function getFieldMappings(): array
+    {
+        return $this->fieldsMappings;
+    }
+
     public function getFieldMappingType($field)
     {
         return (isset($this->fieldsMappings[$field]['type'])) ? $this->fieldsMappings[$field]['type'] : 'text';
     }
 
-    public function setGroupBy($groupBy)
+    public function setGroupBy($groupBy): Metadata
     {
         $this->groupBy = $groupBy;
 
@@ -82,11 +95,11 @@ class Metadata
      *
      * @throws \Exception
      *
-     * @return \SplObjectStorage
+     * @return SplObjectStorage
      */
-    public function getColumnsFromMapping($columnExtensions)
+    public function getColumnsFromMapping($columnExtensions): SplObjectStorage
     {
-        $columns = new \SplObjectStorage();
+        $columns = new SplObjectStorage();
 
         foreach ($this->getFields() as $value) {
             $params = $this->getFieldMapping($value);

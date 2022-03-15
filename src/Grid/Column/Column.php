@@ -235,9 +235,18 @@ abstract class Column
      */
     public function manipulateRenderCell($callback)
     {
+        $this->setCallback($callback);
+        return $this;
+    }
+
+    public function setCallback($callback) {
         $this->callback = $callback;
 
         return $this;
+    }
+
+    public function getCallback() {
+        return $this->callback;
     }
 
     /**
@@ -280,7 +289,7 @@ abstract class Column
      *
      * @param string $title
      *
-     * @return \APY\DataGridBundle\Grid\Column\Column
+     * @return Column
      */
     public function setTitle($title)
     {
@@ -455,7 +464,7 @@ abstract class Column
      *
      * @param string $order asc|desc
      *
-     * @return \APY\DataGridBundle\Grid\Column\Column
+     * @return Column
      */
     public function setOrder($order)
     {
@@ -482,7 +491,7 @@ abstract class Column
      *
      * @param int $size in pixels
      *
-     * @return \APY\DataGridBundle\Grid\Column\Column
+     * @return Column
      */
     public function setSize($size)
     {
@@ -510,9 +519,9 @@ abstract class Column
      *
      * @param  $data
      *
-     * @return \APY\DataGridBundle\Grid\Column\Column
+     * @return Column
      */
-    public function setData($data)
+    public function setData($data): Column
     {
         $this->data = ['operator' => $this->getDefaultOperator(), 'from' => static::DEFAULT_VALUE, 'to' => static::DEFAULT_VALUE];
 
@@ -578,7 +587,7 @@ abstract class Column
      *
      * @param $visibleForSource
      *
-     * @return \APY\DataGridBundle\Grid\Column\Column
+     * @return Column
      */
     public function setVisibleForSource($visibleForSource)
     {
@@ -910,6 +919,10 @@ abstract class Column
         return $this;
     }
 
+    public function getAuthorizationChecker() {
+        return $this->authorizationChecker;
+    }
+
     public function getParentType()
     {
         return '';
@@ -949,7 +962,7 @@ abstract class Column
      *
      * @param string|bool $safeOption can be one of false, html, js, css, url, html_attr
      *
-     * @return \APY\DataGridBundle\Grid\Column\Column
+     * @return Column
      */
     public function setSafe($safeOption)
     {

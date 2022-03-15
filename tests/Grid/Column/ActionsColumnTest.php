@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Role\Role;
 class ActionsColumnTest extends TestCase
 {
     /** @var ActionsColumn */
-    private $column;
+    private ActionsColumn $column;
 
     public function setUp(): void
     {
@@ -33,12 +33,12 @@ class ActionsColumnTest extends TestCase
         $rowAction2 = $this->createMock(RowAction::class);
         $column = new ActionsColumn($columnId, $columnTitle, [$rowAction1, $rowAction2]);
 
-        $this->assertAttributeEquals([$rowAction1, $rowAction2], 'rowActions', $column);
-        $this->assertAttributeEquals($columnId, 'id', $column);
-        $this->assertAttributeEquals($columnTitle, 'title', $column);
-        $this->assertAttributeEquals(false, 'sortable', $column);
-        $this->assertAttributeEquals(false, 'visibleForSource', $column);
-        $this->assertAttributeEquals(true, 'filterable', $column);
+        $this->assertEquals([$rowAction1, $rowAction2],  $column->getRowActions());
+        $this->assertEquals($columnId, $column->getId());
+        $this->assertEquals($columnTitle, $column->getTitle());
+        $this->assertEquals(false, $column->isSortable());
+        $this->assertEquals(false, $column->isVisibleForSource());
+        $this->assertEquals(true, $column->isFilterable());
     }
 
     public function testGetType()
@@ -87,7 +87,7 @@ class ActionsColumnTest extends TestCase
         $column = new ActionsColumn('columnId', 'columnTitle', []);
         $column->setRowActions([$rowAction1, $rowAction2]);
 
-        $this->assertAttributeEquals([$rowAction1, $rowAction2], 'rowActions', $column);
+        $this->assertEquals([$rowAction1, $rowAction2], $column->getRowActions());
     }
 
     public function testIsNotVisibleIfExported()

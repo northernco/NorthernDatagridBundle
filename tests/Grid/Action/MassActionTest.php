@@ -8,22 +8,22 @@ use PHPUnit\Framework\TestCase;
 class MassActionTest extends TestCase
 {
     /** @var MassAction */
-    private $massAction;
+    private MassAction $massAction;
 
     /** @var string */
-    private $title = 'foo';
+    private string $title = 'foo';
 
     /** @var string */
-    private $callback = 'static::massAction';
+    private string $callback = 'static::massAction';
 
     /** @var bool */
-    private $confirm = true;
+    private bool $confirm = true;
 
     /** @var array */
-    private $parameters = ['foo' => 'foo', 'bar' => 'bar'];
+    private array $parameters = ['foo' => 'foo', 'bar' => 'bar'];
 
     /** @var string */
-    private $role = 'ROLE_FOO';
+    private string $role = 'ROLE_FOO';
 
     public function setUp(): void
     {
@@ -32,11 +32,11 @@ class MassActionTest extends TestCase
 
     public function testMassActionConstruct()
     {
-        $this->assertAttributeEquals($this->title, 'title', $this->massAction);
-        $this->assertAttributeEquals($this->callback, 'callback', $this->massAction);
-        $this->assertAttributeEquals($this->confirm, 'confirm', $this->massAction);
-        $this->assertAttributeEquals($this->parameters, 'parameters', $this->massAction);
-        $this->assertAttributeEquals($this->role, 'role', $this->massAction);
+        $this->assertEquals($this->title, $this->massAction->getTitle());
+        $this->assertEquals($this->callback, $this->massAction->getCallback());
+        $this->assertEquals($this->confirm, $this->massAction->getConfirm());
+        $this->assertEquals($this->parameters, $this->massAction->getParameters());
+        $this->assertEquals($this->role, $this->massAction->getRole());
     }
 
     public function testSetTile()
@@ -44,7 +44,7 @@ class MassActionTest extends TestCase
         $title = 'bar';
         $this->massAction->setTitle($title);
 
-        $this->assertAttributeEquals($title, 'title', $this->massAction);
+        $this->assertEquals($title, $this->massAction->getTitle());
     }
 
     public function testGetTitle()
@@ -60,7 +60,7 @@ class MassActionTest extends TestCase
         $callback = 'self::fooMassAction';
         $this->massAction->setCallback($callback);
 
-        $this->assertAttributeEquals($callback, 'callback', $this->massAction);
+        $this->assertEquals($callback, $this->massAction->getCallback());
     }
 
     public function testGetCallback()
@@ -76,7 +76,7 @@ class MassActionTest extends TestCase
         $confirm = false;
         $this->massAction->setConfirm($confirm);
 
-        $this->assertAttributeEquals($confirm, 'confirm', $this->massAction);
+        $this->assertFalse($this->massAction->getConfirm());
     }
 
     public function testGetConfirm()
@@ -89,7 +89,7 @@ class MassActionTest extends TestCase
 
     public function testDefaultConfirmMessage()
     {
-        $this->assertInternalType('string', $this->massAction->getConfirmMessage());
+        $this->assertIsString($this->massAction->getConfirmMessage());
     }
 
     public function testSetConfirmMessage()
@@ -97,7 +97,7 @@ class MassActionTest extends TestCase
         $message = 'A foo test message';
         $this->massAction->setConfirmMessage($message);
 
-        $this->assertAttributeEquals($message, 'confirmMessage', $this->massAction);
+        $this->assertEquals($message, $this->massAction->getConfirmMessage());
     }
 
     public function testGetConfirmMessage()
@@ -113,7 +113,7 @@ class MassActionTest extends TestCase
         $params = [1 => 1, 2 => 2];
         $this->massAction->setParameters($params);
 
-        $this->assertAttributeEquals($params, 'parameters', $this->massAction);
+        $this->assertEquals($params, $this->massAction->getParameters());
     }
 
     public function testGetParameters()
@@ -129,7 +129,7 @@ class MassActionTest extends TestCase
         $role = 'ROLE_ADMIN';
         $this->massAction->setRole($role);
 
-        $this->assertAttributeEquals($role, 'role', $this->massAction);
+        $this->assertEquals($role, $this->massAction->getRole());
     }
 
     public function testGetRole()

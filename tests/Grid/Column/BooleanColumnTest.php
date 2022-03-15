@@ -11,7 +11,7 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 class BooleanColumnTest extends TestCase
 {
     /** @var BooleanColumn */
-    private $column;
+    private BooleanColumn $column;
 
     public function setUp(): void
     {
@@ -40,7 +40,7 @@ class BooleanColumnTest extends TestCase
 
         $column = new BooleanColumn($params);
 
-        $this->assertAttributeEquals([
+        $this->assertEquals([
             'filter'           => 'select',
             'selectFrom'       => 'values',
             'operators'        => [Column::OPERATOR_EQ],
@@ -49,33 +49,33 @@ class BooleanColumnTest extends TestCase
             'selectMulti'      => false,
             'bar'              => 'bar',
             'size'             => 52,
-        ], 'params', $column);
+        ], $column->getParams());
     }
 
     public function testInitializeAlignment()
     {
-        $this->assertAttributeEquals(Column::ALIGN_CENTER, 'align', $this->column);
+        $this->assertEquals(Column::ALIGN_CENTER, $this->column->getAlign());
 
         $column = new BooleanColumn(['align' => Column::ALIGN_LEFT]);
-        $this->assertAttributeEquals(Column::ALIGN_LEFT, 'align', $column);
+        $this->assertEquals(Column::ALIGN_LEFT, $column->getAlign());
     }
 
     public function testInitializeSize()
     {
-        $this->assertAttributeEquals(30, 'size', $this->column);
+        $this->assertEquals(30, $this->column->getSize());
 
         $column = new BooleanColumn(['size' => 40]);
-        $this->assertAttributeEquals(40, 'size', $column);
+        $this->assertEquals(40, $column->getSize());
     }
 
     public function testInitializeValues()
     {
-        $this->assertAttributeEquals([1 => 'true', 0 => 'false'], 'values', $this->column);
+        $this->assertEquals([1 => 'true', 0 => 'false'], $this->column->getValues());
 
         $values = [1 => 'foo', 0 => 'bar'];
         $params = ['values' => $values];
         $column = new BooleanColumn($params);
-        $this->assertAttributeEquals($values, 'values', $column);
+        $this->assertEquals($values, $column->getValues());
     }
 
     public function testIsQueryValid()
