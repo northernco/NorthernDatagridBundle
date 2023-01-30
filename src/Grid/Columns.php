@@ -16,6 +16,7 @@ use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Traversable;
 
 class Columns implements \IteratorAggregate, \Countable
 {
@@ -42,7 +43,7 @@ class Columns implements \IteratorAggregate, \Countable
      *
      * @return ColumnsIterator
      */
-    public function getIterator($showOnlySourceColumns = false)
+    public function getIterator($showOnlySourceColumns = false): Traversable
     {
         return new ColumnsIterator(new \ArrayIterator($this->columns), $showOnlySourceColumns);
     }
@@ -128,7 +129,7 @@ class Columns implements \IteratorAggregate, \Countable
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->columns);
     }

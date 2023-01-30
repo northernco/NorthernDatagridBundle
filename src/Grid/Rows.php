@@ -12,6 +12,8 @@
 
 namespace APY\DataGridBundle\Grid;
 
+use Traversable;
+
 class Rows implements \IteratorAggregate, \Countable
 {
     /** @var \SplObjectStorage */
@@ -34,7 +36,7 @@ class Rows implements \IteratorAggregate, \Countable
      *
      * @see IteratorAggregate::getIterator()
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return $this->rows;
     }
@@ -58,7 +60,7 @@ class Rows implements \IteratorAggregate, \Countable
      *
      * @see Countable::count()
      */
-    public function count()
+    public function count(): int
     {
         return $this->rows->count();
     }
