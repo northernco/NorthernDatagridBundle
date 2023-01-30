@@ -19,21 +19,18 @@
     },
     "require-dev": {
         "ext-intl": "*",
-        "ext-mongodb": "*",
         "dg/bypass-finals": "^1.2",
         "symfony/framework-bundle": "^5.2|^6.0",
         "symfony/expression-language": "^5.2|^6.0",
         "symfony/phpunit-bridge": "^5.2|^6.0",
         "phpunit/phpunit": "^8.5",
         "doctrine/orm": "~2.4,>=2.4.5",
-        "doctrine/mongodb-odm": "^2.3"
     },
     "suggest": {
         "ext-intl": "Translate the grid",
         "ext-mbstring": "Convert your data with the right charset",
         "PHPExcel": "Export the grid (Excel, HTML or PDF)",
         "doctrine/orm": "If you want to use Entity as source, please require doctrine/orm",
-        "doctrine/mongodb-odm": "If you want to use Document as source, please require doctrine/mongodb-odm"
     },
     "autoload": {
         "psr-4": {
