@@ -15,8 +15,10 @@ namespace APY\DataGridBundle\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\JoinColumn;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Doctrine\ORM\Internal\SQLResultCasing;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
@@ -141,16 +143,12 @@ class Entity extends Source
         $this->setTableAlias(self::TABLE_ALIAS);
     }
 
-    public function initialise($container)
+    public function initialise(Registry $doctrine, Manager $mapping)
     {
-        $doctrine = $container->get('doctrine');
-
         $this->manager     = version_compare(Kernel::VERSION, '2.1.0', '>=') ? $doctrine->getManager($this->managerName) : $doctrine->getEntityManager($this->managerName);
         $this->ormMetadata = $this->manager->getClassMetadata($this->entityName);
 
         $this->class = $this->ormMetadata->getReflectionClass()->name;
-
-        $mapping = $container->get('grid.mapping.manager');
 
         /* todo autoregister mapping drivers with tag */
         $mapping->addDriver($this, -1);

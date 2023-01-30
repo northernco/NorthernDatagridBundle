@@ -2,14 +2,18 @@
 
 namespace APY\DataGridBundle\Grid;
 
+use App\Kernel;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Exception\InvalidArgumentException;
 use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\DataCollectorTranslator;
 use Twig\Environment;
 
 /**
@@ -36,6 +40,14 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
 
     private $httpKernel;
 
+    private $doctrine;
+
+    private $mapping;
+
+    private $kernel;
+
+    private $translator;
+
     /**
      * The factory.
      *
@@ -53,10 +65,10 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * Constructor.
      *
-     * @param Container            $container The service container
-     * @param GridFactoryInterface $factory   The grid factory
-     * @param string               $name      The name of the grid
-     * @param array                $options   The options of the grid
+     * @param Container $container          The service container
+     * @param GridFactoryInterface $factory The grid factory
+     * @param string $name                  The name of the grid
+     * @param array $options                The options of the grid
      */
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
@@ -64,6 +76,10 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
         RequestStack $requestStack,
         Environment $twig,
         HttpKernelInterface $httpKernel,
+        Registry $doctrine,
+        Manager $mapping,
+        Kernel $kernel,
+        DataCollectorTranslator $translator,
         // Container $container,
         GridFactoryInterface $factory,
         $name,
@@ -77,7 +93,11 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
         $this->requestStack         = $requestStack;
         $this->twig                 = $twig;
         $this->httpKernel           = $httpKernel;
+        $this->doctrine             = $doctrine;
+        $this->mapping              = $mapping;
         $this->factory              = $factory;
+        $this->kernel               = $kernel;
+        $this->translator           = $translator;
     }
 
     /**
@@ -137,7 +157,19 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     {
         $config = $this->getGridConfig();
 
-        $grid = new Grid($this->authorizationChecker, $this->router, $this->requestStack, $this->twig, $this->httpKernel, $config->getName(), $config);
+        $grid = new Grid(
+            $this->authorizationChecker,
+            $this->router,
+            $this->requestStack,
+            $this->twig,
+            $this->httpKernel,
+            $this->doctrine,
+            $this->mapping,
+            $this->kernel,
+            $this->translator,
+            $config->getName(),
+            $config
+        );
 
         foreach ($this->columns as $column) {
             $grid->addColumn($column);

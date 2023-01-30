@@ -2,15 +2,19 @@
 
 namespace APY\DataGridBundle\Grid;
 
+use App\Kernel;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Source\Source;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\DataCollectorTranslator;
 use Twig\Environment;
 
 /**
@@ -35,12 +39,24 @@ class GridFactory implements GridFactoryInterface
 
     private $httpKernel;
 
+    private $doctrine;
+
+    private $mapping;
+
+    private $kernel;
+
+    private $translator;
+
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         RouterInterface $router,
         RequestStack $requestStack,
         Environment $twig,
         HttpKernelInterface $httpKernel,
+        Registry $doctrine,
+        Manager $mapping,
+        Kernel $kernel,
+        DataCollectorTranslator $translator,
         GridRegistryInterface $registry
     ) {
         $this->authorizationChecker = $authorizationChecker;
@@ -49,6 +65,10 @@ class GridFactory implements GridFactoryInterface
         $this->twig                 = $twig;
         $this->httpKernel           = $httpKernel;
         $this->registry             = $registry;
+        $this->doctrine             = $doctrine;
+        $this->mapping              = $mapping;
+        $this->kernel               = $kernel;
+        $this->translator           = $translator;
     }
 
     /**
@@ -73,6 +93,10 @@ class GridFactory implements GridFactoryInterface
             $this->requestStack,
             $this->twig,
             $this->httpKernel,
+            $this->doctrine,
+            $this->mapping,
+            $this->kernel,
+            $this->translator,
             $this,
             $type->getName(),
             $options
@@ -97,12 +121,14 @@ class GridFactory implements GridFactoryInterface
 
             $column = clone $this->registry->getColumn($type);
 
-            $column->__initialize(array_merge([
-                'id'     => $name,
-                'title'  => $name,
-                'field'  => $name,
-                'source' => true,
-            ], $options));
+            $column->__initialize(
+                array_merge([
+                                'id' => $name,
+                                                                                                                                      'title' => $name,
+                                                                                                                                                                          'field' => $name,
+                                                                                                                                                                                            'source' => true,
+                            ], $options)
+            );
         } else {
             $column = $type;
             $column->setId($name);

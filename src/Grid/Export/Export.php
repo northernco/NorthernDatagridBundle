@@ -13,11 +13,12 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 use APY\DataGridBundle\Grid\Column\ArrayColumn;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Translation\DataCollectorTranslator;
+use Twig\Environment;
 
-abstract class Export implements ExportInterface, ContainerAwareInterface
+abstract class Export implements ExportInterface
 {
     const DEFAULT_TEMPLATE = '@APYDataGrid/blocks.html.twig';
 
@@ -31,11 +32,15 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected $parameters = [];
 
-    protected $container;
-
     protected $templates;
 
     protected $twig;
+
+    private $translator;
+
+    private $router;
+
+    private $kernelCharset;
 
     protected $grid;
 
@@ -60,37 +65,39 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      */
     public function __construct($title, $fileName = 'export', $params = [], $charset = 'UTF-8', $role = null)
     {
-        $this->title = $title;
+        $this->title    = $title;
         $this->fileName = $fileName;
-        $this->params = $params;
-        $this->charset = $charset;
-        $this->role = $role;
+        $this->params   = $params;
+        $this->charset  = $charset;
+        $this->role     = $role;
     }
 
-    /**
-     * Sets the Container associated with this Controller.
-     *
-     * @param ContainerInterface $container A ContainerInterface instance
-     *
-     * @return \APY\DataGridBundle\Grid\Export\Export
-     */
-    public function setContainer(ContainerInterface $container = null)
+    public function setTwig(Environment $twig): self
     {
-        $this->container = $container;
-
-        $this->twig = $this->container->get('twig');
+        $this->twig = $twig;
 
         return $this;
     }
 
-    /**
-     * gets the Container associated with this Controller.
-     *
-     * @return ContainerInterface
-     */
-    public function getContainer()
+    public function setTranslator(DataCollectorTranslator $translator): self
     {
-        return $this->container;
+        $this->translator = $translator;
+
+        return $this;
+    }
+
+    public function setRouter(RouterInterface $router): self
+    {
+        $this->router = $router;
+
+        return $this;
+    }
+
+    public function setKernelCharset(string $kernelCharset): self
+    {
+        $this->kernelCharset = $kernelCharset;
+
+        return $this;
     }
 
     /**
@@ -101,12 +108,12 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     public function getResponse()
     {
         // Response
-        $kernelCharset = $this->container->getParameter('kernel.charset');
+        $kernelCharset = $this->kernelCharset;
         if ($this->charset != $kernelCharset && function_exists('mb_strlen')) {
             $this->content = mb_convert_encoding($this->content, $this->charset, $kernelCharset);
-            $filesize = mb_strlen($this->content, '8bit');
+            $filesize      = mb_strlen($this->content, '8bit');
         } else {
-            $filesize = strlen($this->content);
+            $filesize      = strlen($this->content);
             $this->charset = $kernelCharset;
         }
 
@@ -192,7 +199,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function getRawGridData($grid)
     {
-        $result = [];
+        $result     = [];
         $this->grid = $grid;
 
         if ($this->grid->isTitleSectionVisible()) {
@@ -266,7 +273,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
         $titlesClean = array_map([$this, 'cleanHTML'], $matches[0]);
 
-        $i = 0;
+        $i      = 0;
         $titles = [];
 
         foreach ($this->grid->getColumns() as $column) {
@@ -283,12 +290,12 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
     protected function getRawGridTitles()
     {
-        $translator = $this->container->get('translator');
+        $translator = $this->translator;
 
         $titles = [];
         foreach ($this->grid->getColumns() as $column) {
             if ($column->isVisible(true)) {
-                $titles[] = utf8_decode($translator->trans(/* @Ignore */$column->getTitle()));
+                $titles[] = utf8_decode($translator->trans(/* @Ignore */ $column->getTitle()));
             }
         }
 
@@ -301,7 +308,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         foreach ($this->grid->getRows() as $i => $row) {
             foreach ($this->grid->getColumns() as $column) {
                 if ($column->isVisible(true)) {
-                    $cellHTML = $this->getGridCell($column, $row);
+                    $cellHTML                   = $this->getGridCell($column, $row);
                     $rows[$i][$column->getId()] = $this->cleanHTML($cellHTML);
                 }
             }
@@ -335,17 +342,17 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
 
         $separator = $column->getSeparator();
 
-        $block = null;
+        $block  = null;
         $return = [];
         foreach ($values as $sourceValue) {
-            $value = $column->renderCell($sourceValue, $row, $this->container->get('router'));
+            $value = $column->renderCell($sourceValue, $row, $this->router);
 
             $id = $this->grid->getId();
 
             if (($id != '' && ($block !== null
-                        || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getRenderBlockId() . '_cell')
-                        || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getType() . '_cell')
-                        || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getParentType() . '_cell')))
+                               || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getRenderBlockId() . '_cell')
+                               || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getType() . '_cell')
+                               || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getParentType() . '_cell')))
                 || $this->hasBlock($block = 'grid_' . $id . '_column_id_' . $column->getRenderBlockId() . '_cell')
                 || $this->hasBlock($block = 'grid_' . $id . '_column_type_' . $column->getType() . '_cell')
                 || $this->hasBlock($block = 'grid_' . $id . '_column_type_' . $column->getParentType() . '_cell')
@@ -357,7 +364,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
                 || $this->hasBlock($block = 'grid_column_type_' . $column->getParentType() . '_cell')) {
                 $html = $this->renderBlock($block, ['grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue]);
             } else {
-                $html = $this->renderBlock('grid_column_cell', ['grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue]);
+                $html  = $this->renderBlock('grid_column_cell', ['grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue]);
                 $block = null;
             }
 
@@ -395,7 +402,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     /**
      * Render block.
      *
-     * @param $name string
+     * @param $name       string
      * @param $parameters string
      *
      * @return string
@@ -414,9 +421,9 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
     /**
      * Template Loader.
      *
+     * @return \Twig\TemplateWrapper[]
      * @throws \Exception
      *
-     * @return \Twig\TemplateWrapper[]
      */
     protected function getTemplates()
     {
@@ -432,15 +439,15 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
      *
      * @param \Twig\TemplateWrapper|string $template
      *
+     * @return \APY\DataGridBundle\Grid\Export\Export
      * @throws \Exception
      *
-     * @return \APY\DataGridBundle\Grid\Export\Export
      */
     public function setTemplate($template)
     {
         if (is_string($template)) {
             if (substr($template, 0, 8) === '__SELF__') {
-                $this->templates = $this->getTemplatesFromString(substr($template, 8));
+                $this->templates   = $this->getTemplatesFromString(substr($template, 8));
                 $this->templates[] = $this->twig->load(static::DEFAULT_TEMPLATE);
             } else {
                 $this->templates = $this->getTemplatesFromString($template);
@@ -461,7 +468,7 @@ abstract class Export implements ExportInterface, ContainerAwareInterface
         $template = $this->twig->load($theme);
         while ($template instanceof \Twig\TemplateWrapper) {
             $templates[] = $template;
-            $template = $template->getParent([]);
+            $template    = $template->getParent([]);
         }
 
         return $templates;

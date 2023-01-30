@@ -13,14 +13,17 @@
 
 namespace APY\DataGridBundle\Grid;
 
+use App\Kernel;
 use APY\DataGridBundle\Grid\Action\MassActionInterface;
 use APY\DataGridBundle\Grid\Action\RowActionInterface;
 use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\MassActionColumn;
 use APY\DataGridBundle\Grid\Export\ExportInterface;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -30,6 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Component\Translation\DataCollectorTranslator;
 use Twig\Environment;
 
 class Grid implements GridInterface
@@ -78,6 +82,14 @@ class Grid implements GridInterface
     private $twig;
 
     private $httpKernel;
+
+    private $doctrine;
+
+    private $mapping;
+
+    private $kernelCharset;
+
+    private $translator;
 
     /**
      * @var null|\Symfony\Component\HttpFoundation\Session\Session;
@@ -343,6 +355,10 @@ class Grid implements GridInterface
         RequestStack $requestStack,
         Environment $twig,
         HttpKernelInterface $httpKernel,
+        Registry $doctrine,
+        Manager $mapping,
+        Kernel $kernel,
+        DataCollectorTranslator $translator,
         // $container,
         $id = '',
         GridConfigInterface $config = null
@@ -354,8 +370,12 @@ class Grid implements GridInterface
         $this->router  = $router;
         $this->request = $requestStack->getCurrentRequest();
 
-        $this->twig       = $twig;
-        $this->httpKernel = $httpKernel;
+        $this->twig          = $twig;
+        $this->httpKernel    = $httpKernel;
+        $this->doctrine      = $doctrine;
+        $this->mapping       = $mapping;
+        $this->kernelCharset = $kernel->getCharset();
+        $this->translator    = $translator;
 
         if (null === $this->request) {
             $this->request = Request::createFromGlobals();
@@ -430,7 +450,7 @@ class Grid implements GridInterface
         if (null !== $source) {
             $this->source = $source;
 
-            $source->initialise($this->container);
+            $source->initialise($this->doctrine, $this->mapping);
 
             if ($source instanceof Entity) {
                 $groupBy = $config->getGroupBy();
@@ -520,7 +540,7 @@ class Grid implements GridInterface
 
         $this->source = $source;
 
-        $this->source->initialise($this->container);
+        $this->source->initialise($this->doctrine, $this->mapping);
 
         // Get columns from the source
         $this->source->getColumns($this->columns);
@@ -733,9 +753,14 @@ class Grid implements GridInterface
                 $this->prepare();
 
                 $export = $this->exports[$exportId];
-                if ($export instanceof ContainerAwareInterface) {
-                    $export->setContainer($this->container);
+
+                if ($export instanceof ExportInterface) {
+                    $export->setTwig($this->twig)
+                           ->setTranslator($this->translator)
+                           ->setRouter($this->router)
+                           ->setKernelCharset($this->kernelCharset);
                 }
+
                 $export->computeData($this);
 
                 $this->exportResponse = $export->getResponse();

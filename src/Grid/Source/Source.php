@@ -16,8 +16,10 @@ use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Exception\PropertyAccessDeniedException;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
+use Doctrine\Bundle\DoctrineBundle\Registry;
 
 abstract class Source implements DriverInterface
 {
@@ -97,14 +99,7 @@ abstract class Source implements DriverInterface
      */
     abstract public function getTotalCount($maxResults = null);
 
-    /**
-     * Set container.
-     *
-     * @abstract
-     *
-     * @param  $container
-     */
-    abstract public function initialise($container);
+    abstract public function initialise(Registry $doctrine, Manager $mapping);
 
     /**
      * @abstract
@@ -501,6 +496,16 @@ abstract class Source implements DriverInterface
                         case 'datetime':
                         case 'date':
                         case 'time':
+                            // For document
+                            if ($value instanceof \MongoDate || $value instanceof \MongoTimestamp) {
+                                $value = $value->sec;
+                            }
+
+                            // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
+                            if (is_array($value) && array_keys($value) == ['t', 'i']) {
+                                $value = $value['i'];
+                            }
+
                             $displayedValue = $column->getDisplayedValue($value);
                             $values[$displayedValue] = $displayedValue;
                             break;

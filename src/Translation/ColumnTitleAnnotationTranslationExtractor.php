@@ -12,16 +12,11 @@ use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor, ContainerAwareInterface
+class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 {
     private $annotated;
     private $catalogue;
     private $parsedClassName;
-
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
 
     public function beforeTraverse(array $nodes)
     {
@@ -68,7 +63,7 @@ class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface,
         if ($this->annotated) {
             // Get annotations for the class
             $annotationDriver = new Annotation(new DoctrineAnnotationReader());
-            $manager = new Manager($this->container);
+            $manager = new Manager();
             $manager->addDriver($annotationDriver, -1);
             $metadata = $manager->getMetadata($this->parsedClassName);
 
@@ -86,13 +81,5 @@ class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface,
 
     public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $node)
     {
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function setContainer(ContainerInterface $container = null)
-    {
-        $this->container = $container;
     }
 }
