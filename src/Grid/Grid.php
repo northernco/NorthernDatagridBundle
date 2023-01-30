@@ -71,7 +71,7 @@ class Grid implements GridInterface
     protected $router;
 
     /**
-     * @var \Symfony\Component\HttpFoundation\Session\Session;
+     * @var null|\Symfony\Component\HttpFoundation\Session\Session;
      */
     protected $session;
 
@@ -334,9 +334,15 @@ class Grid implements GridInterface
         $this->container = $container;
         $this->config    = $config;
 
-        $this->router          = $container->get('router');
-        $this->request         = $container->get('request_stack')->getCurrentRequest();
-        $this->session         = $this->request->getSession();
+        $this->router  = $container->get('router');
+        $this->request = $container->get('request_stack')->getCurrentRequest();
+
+        if (null === $this->request) {
+            $this->request = Request::createFromGlobals();
+        } else {
+            $this->session = $this->request->getSession();
+        }
+
         $this->securityContext = $container->get('security.authorization_checker');
 
         $this->id = $id;
@@ -454,7 +460,9 @@ class Grid implements GridInterface
 
         $this->processPersistence();
 
-        $this->sessionData = (array)$this->session->get($this->hash);
+        if (null !== $this->session) {
+            $this->sessionData = (array)$this->session->get($this->hash);
+        }
 
         $this->processLazyParameters();
 
@@ -524,7 +532,9 @@ class Grid implements GridInterface
 
         $this->processPersistence();
 
-        $this->sessionData = (array)$this->session->get($this->hash);
+        if (null !== $this->session) {
+            $this->sessionData = (array)$this->session->get($this->hash);
+        }
 
         $this->processLazyParameters();
 
@@ -565,10 +575,12 @@ class Grid implements GridInterface
         // Persistence or reset - kill previous session
         if ((!$this->request->isXmlHttpRequest() && !$this->persistence && $referer != $this->getCurrentUri())
             || isset($this->requestData[self::REQUEST_QUERY_RESET])) {
-            $this->session->remove($this->hash);
+            if (null !== $this->session) {
+                $this->session->remove($this->hash);
+            }
         }
 
-        if ($this->session->get($this->hash) === null) {
+        if (null !== $this->session && $this->session->get($this->hash) === null) {
             $this->newSession = true;
         }
     }
@@ -656,7 +668,7 @@ class Grid implements GridInterface
                     }
                 }
 
-                if (is_callable($action->getCallback())) {
+                if (is_callable($action->getCallback()) && null !== $this->session) {
                     $this->massActionResponse = call_user_func($action->getCallback(), $actionKeys, $actionAllKeys, $this->session, $action->getParameters());
                 } elseif (strpos($action->getCallback(), ':') !== false) {
                     $path = array_merge(
@@ -735,7 +747,10 @@ class Grid implements GridInterface
 
                 if (isset($tweak['reset'])) {
                     $this->sessionData = [];
-                    $this->session->remove($this->hash);
+
+                    if (null !== $this->session) {
+                        $this->session->remove($this->hash);
+                    }
                 }
 
                 if (isset($tweak['filters'])) {
@@ -1144,7 +1159,7 @@ class Grid implements GridInterface
 
     protected function saveSession()
     {
-        if (!empty($this->sessionData) && !empty($this->hash)) {
+        if (!empty($this->sessionData) && !empty($this->hash) && null !== $this->session) {
             $this->session->set($this->hash, $this->sessionData);
         }
     }
