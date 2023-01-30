@@ -130,8 +130,11 @@ class Entity extends Source
      * @param string $entityName  e.g Cms:Page
      * @param string $managerName e.g. mydatabase
      */
-    public function __construct($entityName, $group = 'default', $managerName = null)
-    {
+    public function __construct(
+        $entityName, 
+        $group = 'default', 
+        $managerName = null
+    ) {
         $this->entityName = $entityName;
         $this->managerName = $managerName;
         $this->joins = [];
