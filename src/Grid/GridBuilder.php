@@ -6,6 +6,11 @@ use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Exception\InvalidArgumentException;
 use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment;
 
 /**
  * A builder for creating Grid instances.
@@ -20,6 +25,16 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
      * @var Container
      */
     private $container;
+
+    private $authorizationChecker;
+
+    private $router;
+
+    private $requestStack;
+
+    private $twig;
+
+    private $httpKernel;
 
     /**
      * The factory.
@@ -43,12 +58,26 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
      * @param string               $name      The name of the grid
      * @param array                $options   The options of the grid
      */
-    public function __construct(Container $container, GridFactoryInterface $factory, $name, array $options = [])
-    {
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        RouterInterface $router,
+        RequestStack $requestStack,
+        Environment $twig,
+        HttpKernelInterface $httpKernel,
+        // Container $container,
+        GridFactoryInterface $factory,
+        $name,
+        array $options = []
+    ) {
         parent::__construct($name, $options);
 
-        $this->container = $container;
-        $this->factory = $factory;
+        // $this->container            = $container;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->router               = $router;
+        $this->requestStack         = $requestStack;
+        $this->twig                 = $twig;
+        $this->httpKernel           = $httpKernel;
+        $this->factory              = $factory;
     }
 
     /**
@@ -108,7 +137,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     {
         $config = $this->getGridConfig();
 
-        $grid = new Grid($this->container, $config->getName(), $config);
+        $grid = new Grid($this->authorizationChecker, $this->router, $this->requestStack, $this->twig, $this->httpKernel, $config->getName(), $config);
 
         foreach ($this->columns as $column) {
             $grid->addColumn($column);

@@ -6,7 +6,12 @@ use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
 use APY\DataGridBundle\Grid\Source\Source;
 use Symfony\Component\DependencyInjection\Container;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Twig\Environment;
 
 /**
  * Class GridFactory.
@@ -16,27 +21,34 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 class GridFactory implements GridFactoryInterface
 {
     /**
-     * The service container.
-     *
-     * @var Container
-     */
-    private $container;
-
-    /**
      * @var GridRegistryInterface
      */
     private $registry;
 
-    /**
-     * Constructor.
-     *
-     * @param Container             $container The service container
-     * @param GridRegistryInterface $registry  The grid registry
-     */
-    public function __construct(Container $container, GridRegistryInterface $registry)
-    {
-        $this->container = $container;
-        $this->registry = $registry;
+    private $authorizationChecker;
+
+    private $router;
+
+    private $requestStack;
+
+    private $twig;
+
+    private $httpKernel;
+
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        RouterInterface $router,
+        RequestStack $requestStack,
+        Environment $twig,
+        HttpKernelInterface $httpKernel,
+        GridRegistryInterface $registry
+    ) {
+        $this->authorizationChecker = $authorizationChecker;
+        $this->router               = $router;
+        $this->requestStack         = $requestStack;
+        $this->twig                 = $twig;
+        $this->httpKernel           = $httpKernel;
+        $this->registry             = $registry;
     }
 
     /**
@@ -52,10 +64,20 @@ class GridFactory implements GridFactoryInterface
      */
     public function createBuilder($type = 'grid', Source $source = null, array $options = [])
     {
-        $type = $this->resolveType($type);
+        $type    = $this->resolveType($type);
         $options = $this->resolveOptions($type, $source, $options);
 
-        $builder = new GridBuilder($this->container, $this, $type->getName(), $options);
+        $builder = new GridBuilder(
+            $this->authorizationChecker,
+            $this->router,
+            $this->requestStack,
+            $this->twig,
+            $this->httpKernel,
+            $this,
+            $type->getName(),
+            $options
+        );
+
         $builder->setType($type);
 
         $type->buildGrid($builder, $options);
