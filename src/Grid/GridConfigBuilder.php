@@ -105,7 +105,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
      */
     public function __construct($name, array $options = [])
     {
-        $this->name = $name;
+        $this->name    = $name;
         $this->options = $options;
     }
 
@@ -434,7 +434,8 @@ class GridConfigBuilder implements GridConfigBuilderInterface
      *
      * @return $this
      */
-    public function setMassActionsInNewTab($massActionsInNewTab) {
+    public function setMassActionsInNewTab($massActionsInNewTab)
+    {
         $this->massActionsInNewTab = (bool)$massActionsInNewTab;
 
         return $this;
@@ -443,7 +444,8 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * @return bool
      */
-    public function getMassActionsInNewTab() {
+    public function getMassActionsInNewTab()
+    {
         return (bool)$this->massActionsInNewTab;
     }
 
@@ -457,6 +459,11 @@ class GridConfigBuilder implements GridConfigBuilderInterface
         $this->actions[$action->getColumn()][] = $action;
 
         return $this;
+    }
+
+    public function getActions(): array
+    {
+        return $this->actions;
     }
 
     /**
