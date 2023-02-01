@@ -40,7 +40,7 @@ class BooleanColumnTest extends TestCase
 
         $column = new BooleanColumn($params);
 
-        $this->assertSame(
+        $this->assertEquals(
             [
                 'filter'           => 'select',
                 'selectFrom'       => 'values',
@@ -57,28 +57,28 @@ class BooleanColumnTest extends TestCase
 
     public function testInitializeAlignment()
     {
-        $this->assertSame(Column::ALIGN_CENTER, $this->column->getAlign());
+        $this->assertEquals(Column::ALIGN_CENTER, $this->column->getAlign());
 
         $column = new BooleanColumn(['align' => Column::ALIGN_LEFT]);
-        $this->assertSame(Column::ALIGN_LEFT, $column->getAlign());
+        $this->assertEquals(Column::ALIGN_LEFT, $column->getAlign());
     }
 
     public function testInitializeSize()
     {
-        $this->assertSame(30, $this->column->getSize());
+        $this->assertEquals(30, $this->column->getSize());
 
         $column = new BooleanColumn(['size' => 40]);
-        $this->assertSame(40, $column->getSize());
+        $this->assertEquals(40, $column->getSize());
     }
 
     public function testInitializeValues()
     {
-        $this->assertSame([1 => 'true', 0 => 'false'], $this->column->getValues());
+        $this->assertEquals([1 => 'true', 0 => 'false'], $this->column->getValues());
 
         $values = [1 => 'foo', 0 => 'bar'];
         $params = ['values' => $values];
         $column = new BooleanColumn($params);
-        $this->assertSame($values, $column->getValues());
+        $this->assertEquals($values, $column->getValues());
     }
 
     public function testIsQueryValid()
