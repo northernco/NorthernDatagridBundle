@@ -52,28 +52,32 @@ class DateColumnTest extends TestCase
     public function testGetFiltersOperatorEq()
     {
         $from = '2017-03-18';
-        $to = '2017-03-20';
+        $to   = '2017-03-20';
 
         $this->column->setData(['operator' => Column::OPERATOR_EQ, 'from' => $from, 'to' => $to]);
 
         $this->assertEquals([
-            new Filter(Column::OPERATOR_GTE, new \DateTime($from . ' 00:00:00')),
-            new Filter(Column::OPERATOR_LTE, new \DateTime($from . '23:59:59')),
-        ], $this->column->getFilters('asource'));
+                                new Filter(Column::OPERATOR_GTE, new \DateTime($from . ' 00:00:00')),
+                                new Filter(Column::OPERATOR_LTE, new \DateTime($from . '23:59:59')),
+                            ], $this->column->getFilters('asource'));
     }
 
     public function testGetFiltersOperatorNeq()
     {
         $from = '2017-03-18';
-        $to = '2017-03-20';
+        $to   = '2017-03-20';
 
         $this->column->setData(['operator' => Column::OPERATOR_NEQ, 'from' => $from, 'to' => $to]);
 
-        $this->assertEquals([
-            new Filter(Column::OPERATOR_LT, new \DateTime($from . ' 00:00:00')),
-            new Filter(Column::OPERATOR_GT, new \DateTime($from . '23:59:59')),
-        ], $this->column->getFilters('asource'));
-        $this->assertAttributeEquals(Column::DATA_DISJUNCTION, 'dataJunction', $this->column);
+        $this->assertEquals(
+            [
+                new Filter(Column::OPERATOR_LT, new \DateTime($from . ' 00:00:00')),
+                new Filter(Column::OPERATOR_GT, new \DateTime($from . '23:59:59')),
+            ],
+            $this->column->getFilters('asource')
+        );
+
+        $this->assertSame(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
     public function testGetFiltersOperatorLt()

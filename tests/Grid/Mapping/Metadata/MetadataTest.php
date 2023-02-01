@@ -14,15 +14,6 @@ class MetadataTest extends TestCase
         $this->metadata = new Metadata();
     }
 
-    public function testSetFields()
-    {
-        $field = ['foo' => 'bar'];
-
-        $this->metadata->setFields($field);
-
-        $this->assertAttributeEquals($field, 'fields', $this->metadata);
-    }
-
     public function testGetFields()
     {
         $field = ['foo' => 'bar'];
@@ -34,8 +25,8 @@ class MetadataTest extends TestCase
 
     public function testHasFieldMappingWithField()
     {
-        $field = 'foo';
-        $value = 'bar';
+        $field        = 'foo';
+        $value        = 'bar';
         $fieldMapping = [$field => ['type' => $value]];
 
         $this->metadata->setFieldsMappings($fieldMapping);
@@ -46,8 +37,8 @@ class MetadataTest extends TestCase
 
     public function testGetterFieldMappingReturnDefaultTypeText()
     {
-        $field = 'foo';
-        $value = 'bar';
+        $field        = 'foo';
+        $value        = 'bar';
         $fieldMapping = [$field => $value];
 
         $this->metadata->setFieldsMappings($fieldMapping);
@@ -55,34 +46,14 @@ class MetadataTest extends TestCase
         $this->assertEquals('text', $this->metadata->getFieldMappingType($field));
     }
 
-    public function testSetterMappingFieldWithType()
-    {
-        $field = 'foo';
-        $value = 'bar';
-        $fieldMapping = [$field => ['type' => $value]];
-
-        $this->metadata->setFieldsMappings($fieldMapping);
-
-        $this->assertAttributeEquals($fieldMapping, 'fieldsMappings', $this->metadata);
-    }
-
     public function testGetterMappingFieldWithType()
     {
-        $field = 'foo';
-        $value = 'bar';
+        $field        = 'foo';
+        $value        = 'bar';
         $fieldMapping = [$field => ['type' => $value]];
 
         $this->metadata->setFieldsMappings($fieldMapping);
         $this->assertEquals($value, $this->metadata->getFieldMappingType($field));
-    }
-
-    public function testSetterGroupBy()
-    {
-        $groupBy = 'groupBy';
-
-        $this->metadata->setGroupBy($groupBy);
-
-        $this->assertAttributeEquals($groupBy, 'groupBy', $this->metadata);
     }
 
     public function testGetterGroupBy()
@@ -91,15 +62,6 @@ class MetadataTest extends TestCase
 
         $this->metadata->setGroupBy($groupBy);
         $this->assertEquals($groupBy, $this->metadata->getGroupBy());
-    }
-
-    public function testSetterName()
-    {
-        $name = 'name';
-
-        $this->metadata->setName($name);
-
-        $this->assertAttributeEquals($name, 'name', $this->metadata);
     }
 
     public function testGetterName()
@@ -115,8 +77,8 @@ class MetadataTest extends TestCase
     {
         $this->expectException(\Exception::class);
 
-        $field = 'foo';
-        $value = 'bar';
+        $field        = 'foo';
+        $value        = 'bar';
         $fieldMapping = [$field => ['type' => $value]];
 
         $columnsMock = $this->createMock(Columns::class);
@@ -131,12 +93,12 @@ class MetadataTest extends TestCase
 
     public function testGetColumnsFromMapping()
     {
-        $field = 'foo';
-        $field2 = 'foo2';
-        $value = 'bar';
-        $value2 = 'bar';
+        $field        = 'foo';
+        $field2       = 'foo2';
+        $value        = 'bar';
+        $value2       = 'bar';
         $fieldMapping = [
-            $field => [
+            $field  => [
                 'type' => $value,
             ],
             $field2 => [

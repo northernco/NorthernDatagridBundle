@@ -46,6 +46,10 @@ class Metadata
         return $this->fieldsMappings[$field];
     }
 
+    public function getFieldsMappings(): array {
+        return $this->fieldsMappings;
+    }
+
     public function getFieldMappingType($field)
     {
         return (isset($this->fieldsMappings[$field]['type'])) ? $this->fieldsMappings[$field]['type'] : 'text';

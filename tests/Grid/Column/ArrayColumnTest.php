@@ -26,14 +26,17 @@ class ArrayColumnTest extends TestCase
 
     public function testInitializeDefaultParams()
     {
-        $this->assertAttributeEquals([
-            Column::OPERATOR_LIKE,
-            Column::OPERATOR_NLIKE,
-            Column::OPERATOR_EQ,
-            Column::OPERATOR_NEQ,
-            Column::OPERATOR_ISNULL,
-            Column::OPERATOR_ISNOTNULL,
-        ], 'operators', $this->column);
+        $this->assertSame(
+            [
+                Column::OPERATOR_LIKE,
+                Column::OPERATOR_NLIKE,
+                Column::OPERATOR_EQ,
+                Column::OPERATOR_NEQ,
+                Column::OPERATOR_ISNULL,
+                Column::OPERATOR_ISNOTNULL,
+            ],
+            $this->column->getOperators()
+        );
     }
 
     public function testDocumentFilters()
@@ -101,10 +104,10 @@ class ArrayColumnTest extends TestCase
         $this->column->setData(['operator' => Column::OPERATOR_ISNULL]);
 
         $this->assertEquals([
-            new Filter(Column::OPERATOR_ISNULL),
-            new Filter(Column::OPERATOR_EQ, 'a:0:{}'),
-        ], $this->column->getFilters('asource'));
-        $this->assertAttributeEquals(Column::DATA_DISJUNCTION, 'dataJunction', $this->column);
+                                new Filter(Column::OPERATOR_ISNULL),
+                                new Filter(Column::OPERATOR_EQ, 'a:0:{}'),
+                            ], $this->column->getFilters('asource'));
+        $this->assertSame(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
     public function testIsNotNullFilter()
@@ -112,9 +115,9 @@ class ArrayColumnTest extends TestCase
         $this->column->setData(['operator' => Column::OPERATOR_ISNOTNULL]);
 
         $this->assertEquals([
-            new Filter(Column::OPERATOR_ISNOTNULL),
-            new Filter(Column::OPERATOR_NEQ, 'a:0:{}'),
-        ], $this->column->getFilters('asource'));
+                                new Filter(Column::OPERATOR_ISNOTNULL),
+                                new Filter(Column::OPERATOR_NEQ, 'a:0:{}'),
+                            ], $this->column->getFilters('asource'));
     }
 
     public function testRenderCellWithoutCallback()

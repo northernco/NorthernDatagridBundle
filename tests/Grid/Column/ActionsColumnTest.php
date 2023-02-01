@@ -16,8 +16,8 @@ class ActionsColumnTest extends TestCase
 
     public function setUp(): void
     {
-        $rowAction1 = $this->createMock(RowAction::class);
-        $rowAction2 = $this->createMock(RowAction::class);
+        $rowAction1   = $this->createMock(RowAction::class);
+        $rowAction2   = $this->createMock(RowAction::class);
         $this->column = new ActionsColumn('columnId', 'columnTitle', [
             $rowAction1,
             $rowAction2,
@@ -26,19 +26,19 @@ class ActionsColumnTest extends TestCase
 
     public function testConstructor()
     {
-        $columnId = 'columnId';
+        $columnId    = 'columnId';
         $columnTitle = 'columnTitle';
 
         $rowAction1 = $this->createMock(RowAction::class);
         $rowAction2 = $this->createMock(RowAction::class);
-        $column = new ActionsColumn($columnId, $columnTitle, [$rowAction1, $rowAction2]);
+        $column     = new ActionsColumn($columnId, $columnTitle, [$rowAction1, $rowAction2]);
 
-        $this->assertAttributeEquals([$rowAction1, $rowAction2], 'rowActions', $column);
-        $this->assertAttributeEquals($columnId, 'id', $column);
-        $this->assertAttributeEquals($columnTitle, 'title', $column);
-        $this->assertAttributeEquals(false, 'sortable', $column);
-        $this->assertAttributeEquals(false, 'visibleForSource', $column);
-        $this->assertAttributeEquals(true, 'filterable', $column);
+        $this->assertSame([$rowAction1, $rowAction2], $column->getRowActions());
+        $this->assertSame($columnId, $column->getId());
+        $this->assertSame($columnTitle, $column->getTitle());
+        $this->assertFalse($column->isSortable());
+        $this->assertFalse($column->isVisibleForSource());
+        $this->assertTrue($column->isFilterable());
     }
 
     public function testGetType()
@@ -72,7 +72,7 @@ class ActionsColumnTest extends TestCase
     {
         $rowAction1 = $this->createMock(RowAction::class);
         $rowAction2 = $this->createMock(RowAction::class);
-        $column = new ActionsColumn('columnId', 'columnTitle', [
+        $column     = new ActionsColumn('columnId', 'columnTitle', [
             $rowAction1,
             $rowAction2,
         ]);
@@ -84,10 +84,10 @@ class ActionsColumnTest extends TestCase
     {
         $rowAction1 = $this->createMock(RowAction::class);
         $rowAction2 = $this->createMock(RowAction::class);
-        $column = new ActionsColumn('columnId', 'columnTitle', []);
+        $column     = new ActionsColumn('columnId', 'columnTitle', []);
         $column->setRowActions([$rowAction1, $rowAction2]);
 
-        $this->assertAttributeEquals([$rowAction1, $rowAction2], 'rowActions', $column);
+        $this->assertSame([$rowAction1, $rowAction2], $column->getRowActions());
     }
 
     public function testIsNotVisibleIfExported()
@@ -158,17 +158,21 @@ class ActionsColumnTest extends TestCase
             ->willReturnOnConsecutiveCalls(null, 'aName');
 
         $rowAction->method('getRouteParameters')->willReturn([
-            'foo'            => 1,
-            'foo.bar.foobar' => 2,
-            1                => 'foo.bar',
-            '2'              => 'barFoo',
-        ]);
+                                                                 'foo'            => 1,
+                                                                 'foo.bar.foobar' => 2,
+                                                                 1                => 'foo.bar',
+                                                                 '2'              => 'barFoo',
+                                                             ]);
 
         $this->assertEquals([
-            'foo'          => 1,
-            'fooBarFoobar' => 2,
-            'fooBar'       => 'testValue',
-            'aName'        => 'aValue',
-        ], $this->column->getRouteParameters($row, $rowAction));
+                                'foo'          => 1,
+                                'fooBarFoobar' => 2,
+                                'fooBar'       => 'testValue',
+                                'aName'        => 'aValue',
+                            ],
+                            $this->column->getRouteParameters(
+                                $row,
+                                $rowAction
+                            ));
     }
 }

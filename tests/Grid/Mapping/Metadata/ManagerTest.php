@@ -18,21 +18,21 @@ class ManagerTest extends TestCase
     public function testAddDriver()
     {
         $driverInterfaceMock = $this->createMock(DriverInterface::class);
-        $priority = 1;
+        $priority            = 1;
 
         $driverHeap = new DriverHeap();
         $driverHeap->insert($driverInterfaceMock, $priority);
 
         $this->manager->addDriver($driverInterfaceMock, $priority);
 
-        $this->assertAttributeEquals($driverHeap, 'drivers', $this->manager);
+        $this->assertSame($driverHeap, $this->manager->getDrivers());
     }
 
     public function testGetDrivers()
     {
         $driverInterfaceMock = $this->createMock(DriverInterface::class);
 
-        $priority = 1;
+        $priority   = 1;
         $driverHeap = new DriverHeap();
         $driverHeap->insert($driverInterfaceMock, $priority);
 
@@ -44,7 +44,7 @@ class ManagerTest extends TestCase
 
     public function testGetDriversReturnDifferentClone()
     {
-        $driverFirstTime = $this->manager->getDrivers();
+        $driverFirstTime  = $this->manager->getDrivers();
         $driverSecondTime = $this->manager->getDrivers();
 
         $this->assertNotSame($driverFirstTime, $driverSecondTime);
@@ -52,9 +52,9 @@ class ManagerTest extends TestCase
 
     public function testGetMetadataWithoutDrivers()
     {
-        $cols = [];
+        $cols     = [];
         $mappings = [];
-        $groupBy = [];
+        $groupBy  = [];
 
         $metadataExpected = new Metadata();
         $metadataExpected->setFields($cols);
@@ -68,7 +68,7 @@ class ManagerTest extends TestCase
 
     public function testGetMetadata()
     {
-        $fields = ['0' => 'bar'];
+        $fields  = ['0' => 'bar'];
         $groupBy = ['foo' => 'bar'];
         $mapping = ['bar' => ['foo' => 'foo2']];
 
@@ -86,8 +86,8 @@ class ManagerTest extends TestCase
 
         $metadata = $this->manager->getMetadata('foo');
 
-        $this->assertAttributeEquals($fields, 'fields', $metadata);
-        $this->assertAttributeEquals($groupBy, 'groupBy', $metadata);
-        $this->assertAttributeEquals($mapping, 'fieldsMappings', $metadata);
+        $this->assertSame($fields, $metadata->getFields());
+        $this->assertSame($groupBy, $metadata->getGroupBy());
+        $this->assertSame($mapping, $metadata->getFieldsMappings());
     }
 }

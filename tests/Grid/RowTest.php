@@ -29,7 +29,7 @@ class RowTest extends TestCase
         $pf = 'id';
         $this->row->setPrimaryField($pf);
 
-        $this->assertAttributeEquals($pf, 'primaryField', $this->row);
+        $this->assertSame($pf, $this->row->getPrimaryField());
     }
 
     public function testGetPrimaryField()
@@ -42,22 +42,22 @@ class RowTest extends TestCase
 
     public function testSetField()
     {
-        $field1Id = 'col1';
+        $field1Id  = 'col1';
         $field1Val = 'col1_val';
 
-        $field2Id = 'col2';
+        $field2Id  = 'col2';
         $field2Val = 'col2_val';
 
         $this->row->setField($field1Id, $field1Val);
         $this->row->setField($field2Id, $field2Val);
 
-        $this->assertAttributeEquals([$field1Id => $field1Val, $field2Id => $field2Val], 'fields', $this->row);
+        $this->assertSame([$field1Id => $field1Val, $field2Id => $field2Val], $this->row->getFields());
     }
 
     public function testGetField()
     {
         $field = 'col1';
-        $val = 'col1_val';
+        $val   = 'col1_val';
 
         $this->row->setField($field, $val);
 
@@ -76,8 +76,8 @@ class RowTest extends TestCase
     {
         $this->expectException(\InvalidArgumentException::class);
 
-        $field = 'foo';
-        $fieldValue = 1;
+        $field        = 'foo';
+        $fieldValue   = 1;
         $primaryField = 'id';
 
         $this->row->setField($field, $fieldValue);
@@ -88,8 +88,8 @@ class RowTest extends TestCase
 
     public function testGetSinglePrimaryFieldValue()
     {
-        $field = 'id';
-        $value = 1;
+        $field        = 'id';
+        $value        = 1;
         $primaryField = 'id';
 
         $this->row->setField($field, $value);
@@ -149,7 +149,7 @@ class RowTest extends TestCase
         $this->row->setPrimaryField($field);
 
         $entityDummy = $this->createMock(self::class);
-        $repo = $this->createMock(EntityRepository::class);
+        $repo        = $this->createMock(EntityRepository::class);
         $repo
             ->expects($this->once())
             ->method('find')
@@ -160,14 +160,6 @@ class RowTest extends TestCase
         $this->assertSame($entityDummy, $this->row->getEntity());
     }
 
-    public function testSetClass()
-    {
-        $class = 'Vendor/Bundle/Foo';
-        $this->row->setClass($class);
-
-        $this->assertAttributeEquals($class, 'class', $this->row);
-    }
-
     public function testGetClass()
     {
         $class = 'Vendor/Bundle/Foo';
@@ -176,28 +168,12 @@ class RowTest extends TestCase
         $this->assertEquals($class, $this->row->getClass());
     }
 
-    public function testSetColor()
-    {
-        $color = 'red';
-        $this->row->setColor($color);
-
-        $this->assertAttributeEquals($color, 'color', $this->row);
-    }
-
     public function testGetColor()
     {
         $color = 'blue';
         $this->row->setColor($color);
 
         $this->assertEquals($color, $this->row->getColor());
-    }
-
-    public function testSetLegend()
-    {
-        $legend = 'foo';
-        $this->row->setLegend($legend);
-
-        $this->assertAttributeEquals($legend, 'legend', $this->row);
     }
 
     public function testGetLegend()

@@ -43,32 +43,32 @@ class VectorTest extends TestCase
 
     public function testCreateVectorWithColumns()
     {
-        $column = $this->createMock(Column::class);
+        $column  = $this->createMock(Column::class);
         $column2 = $this->createMock(Column::class);
         $columns = [$column, $column2];
 
         $vector = new Vector([], $columns);
 
-        $this->assertAttributeEquals($columns, 'columns', $vector);
+        $this->assertSame($columns, $vector->getColumnsArray());
     }
 
     public function testInitialiseWithoutData()
     {
         $this->vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEmpty('columns', $this->vector);
+        $this->assertEmpty($this->vector->getColumnsArray());
     }
 
     public function testInizialiseWithGuessedColumnsMergedToAlreadySettedColumns()
     {
         $columnId = 'cId';
-        $column = $this->createMock(Column::class);
+        $column   = $this->createMock(Column::class);
         $column
             ->method('getId')
             ->willReturn($columnId);
 
         $column2Id = 'c2Id';
-        $column2 = $this->createMock(Column::class);
+        $column2   = $this->createMock(Column::class);
         $column2
             ->method('getId')
             ->willReturn($column2Id);
@@ -76,42 +76,42 @@ class VectorTest extends TestCase
         $vector = new Vector([['c3Id' => 'c3', 'c4Id' => 'c4']], [$column, $column2]);
 
         $uc1 = new UntypedColumn([
-            'id'         => 'c3Id',
-            'title'      => 'c3Id',
-            'source'     => true,
-            'filterable' => true,
-            'sortable'   => true,
-            'visible'    => true,
-            'field'      => 'c3Id',
-        ]);
+                                     'id'         => 'c3Id',
+                                     'title'      => 'c3Id',
+                                     'source'     => true,
+                                     'filterable' => true,
+                                     'sortable'   => true,
+                                     'visible'    => true,
+                                     'field'      => 'c3Id',
+                                 ]);
         $uc1->setType('text');
 
         $uc2 = new UntypedColumn([
-            'id'         => 'c4Id',
-            'title'      => 'c4Id',
-            'source'     => true,
-            'filterable' => true,
-            'sortable'   => true,
-            'visible'    => true,
-            'field'      => 'c4Id',
-        ]);
+                                     'id'         => 'c4Id',
+                                     'title'      => 'c4Id',
+                                     'source'     => true,
+                                     'filterable' => true,
+                                     'sortable'   => true,
+                                     'visible'    => true,
+                                     'field'      => 'c4Id',
+                                 ]);
         $uc2->setType('text');
 
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$column, $column2, $uc1, $uc2], 'columns', $vector);
+        $this->assertSame([$column, $column2, $uc1, $uc2], $vector->getColumnsArray());
     }
 
     public function testInizialiseWithoutGuessedColumns()
     {
         $columnId = 'cId';
-        $column = $this->createMock(Column::class);
+        $column   = $this->createMock(Column::class);
         $column
             ->method('getId')
             ->willReturn($columnId);
 
         $column2Id = 'c2Id';
-        $column2 = $this->createMock(Column::class);
+        $column2   = $this->createMock(Column::class);
         $column2
             ->method('getId')
             ->willReturn($column2Id);
@@ -120,7 +120,7 @@ class VectorTest extends TestCase
 
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$column, $column2], 'columns', $vector);
+        $this->assertSame([$column, $column2], $vector->getColumnsArray());
     }
 
     /**
@@ -133,12 +133,12 @@ class VectorTest extends TestCase
         $vector = new Vector($vectorValue);
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertAttributeEquals([$untypedColumn], 'columns', $vector);
+        $this->assertSame([$untypedColumn], $vector->getColumnsArray());
     }
 
     public function testExecute()
     {
-        $rows = [new Row(), new Row()];
+        $rows    = [new Row(), new Row()];
         $columns = $this->createMock(Columns::class);
 
         $vector = $this->createPartialMock(Vector::class, ['executeFromData']);
@@ -178,13 +178,13 @@ class VectorTest extends TestCase
 
     public function testGetHash()
     {
-        $idCol1 = 'idCol1';
+        $idCol1  = 'idCol1';
         $column1 = $this->createMock(Column::class);
         $column1
             ->method('getId')
             ->willReturn($idCol1);
 
-        $idCol2 = 'idCol2';
+        $idCol2  = 'idCol2';
         $column2 = $this->createMock(Column::class);
         $column2
             ->method('getId')
@@ -192,7 +192,7 @@ class VectorTest extends TestCase
 
         $vector = new Vector([], [$column1, $column2]);
 
-        $this->assertEquals('APY\DataGridBundle\Grid\Source\Vector' . md5($idCol1.$idCol2), $vector->getHash());
+        $this->assertEquals('APY\DataGridBundle\Grid\Source\Vector' . md5($idCol1 . $idCol2), $vector->getHash());
     }
 
     public function testId()
@@ -206,38 +206,38 @@ class VectorTest extends TestCase
     public function guessedColumnProvider()
     {
         $uc = new UntypedColumn([
-            'id'         => 'c1Id',
-            'title'      => 'c1Id',
-            'source'     => true,
-            'filterable' => true,
-            'sortable'   => true,
-            'visible'    => true,
-            'field'      => 'c1Id',
-        ]);
+                                    'id'         => 'c1Id',
+                                    'title'      => 'c1Id',
+                                    'source'     => true,
+                                    'filterable' => true,
+                                    'sortable'   => true,
+                                    'visible'    => true,
+                                    'field'      => 'c1Id',
+                                ]);
 
         $date = new \DateTime();
         $date->setTime(0, 0, 0);
 
         return [
-            'Empty' => [[['c1Id' => '']], $uc, 'text'],
-            'Null' => [[['c1Id' => null]], $uc, 'text'],
-            'Array' => [[['c1Id' => []]], $uc, 'array'],
-            'Datetime' => [[['c1Id' => new \DateTime()]], $uc, 'datetime'],
-            'Date' => [[['c1Id' => $date]], $uc, 'date'],
-            'String but not date' => [[['c1Id' => 'thisIsAString']], $uc, 'text'],
-            'Date string' => [[['c1Id' => '2017-07-22']], $uc, 'date'],
-            'Datetime string' => [[['c1Id' => '2017-07-22 12:00:00']], $uc, 'datetime'],
-            'True value' => [[['c1Id' => true]], $uc, 'boolean'],
-            'False value' => [[['c1Id' => true]], $uc, 'boolean'],
-            'True int value' => [[['c1Id' => 1]], $uc, 'boolean'],
-            'False int value' => [[['c1Id' => 0]], $uc, 'boolean'],
-            'True string value' => [[['c1Id' => '1']], $uc, 'boolean'],
-            'False string value' => [[['c1Id' => '0']], $uc, 'boolean'],
-            'Number' => [[['c1Id' => 12]], $uc, 'number'],
+            'Empty'                  => [[['c1Id' => '']], $uc, 'text'],
+            'Null'                   => [[['c1Id' => null]], $uc, 'text'],
+            'Array'                  => [[['c1Id' => []]], $uc, 'array'],
+            'Datetime'               => [[['c1Id' => new \DateTime()]], $uc, 'datetime'],
+            'Date'                   => [[['c1Id' => $date]], $uc, 'date'],
+            'String but not date'    => [[['c1Id' => 'thisIsAString']], $uc, 'text'],
+            'Date string'            => [[['c1Id' => '2017-07-22']], $uc, 'date'],
+            'Datetime string'        => [[['c1Id' => '2017-07-22 12:00:00']], $uc, 'datetime'],
+            'True value'             => [[['c1Id' => true]], $uc, 'boolean'],
+            'False value'            => [[['c1Id' => true]], $uc, 'boolean'],
+            'True int value'         => [[['c1Id' => 1]], $uc, 'boolean'],
+            'False int value'        => [[['c1Id' => 0]], $uc, 'boolean'],
+            'True string value'      => [[['c1Id' => '1']], $uc, 'boolean'],
+            'False string value'     => [[['c1Id' => '0']], $uc, 'boolean'],
+            'Number'                 => [[['c1Id' => 12]], $uc, 'number'],
             'Boolean and not number' => [[['c1Id' => true], ['c1Id' => '2017-07-22']], $uc, 'text'],
-            'Boolean and number' => [[['c1Id' => true], ['c1Id' => 20]], $uc, 'number'],
+            'Boolean and number'     => [[['c1Id' => true], ['c1Id' => 20]], $uc, 'number'],
             'Date and not date time' => [[['c1Id' => '2017-07-22'], ['c1Id' => 20]], $uc, 'text'],
-            'Date and time' => [[['c1Id' => '2017-07-22'], ['c1Id' => '2017-07-22 11:00:00']], $uc, 'datetime']
+            'Date and time'          => [[['c1Id' => '2017-07-22'], ['c1Id' => '2017-07-22 11:00:00']], $uc, 'datetime'],
         ];
     }
 }

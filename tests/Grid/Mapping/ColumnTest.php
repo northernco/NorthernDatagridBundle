@@ -10,25 +10,25 @@ class ColumnTest extends TestCase
     public function setUp(): void
     {
         $this->stringMetadata = 'foo';
-        $this->arrayMetadata = ['foo' => 'bar', 'groups' => 'baz'];
+        $this->arrayMetadata  = ['foo' => 'bar', 'groups' => 'baz'];
     }
 
     public function testColumnMetadataCanBeEmpty()
     {
         $column = new Column([]);
-        $this->assertAttributeEmpty('metadata', $column);
-        $this->assertAttributeEquals(['default'], 'groups', $column);
+        $this->assertEmpty($column->getMetadata());
+        $this->assertSame(['default'], $column->getGroups());
     }
 
     public function testColumnStringMetadataInjectedInConstructor()
     {
         $column = new Column($this->stringMetadata);
-        $this->assertAttributeEquals($this->stringMetadata, 'metadata', $column);
+        $this->assertSame($this->stringMetadata, $column->getMetadata());
     }
 
     public function testColumnArrayMetadataInjectedInConstructor()
     {
         $column = new Column($this->arrayMetadata);
-        $this->assertAttributeEquals($this->arrayMetadata, 'metadata', $column);
+        $this->assertSame($this->arrayMetadata, $column->getMetadata());
     }
 }
