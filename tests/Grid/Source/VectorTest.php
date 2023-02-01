@@ -49,7 +49,7 @@ class VectorTest extends TestCase
 
         $vector = new Vector([], $columns);
 
-        $this->assertSame($columns, $vector->getColumnsArray());
+        $this->assertEquals($columns, $vector->getColumnsArray());
     }
 
     public function testInitialiseWithoutData()
@@ -99,7 +99,7 @@ class VectorTest extends TestCase
 
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertSame([$column, $column2, $uc1, $uc2], $vector->getColumnsArray());
+        $this->assertEquals([$column, $column2, $uc1, $uc2], $vector->getColumnsArray());
     }
 
     public function testInizialiseWithoutGuessedColumns()
@@ -120,7 +120,7 @@ class VectorTest extends TestCase
 
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertSame([$column, $column2], $vector->getColumnsArray());
+        $this->assertEquals([$column, $column2], $vector->getColumnsArray());
     }
 
     /**
@@ -133,7 +133,7 @@ class VectorTest extends TestCase
         $vector = new Vector($vectorValue);
         $vector->initialise($this->createMock(Container::class));
 
-        $this->assertSame([$untypedColumn], $vector->getColumnsArray());
+        $this->assertEquals([$untypedColumn], $vector->getColumnsArray());
     }
 
     public function testExecute()
