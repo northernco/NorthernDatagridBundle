@@ -19,7 +19,10 @@ use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
 use Doctrine\Bundle\DoctrineBundle\Registry;
-use Doctrine\ORM\Internal\SQLResultCasing;
+use Doctrine\DBAL\Platforms\AbstractPlatform;
+use Doctrine\DBAL\Platforms\DB2Platform;
+use Doctrine\DBAL\Platforms\OraclePlatform;
+use Doctrine\DBAL\Platforms\PostgreSQLPlatform;
 use Doctrine\ORM\NoResultException;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
@@ -31,8 +34,6 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class Entity extends Source
 {
-    use SQLResultCasing;
-
     public const HINT_QUERY_HAS_FETCH_JOIN = 'grid.hasFetchJoin';
 
     const DOT_DQL_ALIAS_PH   = '__dot__';
@@ -893,5 +894,22 @@ class Entity extends Source
         }
 
         return false;
+    }
+
+    private function getSQLResultCasing(AbstractPlatform $platform, string $column): string
+    {
+        if ($platform instanceof DB2Platform || $platform instanceof OraclePlatform) {
+            return strtoupper($column);
+        }
+
+        if ($platform instanceof PostgreSQLPlatform) {
+            return strtolower($column);
+        }
+
+        if (method_exists(AbstractPlatform::class, 'getSQLResultCasing')) {
+            return $platform->getSQLResultCasing($column);
+        }
+
+        return $column;
     }
 }
