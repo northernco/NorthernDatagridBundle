@@ -66,16 +66,17 @@ class RowAction implements RowActionInterface
      */
     public function __construct($title, $route, $confirm = false, $target = '_self', $attributes = [], $role = null)
     {
-        $this->title = $title;
-        $this->route = $route;
-        $this->confirm = $confirm;
+        $this->title          = $title;
+        $this->route          = $route;
+        $this->confirm        = $confirm;
         $this->confirmMessage = 'Do you want to ' . strtolower($title) . ' this row?';
-        $this->target = $target;
-        $this->attributes = $attributes;
-        $this->role = $role;
+        $this->target         = $target;
+        $this->attributes     = $attributes;
+        $this->role           = $role;
     }
 
     // @todo: has this setter real sense? we passed this value from constructor
+
     /**
      * Set action title.
      *
@@ -99,6 +100,7 @@ class RowAction implements RowActionInterface
     }
 
     // @todo: has this setter real sense? we passed this value from constructor
+
     /**
      * Set action route.
      *
@@ -220,7 +222,7 @@ class RowAction implements RowActionInterface
      */
     public function addRouteParameters($routeParameters)
     {
-        $routeParameters = (array) $routeParameters;
+        $routeParameters = (array)$routeParameters;
 
         foreach ($routeParameters as $key => $routeParameter) {
             if (is_int($key)) {
@@ -242,7 +244,7 @@ class RowAction implements RowActionInterface
      */
     public function setRouteParameters($routeParameters)
     {
-        $this->routeParameters = (array) $routeParameters;
+        $this->routeParameters = (array)$routeParameters;
 
         return $this;
     }
@@ -256,6 +258,7 @@ class RowAction implements RowActionInterface
     }
 
     // @todo: why is this accepting string? it seems pretty useless, isn't it?
+
     /**
      * Set route parameters mapping.
      *
@@ -265,7 +268,7 @@ class RowAction implements RowActionInterface
      */
     public function setRouteParametersMapping($routeParametersMapping)
     {
-        $this->routeParametersMapping = (array) $routeParametersMapping;
+        $this->routeParametersMapping = (array)$routeParametersMapping;
 
         return $this;
     }
@@ -346,11 +349,11 @@ class RowAction implements RowActionInterface
     /**
      * Set render callback.
      *
-     * @deprecated This is deprecated and will be removed in 3.0; use addManipulateRender instead.
-     *
      * @param \Closure $callback
      *
      * @return self
+     * @deprecated This is deprecated and will be removed in 3.0; use addManipulateRender instead.
+     *
      */
     public function manipulateRender(\Closure $callback)
     {
@@ -371,7 +374,8 @@ class RowAction implements RowActionInterface
         return $this;
     }
 
-    public function getCallbacks(): array {
+    public function getCallbacks(): array
+    {
         return $this->callbacks;
     }
 
@@ -396,6 +400,7 @@ class RowAction implements RowActionInterface
     }
 
     // @todo: should not this be "isEnabled"?
+
     /**
      * {@inheritdoc}
      */
@@ -405,6 +410,7 @@ class RowAction implements RowActionInterface
     }
 
     // @todo: should not this be "enable" as default value is false?
+
     /**
      * Set the enabled state of this action.
      *
