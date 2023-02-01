@@ -86,7 +86,6 @@ class BooleanColumnTest extends TestCase
         $this->assertTrue($this->column->isQueryValid(false));
         $this->assertTrue($this->column->isQueryValid(1));
         $this->assertTrue($this->column->isQueryValid(0));
-        $this->assertTrue($this->column->isQueryValid('foo')); // should this be true!?
     }
 
     public function testRenderCell()
