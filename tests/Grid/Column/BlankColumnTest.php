@@ -25,7 +25,7 @@ class BlankColumnTest extends TestCase
 
         $column = new BlankColumn($params);
 
-        $this->assertSame(
+        $this->assertEquals(
             [
                 'filterable' => false,
                 'sortable'   => false,

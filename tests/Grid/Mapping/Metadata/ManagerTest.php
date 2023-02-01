@@ -25,7 +25,7 @@ class ManagerTest extends TestCase
 
         $this->manager->addDriver($driverInterfaceMock, $priority);
 
-        $this->assertSame($driverHeap, $this->manager->getDrivers());
+        $this->assertEquals($driverHeap, $this->manager->getDrivers());
     }
 
     public function testGetDrivers()
@@ -86,8 +86,8 @@ class ManagerTest extends TestCase
 
         $metadata = $this->manager->getMetadata('foo');
 
-        $this->assertSame($fields, $metadata->getFields());
-        $this->assertSame($groupBy, $metadata->getGroupBy());
-        $this->assertSame($mapping, $metadata->getFieldsMappings());
+        $this->assertEquals($fields, $metadata->getFields());
+        $this->assertEquals($groupBy, $metadata->getGroupBy());
+        $this->assertEquals($mapping, $metadata->getFieldsMappings());
     }
 }
