@@ -51,6 +51,10 @@ class Row
         $this->repository = $repository;
     }
 
+    public function getRepository(): ?EntityRepository {
+        return $this->repository;
+    }
+
     /**
      * @return null|object
      */

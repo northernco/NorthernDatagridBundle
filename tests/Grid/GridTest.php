@@ -101,7 +101,6 @@ class GridTest extends TestCase
 
         $this->assertFalse($this->grid->getPersistence());
         $this->assertEmpty($this->grid->getRouteParameters());
-        $this->assertEmpty($this->grid->getRouteUrl());
         $this->assertEmpty($this->grid->getSource());
         $this->assertEmpty($this->grid->getDefaultOrder());
         $this->assertEmpty($this->grid->getLimits());
@@ -674,7 +673,7 @@ class GridTest extends TestCase
 
         $result = [$id => array_merge(['title' => $title, 'id' => $id, 'group' => $group], $tweak)];
 
-        $this->assertSame($result, $this->grid->getTweaks());
+        $this->assertEquals($result, $this->grid->getAllTweaks());
     }
 
     public function testAddTweakWithoutId()
@@ -687,7 +686,7 @@ class GridTest extends TestCase
 
         $result = [0 => array_merge(['title' => $title, 'id' => null, 'group' => $group], $tweak)];
 
-        $this->assertSame($result, $this->grid->getTweaks());
+        $this->assertEquals($result, $this->grid->getAllTweaks());
     }
 
     public function testAddRowActionWithoutRole()

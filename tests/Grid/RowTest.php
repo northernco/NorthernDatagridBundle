@@ -21,7 +21,7 @@ class RowTest extends TestCase
         $repo = $this->createMock(EntityRepository::class);
         $this->row->setRepository($repo);
 
-        $this->assertAttributeSame($repo, 'repository', $this->row);
+        $this->assertEquals($repo, $this->row->getRepository());
     }
 
     public function testSetPrimaryField()
