@@ -103,10 +103,14 @@ class ArrayColumnTest extends TestCase
     {
         $this->column->setData(['operator' => Column::OPERATOR_ISNULL]);
 
-        $this->assertEquals([
-                                new Filter(Column::OPERATOR_ISNULL),
-                                new Filter(Column::OPERATOR_EQ, 'a:0:{}'),
-                            ], $this->column->getFilters('asource'));
+        $this->assertEquals(
+            [
+                new Filter(Column::OPERATOR_ISNULL),
+                new Filter(Column::OPERATOR_EQ, 'a:0:{}'),
+            ],
+            $this->column->getFilters('asource')
+        );
+
         $this->assertSame(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
@@ -114,10 +118,13 @@ class ArrayColumnTest extends TestCase
     {
         $this->column->setData(['operator' => Column::OPERATOR_ISNOTNULL]);
 
-        $this->assertEquals([
-                                new Filter(Column::OPERATOR_ISNOTNULL),
-                                new Filter(Column::OPERATOR_NEQ, 'a:0:{}'),
-                            ], $this->column->getFilters('asource'));
+        $this->assertEquals(
+            [
+                new Filter(Column::OPERATOR_ISNOTNULL),
+                new Filter(Column::OPERATOR_NEQ, 'a:0:{}'),
+            ],
+            $this->column->getFilters('asource')
+        );
     }
 
     public function testRenderCellWithoutCallback()

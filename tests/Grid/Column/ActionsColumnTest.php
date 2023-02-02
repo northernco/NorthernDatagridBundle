@@ -157,22 +157,26 @@ class ActionsColumnTest extends TestCase
             ->withConsecutive(['foo.bar'], ['barFoo'])
             ->willReturnOnConsecutiveCalls(null, 'aName');
 
-        $rowAction->method('getRouteParameters')->willReturn([
-                                                                 'foo'            => 1,
-                                                                 'foo.bar.foobar' => 2,
-                                                                 1                => 'foo.bar',
-                                                                 '2'              => 'barFoo',
-                                                             ]);
+        $rowAction->method('getRouteParameters')->willReturn(
+            [
+                'foo'            => 1,
+                'foo.bar.foobar' => 2,
+                1                => 'foo.bar',
+                '2'              => 'barFoo',
+            ]
+        );
 
-        $this->assertEquals([
-                                'foo'          => 1,
-                                'fooBarFoobar' => 2,
-                                'fooBar'       => 'testValue',
-                                'aName'        => 'aValue',
-                            ],
-                            $this->column->getRouteParameters(
-                                $row,
-                                $rowAction
-                            ));
+        $this->assertEquals(
+            [
+                'foo'          => 1,
+                'fooBarFoobar' => 2,
+                'fooBar'       => 'testValue',
+                'aName'        => 'aValue',
+            ],
+            $this->column->getRouteParameters(
+                $row,
+                $rowAction
+            )
+        );
     }
 }

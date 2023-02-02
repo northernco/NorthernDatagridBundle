@@ -56,10 +56,13 @@ class DateColumnTest extends TestCase
 
         $this->column->setData(['operator' => Column::OPERATOR_EQ, 'from' => $from, 'to' => $to]);
 
-        $this->assertEquals([
-                                new Filter(Column::OPERATOR_GTE, new \DateTime($from . ' 00:00:00')),
-                                new Filter(Column::OPERATOR_LTE, new \DateTime($from . '23:59:59')),
-                            ], $this->column->getFilters('asource'));
+        $this->assertEquals(
+            [
+                new Filter(Column::OPERATOR_GTE, new \DateTime($from . ' 00:00:00')),
+                new Filter(Column::OPERATOR_LTE, new \DateTime($from . '23:59:59')),
+            ],
+            $this->column->getFilters('asource')
+        );
     }
 
     public function testGetFiltersOperatorNeq()

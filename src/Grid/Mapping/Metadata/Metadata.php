@@ -15,8 +15,11 @@ namespace APY\DataGridBundle\Grid\Mapping\Metadata;
 class Metadata
 {
     protected $name;
+
     protected $fields;
+
     protected $fieldsMappings;
+
     protected $groupBy;
 
     public function setFields($fields)
@@ -46,7 +49,8 @@ class Metadata
         return $this->fieldsMappings[$field];
     }
 
-    public function getFieldsMappings(): array {
+    public function getFieldsMappings(): array
+    {
         return $this->fieldsMappings;
     }
 
@@ -80,13 +84,13 @@ class Metadata
     }
 
     /**
-     * @todo move to another place
-     *
      * @param $columnExtensions
      *
+     * @return \SplObjectStorage
      * @throws \Exception
      *
-     * @return \SplObjectStorage
+     * @todo move to another place
+     *
      */
     public function getColumnsFromMapping($columnExtensions)
     {
@@ -94,7 +98,7 @@ class Metadata
 
         foreach ($this->getFields() as $value) {
             $params = $this->getFieldMapping($value);
-            $type = $this->getFieldMappingType($value);
+            $type   = $this->getFieldMappingType($value);
 
             /* todo move available extensions from columns */
             if ($columnExtensions->hasExtensionForColumnType($type)) {

@@ -75,26 +75,31 @@ class VectorTest extends TestCase
 
         $vector = new Vector([['c3Id' => 'c3', 'c4Id' => 'c4']], [$column, $column2]);
 
-        $uc1 = new UntypedColumn([
-                                     'id'         => 'c3Id',
-                                     'title'      => 'c3Id',
-                                     'source'     => true,
-                                     'filterable' => true,
-                                     'sortable'   => true,
-                                     'visible'    => true,
-                                     'field'      => 'c3Id',
-                                 ]);
+        $uc1 = new UntypedColumn(
+            [
+                'id'         => 'c3Id',
+                'title'      => 'c3Id',
+                'source'     => true,
+                'filterable' => true,
+                'sortable'   => true,
+                'visible'    => true,
+                'field'      => 'c3Id',
+            ]
+        );
+
         $uc1->setType('text');
 
-        $uc2 = new UntypedColumn([
-                                     'id'         => 'c4Id',
-                                     'title'      => 'c4Id',
-                                     'source'     => true,
-                                     'filterable' => true,
-                                     'sortable'   => true,
-                                     'visible'    => true,
-                                     'field'      => 'c4Id',
-                                 ]);
+        $uc2 = new UntypedColumn(
+            [
+                'id'         => 'c4Id',
+                'title'      => 'c4Id',
+                'source'     => true,
+                'filterable' => true,
+                'sortable'   => true,
+                'visible'    => true,
+                'field'      => 'c4Id',
+            ]
+        );
         $uc2->setType('text');
 
         $vector->initialise($this->createMock(Container::class));
@@ -205,15 +210,17 @@ class VectorTest extends TestCase
 
     public function guessedColumnProvider()
     {
-        $uc = new UntypedColumn([
-                                    'id'         => 'c1Id',
-                                    'title'      => 'c1Id',
-                                    'source'     => true,
-                                    'filterable' => true,
-                                    'sortable'   => true,
-                                    'visible'    => true,
-                                    'field'      => 'c1Id',
-                                ]);
+        $uc = new UntypedColumn(
+            [
+                'id'         => 'c1Id',
+                'title'      => 'c1Id',
+                'source'     => true,
+                'filterable' => true,
+                'sortable'   => true,
+                'visible'    => true,
+                'field'      => 'c1Id',
+            ]
+        );
 
         $date = new \DateTime();
         $date->setTime(0, 0, 0);
