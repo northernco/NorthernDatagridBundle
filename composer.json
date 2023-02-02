@@ -6,7 +6,7 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "symfony/form": "^4.4|^5.2",
         "symfony/dependency-injection": "^4.4|^5.2",
         "symfony/config": "^4.4|^5.2",
