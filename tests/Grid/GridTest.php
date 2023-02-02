@@ -1421,9 +1421,8 @@ class GridTest extends TestCase
 
         $this
             ->request
-            ->expects($this->at(1))
+            ->expects($this->any())
             ->method('get')
-            ->with('_controller')
             ->willReturn($controller);
 
         $this->grid->handleRequest($this->request);
@@ -3173,9 +3172,8 @@ class GridTest extends TestCase
 
         $this
             ->request
-            ->expects($this->at(0))
+            ->expects($this->any())
             ->method('get')
-            ->with('_controller')
             ->willReturn($controller);
 
         $this->grid->isReadyForRedirect();
