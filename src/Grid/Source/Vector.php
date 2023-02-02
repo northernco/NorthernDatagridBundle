@@ -76,11 +76,11 @@ class Vector extends Source
     protected function guessColumns()
     {
         $guessedColumns = [];
-        $dataColumnIds = array_keys(reset($this->data));
+        $dataColumnIds  = array_keys(reset($this->data));
 
         foreach ($dataColumnIds as $id) {
             if (!$this->hasColumn($id)) {
-                $params = [
+                $params           = [
                     'id'         => $id,
                     'title'      => $id,
                     'source'     => true,
@@ -103,7 +103,7 @@ class Vector extends Source
                 continue;
             }
 
-            $i = 0;
+            $i          = 0;
             $fieldTypes = [];
 
             foreach ($this->data as $row) {
@@ -225,7 +225,14 @@ class Vector extends Source
 
     public function getHash()
     {
-        return __CLASS__ . md5(implode('', array_map(function ($c) { return $c->getId(); }, $this->columns)));
+        return __CLASS__ . md5(
+                implode(
+                    '',
+                    array_map(function ($c) {
+                        return $c->getId();
+                    }, $this->columns)
+                )
+            );
     }
 
     /**
@@ -264,7 +271,7 @@ class Vector extends Source
         // This seems to exclude ...
         if (is_object(reset($this->data))) {
             foreach ($this->data as $key => $object) {
-                $this->data[$key] = (array) $object;
+                $this->data[$key] = (array)$object;
             }
         }
 
@@ -293,5 +300,10 @@ class Vector extends Source
         }
 
         return false;
+    }
+
+    public function getColumnsArray(): array
+    {
+        return $this->columns;
     }
 }

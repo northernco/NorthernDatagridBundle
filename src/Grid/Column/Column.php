@@ -240,6 +240,10 @@ abstract class Column
         return $this;
     }
 
+    public function getCallback(): mixed {
+        return $this->callback;
+    }
+
     /**
      * Set column identifier.
      *
@@ -561,6 +565,10 @@ abstract class Column
         }
 
         return $result;
+    }
+
+    public function getDataAttribute(): array {
+        return $this->data;
     }
 
     /**
@@ -908,6 +916,10 @@ abstract class Column
         $this->authorizationChecker = $authorizationChecker;
 
         return $this;
+    }
+
+    public function getAuthorizationChecker(): ?AuthorizationCheckerInterface {
+        return $this->authorizationChecker;
     }
 
     public function getParentType()

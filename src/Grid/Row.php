@@ -40,7 +40,7 @@ class Row
     public function __construct()
     {
         $this->fields = [];
-        $this->color = '';
+        $this->color  = '';
     }
 
     /**
@@ -49,6 +49,10 @@ class Row
     public function setRepository(EntityRepository $repository)
     {
         $this->repository = $repository;
+    }
+
+    public function getRepository(): ?EntityRepository {
+        return $this->repository;
     }
 
     /**
@@ -77,9 +81,9 @@ class Row
     }
 
     /**
+     * @return array|mixed
      * @throws \InvalidArgumentException
      *
-     * @return array|mixed
      */
     public function getPrimaryFieldValue()
     {
@@ -139,6 +143,11 @@ class Row
     public function getField($columnId)
     {
         return isset($this->fields[$columnId]) ? $this->fields[$columnId] : '';
+    }
+
+    public function getFields(): array
+    {
+        return $this->fields;
     }
 
     /**

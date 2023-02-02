@@ -6,7 +6,7 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "symfony/form": "^5.2|^6.2",
         "symfony/dependency-injection": "^5.2|^6.2",
         "symfony/config": "^5.2|^6.2",
@@ -23,14 +23,14 @@
         "symfony/framework-bundle": "^5.2|^6.2",
         "symfony/expression-language": "^5.2|^6.2",
         "symfony/phpunit-bridge": "^5.2|^6.2",
-        "phpunit/phpunit": "^8.5",
-        "doctrine/orm": "~2.4,>=2.4.5",
+        "phpunit/phpunit": "^9.5",
+        "doctrine/orm": "~2.4,>=2.4.5"
     },
     "suggest": {
         "ext-intl": "Translate the grid",
         "ext-mbstring": "Convert your data with the right charset",
         "PHPExcel": "Export the grid (Excel, HTML or PDF)",
-        "doctrine/orm": "If you want to use Entity as source, please require doctrine/orm",
+        "doctrine/orm": "If you want to use Entity as source, please require doctrine/orm"
     },
     "autoload": {
         "psr-4": {
