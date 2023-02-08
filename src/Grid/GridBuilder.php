@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
@@ -39,7 +39,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
 
     private KernelInterface $kernel;
 
-    private DataCollectorTranslator $translator;
+    private TranslatorInterface $translator;
 
     /**
      * The factory.
@@ -72,7 +72,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
         ManagerRegistry $doctrine,
         Manager $mapping,
         KernelInterface $kernel,
-        DataCollectorTranslator $translator,
+        TranslatorInterface $translator,
         GridFactoryInterface $factory,
         $name,
         array $options = []

@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
@@ -47,7 +47,7 @@ class GridBuilderTest extends TestCase
         $registry     = $this->createMock(ManagerRegistry::class);
         $manager      = $this->createMock(Manager::class);
         $kernel       = $this->createMock(KernelInterface::class);
-        $translator   = $this->createMock(DataCollectorTranslator::class);
+        $translator   = $this->createMock(TranslatorInterface::class);
 
         $this->factory = $this->createMock(GridFactoryInterface::class);
         $this->builder = new GridBuilder($auth, $router, $requestStack, $twig, $httpKernel, $registry, $manager, $kernel, $translator, $this->factory, 'name');

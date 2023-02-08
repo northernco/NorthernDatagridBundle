@@ -33,7 +33,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 class Grid implements GridInterface
@@ -87,7 +87,7 @@ class Grid implements GridInterface
 
     private Manager $mapping;
 
-    private DataCollectorTranslator $translator;
+    private TranslatorInterface $translator;
 
     private string $kernelCharset;
 
@@ -358,7 +358,7 @@ class Grid implements GridInterface
         ManagerRegistry $doctrine,
         Manager $mapping,
         KernelInterface $kernel,
-        DataCollectorTranslator $translator,
+        TranslatorInterface $translator,
         $id = '',
         GridConfigInterface $config = null
     ) {

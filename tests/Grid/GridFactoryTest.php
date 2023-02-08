@@ -20,7 +20,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
@@ -53,7 +53,7 @@ class GridFactoryTest extends TestCase
         $registry       = $this->createMock(ManagerRegistry::class);
         $manager        = $this->createMock(Manager::class);
         $kernel         = $this->createMock(KernelInterface::class);
-        $translator     = $this->createMock(DataCollectorTranslator::class);
+        $translator     = $this->createMock(TranslatorInterface::class);
         $this->registry = $this->createMock(GridRegistryInterface::class);
         $this->builder  = $this->createMock(GridBuilderInterface::class);
 

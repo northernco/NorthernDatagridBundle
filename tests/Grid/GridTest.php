@@ -33,7 +33,7 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\Router;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 use Twig\TemplateWrapper;
 
@@ -4452,7 +4452,7 @@ class GridTest extends TestCase
         $this->registry = $this->createMock(ManagerRegistry::class);
         $this->manager  = $this->createMock(Manager::class);
         $kernel         = $this->createMock(KernelInterface::class);
-        $translator     = $this->createMock(DataCollectorTranslator::class);
+        $translator     = $this->createMock(TranslatorInterface::class);
 
         $this->gridId   = $id;
         $this->gridHash = 'grid_' . $this->gridId;

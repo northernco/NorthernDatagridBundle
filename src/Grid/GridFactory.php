@@ -13,7 +13,7 @@ use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 /**
@@ -44,7 +44,7 @@ class GridFactory implements GridFactoryInterface
 
     private KernelInterface $kernel;
 
-    private DataCollectorTranslator $translator;
+    private TranslatorInterface $translator;
 
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
@@ -55,7 +55,7 @@ class GridFactory implements GridFactoryInterface
         ManagerRegistry $doctrine,
         Manager $mapping,
         KernelInterface $kernel,
-        DataCollectorTranslator $translator,
+        TranslatorInterface $translator,
         GridRegistryInterface $registry
     ) {
         $this->authorizationChecker = $authorizationChecker;

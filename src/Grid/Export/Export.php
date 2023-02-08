@@ -15,7 +15,7 @@ namespace APY\DataGridBundle\Grid\Export;
 use APY\DataGridBundle\Grid\Column\ArrayColumn;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
-use Symfony\Component\Translation\DataCollectorTranslator;
+use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
 
 abstract class Export implements ExportInterface
@@ -36,7 +36,7 @@ abstract class Export implements ExportInterface
 
     protected $twig;
 
-    private DataCollectorTranslator $translator;
+    private TranslatorInterface $translator;
 
     private RouterInterface $router;
 
@@ -79,7 +79,7 @@ abstract class Export implements ExportInterface
         return $this;
     }
 
-    public function setTranslator(DataCollectorTranslator $translator): self
+    public function setTranslator(TranslatorInterface $translator): self
     {
         $this->translator = $translator;
 
