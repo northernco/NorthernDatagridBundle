@@ -23,30 +23,23 @@ use Twig\Environment;
  */
 class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
 {
-    /**
-     * The container.
-     *
-     * @var Container
-     */
-    private $container;
+    private AuthorizationCheckerInterface $authorizationChecker;
 
-    private $authorizationChecker;
+    private RouterInterface $router;
 
-    private $router;
+    private RequestStack $requestStack;
 
-    private $requestStack;
+    private Environment $twig;
 
-    private $twig;
+    private HttpKernelInterface $httpKernel;
 
-    private $httpKernel;
+    private ManagerRegistry $doctrine;
 
-    private $doctrine;
+    private Manager $mapping;
 
-    private $mapping;
+    private KernelInterface $kernel;
 
-    private $kernel;
-
-    private $translator;
+    private DataCollectorTranslator $translator;
 
     /**
      * The factory.
@@ -80,14 +73,12 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
         Manager $mapping,
         KernelInterface $kernel,
         DataCollectorTranslator $translator,
-        // Container $container,
         GridFactoryInterface $factory,
         $name,
         array $options = []
     ) {
         parent::__construct($name, $options);
 
-        // $this->container            = $container;
         $this->authorizationChecker = $authorizationChecker;
         $this->router               = $router;
         $this->requestStack         = $requestStack;

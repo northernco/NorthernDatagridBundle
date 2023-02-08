@@ -28,23 +28,23 @@ class GridFactory implements GridFactoryInterface
      */
     private $registry;
 
-    private $authorizationChecker;
+    private AuthorizationCheckerInterface $authorizationChecker;
 
-    private $router;
+    private RouterInterface $router;
 
-    private $requestStack;
+    private RequestStack $requestStack;
 
-    private $twig;
+    private Environment $twig;
 
-    private $httpKernel;
+    private HttpKernelInterface $httpKernel;
 
-    private $doctrine;
+    private ManagerRegistry $doctrine;
 
-    private $mapping;
+    private Manager $mapping;
 
-    private $kernel;
+    private KernelInterface $kernel;
 
-    private $translator;
+    private DataCollectorTranslator $translator;
 
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
@@ -121,12 +121,15 @@ class GridFactory implements GridFactoryInterface
             $column = clone $this->registry->getColumn($type);
 
             $column->__initialize(
-                array_merge([
-                                'id' => $name,
-                                                                                                                                      'title' => $name,
-                                                                                                                                                                          'field' => $name,
-                                                                                                                                                                                            'source' => true,
-                            ], $options)
+                array_merge(
+                    [
+                        'id'     => $name,
+                        'title'  => $name,
+                        'field'  => $name,
+                        'source' => true,
+                    ],
+                    $options
+                )
             );
         } else {
             $column = $type;

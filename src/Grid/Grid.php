@@ -79,17 +79,17 @@ class Grid implements GridInterface
      */
     protected $router;
 
-    private $twig;
+    private Environment $twig;
 
-    private $httpKernel;
+    private HttpKernelInterface $httpKernel;
 
-    private $doctrine;
+    private ManagerRegistry $doctrine;
 
-    private $mapping;
+    private Manager $mapping;
 
-    private $kernelCharset;
+    private DataCollectorTranslator $translator;
 
-    private $translator;
+    private string $kernelCharset;
 
     /**
      * @var null|\Symfony\Component\HttpFoundation\Session\Session;
@@ -1383,7 +1383,8 @@ class Grid implements GridInterface
         return $this->tweaks;
     }
 
-    public function getAllTweaks(): ?array {
+    public function getAllTweaks(): ?array
+    {
         return $this->tweaks;
     }
 

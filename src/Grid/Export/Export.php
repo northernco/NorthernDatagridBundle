@@ -36,11 +36,11 @@ abstract class Export implements ExportInterface
 
     protected $twig;
 
-    private $translator;
+    private DataCollectorTranslator $translator;
 
-    private $router;
+    private RouterInterface $router;
 
-    private $kernelCharset;
+    private string $kernelCharset;
 
     protected $grid;
 
