@@ -2,15 +2,15 @@
 
 namespace APY\DataGridBundle\Grid;
 
-use App\Kernel;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Exception\InvalidArgumentException;
 use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\DataCollectorTranslator;
@@ -76,9 +76,9 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
         RequestStack $requestStack,
         Environment $twig,
         HttpKernelInterface $httpKernel,
-        Registry $doctrine,
+        ManagerRegistry $doctrine,
         Manager $mapping,
-        Kernel $kernel,
+        KernelInterface $kernel,
         DataCollectorTranslator $translator,
         // Container $container,
         GridFactoryInterface $factory,

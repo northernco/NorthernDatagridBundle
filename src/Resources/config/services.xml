@@ -21,7 +21,6 @@
         </service>
 
         <service id="grid" class="%grid.class%" shared="false" public="true">
-<!--            <argument type="service" id="service_container" />-->
             <argument type="service" id="security.authorization_checker" />
             <argument type="service" id="router" />
             <argument type="service" id="request_stack" />

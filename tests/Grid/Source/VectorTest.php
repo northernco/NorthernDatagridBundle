@@ -5,10 +5,11 @@ namespace APY\DataGridBundle\Tests\Grid\Source;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\UntypedColumn;
 use APY\DataGridBundle\Grid\Columns;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Source\Vector;
+use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
 
 class VectorTest extends TestCase
 {
@@ -54,7 +55,7 @@ class VectorTest extends TestCase
 
     public function testInitialiseWithoutData()
     {
-        $this->vector->initialise($this->createMock(Container::class));
+        $this->vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertEmpty($this->vector->getColumnsArray());
     }
@@ -102,7 +103,7 @@ class VectorTest extends TestCase
         );
         $uc2->setType('text');
 
-        $vector->initialise($this->createMock(Container::class));
+        $vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertEquals([$column, $column2, $uc1, $uc2], $vector->getColumnsArray());
     }
@@ -123,7 +124,7 @@ class VectorTest extends TestCase
 
         $vector = new Vector([[$columnId => 'c1', $column2Id => 'c2']], [$column, $column2]);
 
-        $vector->initialise($this->createMock(Container::class));
+        $vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertEquals([$column, $column2], $vector->getColumnsArray());
     }
@@ -136,7 +137,7 @@ class VectorTest extends TestCase
         $untypedColumn->setType($columnType);
 
         $vector = new Vector($vectorValue);
-        $vector->initialise($this->createMock(Container::class));
+        $vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertEquals([$untypedColumn], $vector->getColumnsArray());
     }

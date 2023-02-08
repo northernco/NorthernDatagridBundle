@@ -240,7 +240,7 @@ abstract class Column
         return $this;
     }
 
-    public function getCallback(): mixed {
+    public function getCallback() {
         return $this->callback;
     }
 

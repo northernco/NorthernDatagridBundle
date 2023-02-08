@@ -13,24 +13,24 @@
 
 namespace APY\DataGridBundle\Grid;
 
-use App\Kernel;
 use APY\DataGridBundle\Grid\Action\MassActionInterface;
 use APY\DataGridBundle\Grid\Action\RowActionInterface;
 use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\MassActionColumn;
+use APY\DataGridBundle\Grid\Export\Export;
 use APY\DataGridBundle\Grid\Export\ExportInterface;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Translation\DataCollectorTranslator;
@@ -355,16 +355,13 @@ class Grid implements GridInterface
         RequestStack $requestStack,
         Environment $twig,
         HttpKernelInterface $httpKernel,
-        Registry $doctrine,
+        ManagerRegistry $doctrine,
         Manager $mapping,
-        Kernel $kernel,
+        KernelInterface $kernel,
         DataCollectorTranslator $translator,
-        // $container,
         $id = '',
         GridConfigInterface $config = null
     ) {
-        // @todo: why the whole container is injected?
-        // $this->container = $container;
         $this->config = $config;
 
         $this->router  = $router;
@@ -374,7 +371,7 @@ class Grid implements GridInterface
         $this->httpKernel    = $httpKernel;
         $this->doctrine      = $doctrine;
         $this->mapping       = $mapping;
-        $this->kernelCharset = $kernel->getCharset();
+        $this->kernelCharset = $kernel->getCharset() ?? 'UTF-8';
         $this->translator    = $translator;
 
         if (null === $this->request) {
@@ -754,7 +751,7 @@ class Grid implements GridInterface
 
                 $export = $this->exports[$exportId];
 
-                if ($export instanceof ExportInterface) {
+                if ($export instanceof Export) {
                     $export->setTwig($this->twig)
                            ->setTranslator($this->translator)
                            ->setRouter($this->router)

@@ -22,7 +22,7 @@ use APY\DataGridBundle\Grid\Column\TextColumn;
 use APY\DataGridBundle\Grid\Column\UntypedColumn;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Rows;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Persistence\ManagerRegistry;
 
 /**
  * Vector is really an Array.
@@ -66,7 +66,7 @@ class Vector extends Source
         $this->setColumns($columns);
     }
 
-    public function initialise(Registry $doctrine, Manager $mapping)
+    public function initialise(ManagerRegistry $doctrine, Manager $mapping)
     {
         if (!empty($this->data)) {
             $this->guessColumns();

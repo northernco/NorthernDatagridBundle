@@ -19,7 +19,7 @@ use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
-use Doctrine\Bundle\DoctrineBundle\Registry;
+use Doctrine\Persistence\ManagerRegistry;
 
 abstract class Source implements DriverInterface
 {
@@ -99,7 +99,7 @@ abstract class Source implements DriverInterface
      */
     abstract public function getTotalCount($maxResults = null);
 
-    abstract public function initialise(Registry $doctrine, Manager $mapping);
+    abstract public function initialise(ManagerRegistry $doctrine, Manager $mapping);
 
     /**
      * @abstract
