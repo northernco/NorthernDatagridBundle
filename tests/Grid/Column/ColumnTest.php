@@ -1007,9 +1007,12 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_BTWE, 'to' => 10]);
 
-        $this->assertEquals([
-                                new Filter(Column::OPERATOR_LTE, 10),
-                            ], $mock->getFilters('aSource'));
+        $this->assertEquals(
+            [
+                new Filter(Column::OPERATOR_LTE, 10),
+            ],
+            $mock->getFilters('aSource')
+        );
     }
 
     public function testGetFiltersBtweWithoutTo()
@@ -1030,10 +1033,13 @@ class ColumnTest extends TestCase
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_BTWE, 'from' => 1, 'to' => 10]);
 
-        $this->assertEquals([
-                                new Filter(Column::OPERATOR_GTE, 1),
-                                new Filter(Column::OPERATOR_LTE, 10),
-                            ], $mock->getFilters('aSource'));
+        $this->assertEquals(
+            [
+                new Filter(Column::OPERATOR_GTE, 1),
+                new Filter(Column::OPERATOR_LTE, 10),
+            ],
+            $mock->getFilters('aSource')
+        );
     }
 
     public function testGetFiltersNullNoNull()
