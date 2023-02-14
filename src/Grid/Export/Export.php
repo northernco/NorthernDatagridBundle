@@ -13,28 +13,32 @@
 namespace APY\DataGridBundle\Grid\Export;
 
 use APY\DataGridBundle\Grid\Column\ArrayColumn;
+use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Grid;
+use APY\DataGridBundle\Grid\Row;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Twig\Environment;
+use Twig\TemplateWrapper;
 
 abstract class Export implements ExportInterface
 {
-    const DEFAULT_TEMPLATE = '@APYDataGrid/blocks.html.twig';
+    public const DEFAULT_TEMPLATE = '@APYDataGrid/blocks.html.twig';
 
-    protected $title;
+    private string $title;
 
-    protected $fileName;
+    private string $fileName;
 
-    protected $fileExtension = null;
+    protected ?string $fileExtension = null;
 
-    protected $mimeType = 'application/octet-stream';
+    protected string $mimeType = 'application/octet-stream';
 
-    protected $parameters = [];
+    private array $parameters = [];
 
-    protected $templates;
+    private array $templates;
 
-    protected $twig;
+    private Environment $twig;
 
     private TranslatorInterface $translator;
 
@@ -42,29 +46,23 @@ abstract class Export implements ExportInterface
 
     private string $kernelCharset;
 
-    protected $grid;
+    private Grid $grid;
 
-    protected $params = [];
+    private array $params = [];
 
-    protected $content;
+    private string $content;
 
-    protected $charset;
+    private string $charset;
 
-    protected $role;
+    private ?string $role;
 
-    /**
-     * Default Export constructor.
-     *
-     * @param string $title    Title of the export
-     * @param string $fileName FileName of the export
-     * @param array  $params   Additionnal parameters for the export
-     * @param string $charset  Charset of the exported data
-     * @param string $role     Security role
-     *
-     * @return \APY\DataGridBundle\Grid\Export\Export
-     */
-    public function __construct($title, $fileName = 'export', $params = [], $charset = 'UTF-8', $role = null)
-    {
+    public function __construct(
+        string $title,
+        string $fileName = 'export',
+        array $params = [],
+        string $charset = 'UTF-8',
+        ?string $role = null
+    ) {
         $this->title    = $title;
         $this->fileName = $fileName;
         $this->params   = $params;
@@ -100,12 +98,7 @@ abstract class Export implements ExportInterface
         return $this;
     }
 
-    /**
-     * gets the export Response.
-     *
-     * @return Response
-     */
-    public function getResponse()
+    public function getResponse(): Response
     {
         // Response
         $kernelCharset = $this->kernelCharset;
@@ -134,55 +127,19 @@ abstract class Export implements ExportInterface
         return $response;
     }
 
-    /**
-     * sets the Content of the export.
-     *
-     * @param string $content
-     *
-     * @return self
-     */
-    public function setContent($content = '')
+    public function setContent(string $content = ''): self
     {
         $this->content = $content;
 
         return $this;
     }
 
-    /**
-     * gets the Content of the export.
-     *
-     * @return string
-     */
-    public function getContent()
+    public function getContent(): string
     {
         return $this->content;
     }
 
-    /**
-     * Get data form the grid.
-     *
-     * @param Grid $grid
-     *
-     * @return array
-     *
-     * array(
-     *     'titles' => array(
-     *         'column_id_1' => 'column_title_1',
-     *         'column_id_2' => 'column_title_2'
-     *     ),
-     *     'rows' =>array(
-     *          array(
-     *              'column_id_1' => 'cell_value_1_1',
-     *              'column_id_2' => 'cell_value_1_2'
-     *          ),
-     *          array(
-     *              'column_id_1' => 'cell_value_2_1',
-     *              'column_id_2' => 'cell_value_2_2'
-     *          )
-     *     )
-     * )
-     */
-    protected function getGridData($grid)
+    protected function getGridData(Grid $grid): array
     {
         $result = [];
 
@@ -197,7 +154,7 @@ abstract class Export implements ExportInterface
         return $result;
     }
 
-    protected function getRawGridData($grid)
+    protected function getRawGridData(Grid $grid): array
     {
         $result     = [];
         $this->grid = $grid;
@@ -211,29 +168,7 @@ abstract class Export implements ExportInterface
         return $result;
     }
 
-    /**
-     * Get data form the grid in a flat array.
-     *
-     * @param Grid $grid
-     *
-     * @return array
-     *
-     * array(
-     *     '0' => array(
-     *         'column_id_1' => 'column_title_1',
-     *         'column_id_2' => 'column_title_2'
-     *     ),
-     *     '1' => array(
-     *          'column_id_1' => 'cell_value_1_1',
-     *          'column_id_2' => 'cell_value_1_2'
-     *      ),
-     *     '2' => array(
-     *          'column_id_1' => 'cell_value_2_1',
-     *          'column_id_2' => 'cell_value_2_2'
-     *      )
-     * )
-     */
-    protected function getFlatGridData($grid)
+    protected function getFlatGridData(Grid $grid): array
     {
         $data = $this->getGridData($grid);
 
@@ -245,7 +180,7 @@ abstract class Export implements ExportInterface
         return array_merge($flatData, $data['rows']);
     }
 
-    protected function getFlatRawGridData($grid)
+    protected function getFlatRawGridData(Grid $grid): array
     {
         $data = $this->getRawGridData($grid);
 
@@ -257,7 +192,7 @@ abstract class Export implements ExportInterface
         return array_merge($flatData, $data['rows']);
     }
 
-    protected function getGridTitles()
+    protected function getGridTitles(): array
     {
         $titlesHTML = $this->renderBlock('grid_titles', ['grid' => $this->grid]);
 
@@ -288,7 +223,7 @@ abstract class Export implements ExportInterface
         return $titles;
     }
 
-    protected function getRawGridTitles()
+    protected function getRawGridTitles(): array
     {
         $translator = $this->translator;
 
@@ -302,7 +237,7 @@ abstract class Export implements ExportInterface
         return $titles;
     }
 
-    protected function getGridRows()
+    protected function getGridRows(): array
     {
         $rows = [];
         foreach ($this->grid->getRows() as $i => $row) {
@@ -317,7 +252,7 @@ abstract class Export implements ExportInterface
         return $rows;
     }
 
-    protected function getRawGridRows()
+    protected function getRawGridRows(): array
     {
         $rows = [];
         foreach ($this->grid->getRows() as $i => $row) {
@@ -331,7 +266,7 @@ abstract class Export implements ExportInterface
         return $rows;
     }
 
-    protected function getGridCell($column, $row)
+    protected function getGridCell(Column $column, Row $row): string
     {
         $values = $row->getField($column->getId());
 
@@ -381,14 +316,7 @@ abstract class Export implements ExportInterface
         return $value;
     }
 
-    /**
-     * Has block.
-     *
-     * @param $name string
-     *
-     * @return bool
-     */
-    protected function hasBlock($name)
+    protected function hasBlock(string $name): bool
     {
         foreach ($this->getTemplates() as $template) {
             if ($template->hasBlock($name, [])) {
@@ -399,15 +327,7 @@ abstract class Export implements ExportInterface
         return false;
     }
 
-    /**
-     * Render block.
-     *
-     * @param $name       string
-     * @param $parameters string
-     *
-     * @return string
-     */
-    protected function renderBlock($name, $parameters)
+    protected function renderBlock(string $name, array $parameters): string
     {
         foreach ($this->getTemplates() as $template) {
             if ($template->hasBlock($name, [])) {
@@ -418,14 +338,7 @@ abstract class Export implements ExportInterface
         throw new \InvalidArgumentException(sprintf('Block "%s" doesn\'t exist in grid template "%s".', $name, 'ee'));
     }
 
-    /**
-     * Template Loader.
-     *
-     * @return \Twig\TemplateWrapper[]
-     * @throws \Exception
-     *
-     */
-    protected function getTemplates()
+    protected function getTemplates(): array
     {
         if (empty($this->templates)) {
             $this->setTemplate($this->grid->getTemplate());
@@ -434,16 +347,7 @@ abstract class Export implements ExportInterface
         return $this->templates;
     }
 
-    /**
-     * set template.
-     *
-     * @param \Twig\TemplateWrapper|string $template
-     *
-     * @return \APY\DataGridBundle\Grid\Export\Export
-     * @throws \Exception
-     *
-     */
-    public function setTemplate($template)
+    public function setTemplate(\Twig\TemplateWrapper|string $template): self
     {
         if (is_string($template)) {
             if (substr($template, 0, 8) === '__SELF__') {
@@ -461,7 +365,7 @@ abstract class Export implements ExportInterface
         return $this;
     }
 
-    protected function getTemplatesFromString($theme)
+    protected function getTemplatesFromString(string|TemplateWrapper $theme): array
     {
         $templates = [];
 
@@ -474,7 +378,7 @@ abstract class Export implements ExportInterface
         return $templates;
     }
 
-    protected function cleanHTML($value)
+    protected function cleanHTML(array|string $value): string
     {
         // Handle image
         $value = preg_replace('#<img[^>]*title="([^"]*)"[^>]*?/>#isU', '\1', $value);
@@ -500,191 +404,96 @@ abstract class Export implements ExportInterface
         return $value;
     }
 
-    /**
-     * set title.
-     *
-     * @param string $title
-     *
-     * @return self
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * get title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * set file name.
-     *
-     * @param string $fileName
-     *
-     * @return self
-     */
-    public function setFileName($fileName)
+    public function setFileName(string $fileName): self
     {
         $this->fileName = $fileName;
 
         return $this;
     }
 
-    /**
-     * get file name.
-     *
-     * @return string
-     */
-    public function getFileName()
+    public function getFileName(): string
     {
         return $this->fileName;
     }
 
-    /**
-     * set file extension.
-     *
-     * @param string $fileExtension
-     *
-     * @return self
-     */
-    public function setFileExtension($fileExtension)
+    public function setFileExtension(string $fileExtension): self
     {
         $this->fileExtension = $fileExtension;
 
         return $this;
     }
 
-    /**
-     * get file extension.
-     *
-     * @return string
-     */
-    public function getFileExtension()
+    public function getFileExtension(): string
     {
         return $this->fileExtension;
     }
 
-    /**
-     * get base name.
-     *
-     * @return string
-     */
-    public function getBaseName()
+    public function getBaseName(): string
     {
         return $this->fileName . (isset($this->fileExtension) ? ".$this->fileExtension" : '');
     }
 
-    /**
-     * set response mime type.
-     *
-     * @param string $mimeType
-     *
-     * @return self
-     */
-    public function setMimeType($mimeType)
+    public function setMimeType(string $mimeType): self
     {
         $this->mimeType = $mimeType;
 
         return $this;
     }
 
-    /**
-     * get response mime type.
-     *
-     * @return string
-     */
-    public function getMimeType()
+    public function getMimeType(): string
     {
         return $this->mimeType;
     }
 
-    /**
-     * set response charset.
-     *
-     * @param string $charset
-     *
-     * @return self
-     */
-    public function setCharset($charset)
+    public function setCharset(string $charset): self
     {
         $this->charset = $charset;
 
         return $this;
     }
 
-    /**
-     * get response charset.
-     *
-     * @return string
-     */
-    public function getCharset()
+    public function getCharset(): string
     {
         return $this->charset;
     }
 
-    /**
-     * set parameters.
-     *
-     * @param array $parameters
-     *
-     * @return self
-     */
-    public function setParameters(array $parameters)
+    public function setParameters(array $parameters): self
     {
         $this->parameters = $parameters;
 
         return $this;
     }
 
-    /**
-     * get parameters.
-     *
-     * @return array
-     */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
 
-    /**
-     * has parameter.
-     *
-     * @return mixed
-     */
-    public function hasParameter($name)
+    public function hasParameter(string $name): bool
     {
         return array_key_exists($name, $this->parameters);
     }
 
-    /**
-     * add parameter.
-     *
-     * @param $name
-     * @param $value
-     *
-     * @return \APY\DataGridBundle\Grid\Export\Export
-     */
-    public function addParameter($name, $value)
+    public function addParameter(string $name, string $value): self
     {
         $this->parameters[$name] = $value;
 
         return $this;
     }
 
-    /**
-     * get parameter.
-     *
-     * @return mixed
-     */
-    public function getParameter($name)
+    public function getParameter(string $name): string
     {
         if (!$this->hasParameter($name)) {
             throw new \InvalidArgumentException(sprintf('The parameter "%s" must be defined.', $name));
@@ -693,26 +502,14 @@ abstract class Export implements ExportInterface
         return $this->parameters[$name];
     }
 
-    /**
-     * set role.
-     *
-     * @param mixed $role
-     *
-     * @return self
-     */
-    public function setRole($role)
+    public function setRole(?string $role): self
     {
         $this->role = $role;
 
         return $this;
     }
 
-    /**
-     * Get role.
-     *
-     * @return mixed
-     */
-    public function getRole()
+    public function getRole(): ?string
     {
         return $this->role;
     }

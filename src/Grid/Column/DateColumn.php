@@ -16,13 +16,13 @@ use APY\DataGridBundle\Grid\Filter;
 
 class DateColumn extends DateTimeColumn
 {
-    protected $timeFormat = \IntlDateFormatter::NONE;
+    protected int $timeFormat = \IntlDateFormatter::NONE;
 
-    protected $fallbackFormat = 'Y-m-d';
+    protected string $fallbackFormat = 'Y-m-d';
 
-    protected $fallbackInputFormat = 'Y-m-d';
+    protected string $fallbackInputFormat = 'Y-m-d';
 
-    public function getFilters($source)
+    public function getFilters(string $source): array
     {
         $parentFilters = parent::getFilters($source);
 
@@ -64,7 +64,7 @@ class DateColumn extends DateTimeColumn
         return $filters;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'date';
     }

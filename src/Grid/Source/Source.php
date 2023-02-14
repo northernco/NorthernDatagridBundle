@@ -13,38 +13,42 @@
 namespace APY\DataGridBundle\Grid\Source;
 
 use APY\DataGridBundle\Grid\Column\Column;
+use APY\DataGridBundle\Grid\Columns;
 use APY\DataGridBundle\Grid\Exception\PropertyAccessDeniedException;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Rows;
+use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
 
 abstract class Source implements DriverInterface
 {
-    protected $prepareQueryCallback = null;
-    protected $prepareRowCallback = null;
-    protected $data = null;
-    protected $items = [];
-    protected $count;
+    /**
+     * @var callable|null
+     */
+    private $prepareQueryCallback = null;
 
     /**
-     * @param \Doctrine\ODM\MongoDB\Query\Builder $queryBuilder
+     * @var callable|null
      */
-    public function prepareQuery($queryBuilder)
+    private $prepareRowCallback = null;
+
+    private array|object|null $data = null;
+
+    private array $items = [];
+
+    private int $count;
+
+    public function prepareQuery(QueryBuilder $queryBuilder): void
     {
         if (is_callable($this->prepareQueryCallback)) {
             call_user_func($this->prepareQueryCallback, $queryBuilder);
         }
     }
 
-    /**
-     * @param \APY\DataGridBundle\Grid\Row $row
-     *
-     * @return \APY\DataGridBundle\Grid\Row|null
-     */
-    public function prepareRow($row)
+    public function prepareRow(Row $row): ?Row
     {
         if (is_callable($this->prepareRowCallback)) {
             return call_user_func($this->prepareRowCallback, $row);
@@ -53,138 +57,73 @@ abstract class Source implements DriverInterface
         return $row;
     }
 
-    /**
-     * @param callable $callback
-     *
-     * @return $this
-     */
-    public function manipulateQuery($callback = null)
+    public function manipulateQuery(?callable $callback = null): self
     {
         $this->prepareQueryCallback = $callback;
 
         return $this;
     }
 
-    /**
-     * @param \Closure $callback
-     */
-    public function manipulateRow(\Closure $callback = null)
+    public function manipulateRow(?\Closure $callback = null): self
     {
         $this->prepareRowCallback = $callback;
 
         return $this;
     }
 
-    /**
-     * Find data for current page.
-     *
-     * @abstract
-     *
-     * @param ColumnsIterator $columns
-     * @param int                                      $page             Page Number
-     * @param int                                      $limit            Rows Per Page
-     * @param int                                      $gridDataJunction Grid data junction
-     *
-     * @return \APY\DataGridBundle\Grid\Rows
-     */
-    // @todo: typehint?
-    abstract public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION);
+    abstract public function execute(ColumnsIterator $columns, int $page = 0, int $limit = 0, ?int $maxResults = null, int $gridDataJunction = Column::DATA_CONJUNCTION): Rows;
 
-    /**
-     * Get Total count of data items.
-     *
-     * @param int $maxResults
-     *
-     * @return int
-     */
-    abstract public function getTotalCount($maxResults = null);
+    abstract public function getTotalCount(?int $maxResults = null): int;
 
-    abstract public function initialise(ManagerRegistry $doctrine, Manager $mapping);
+    abstract public function initialise(ManagerRegistry $doctrine, Manager $mapping): void;
 
-    /**
-     * @abstract
-     *
-     * @param $columns
-     */
-    abstract public function getColumns($columns);
+    abstract public function getColumns(Columns $columns): void;
 
-    public function getClassColumns($class, $group = 'default')
+    public function getClassColumns(string $class, string $group = 'default'): array
     {
         return [];
     }
 
-    public function getFieldsMetadata($class, $group = 'default')
+    public function getFieldsMetadata(string $class, string $group = 'default'): array
     {
         return [];
     }
 
-    public function getGroupBy($class, $group = 'default')
+    public function getGroupBy(string $class, string $group = 'default'): array
     {
         return [];
     }
 
-    abstract public function populateSelectFilters($columns, $loop = false);
+    abstract public function populateSelectFilters(array $columns, bool $loop = false): void;
 
-    /**
-     * Return source hash string.
-     *
-     * @abstract
-     */
-    abstract public function getHash();
+    abstract public function getHash(): string;
 
-    /**
-     * Delete one or more objects.
-     *
-     * @abstract
-     *
-     * @param array $ids
-     */
-    abstract public function delete(array $ids);
+    abstract public function delete(array $ids): void;
 
-    /**
-     * Use data instead of fetching the source.
-     *
-     * @param array|object $data
-     */
-    public function setData($data)
+    public function setData(array|object $data): self
     {
         $this->data = $data;
 
         return $this;
     }
 
-    /**
-     * Get the loaded data.
-     *
-     * @return array|object
-     */
-    public function getData()
+    public function getData(): array|object|null
     {
         return $this->data;
     }
 
-    /**
-     * Check if data is loaded.
-     *
-     * @return bool
-     */
-    public function isDataLoaded()
+    public function isDataLoaded(): bool
     {
         return $this->data !== null;
     }
 
-    /**
-     * Gets an array of data items for rows from the set data.
-     *
-     * @return array
-     */
-    protected function getItemsFromData($columns)
+    protected function getItemsFromData(Columns $columns): array
     {
         $items = [];
 
         foreach ($this->data as $key => $item) {
             foreach ($columns as $column) {
-                $fieldName = $column->getField();
+                $fieldName  = $column->getField();
                 $fieldValue = '';
 
                 if ($this instanceof Entity) {
@@ -208,8 +147,8 @@ abstract class Source implements DriverInterface
                     if (isset($itemEntity->$fieldName)) {
                         $fieldValue = $itemEntity->$fieldName;
                     } elseif (is_callable([$itemEntity, $fullFunctionName = 'get' . $functionName])
-                           || is_callable([$itemEntity, $fullFunctionName = 'has' . $functionName])
-                           || is_callable([$itemEntity, $fullFunctionName = 'is' . $functionName])) {
+                              || is_callable([$itemEntity, $fullFunctionName = 'has' . $functionName])
+                              || is_callable([$itemEntity, $fullFunctionName = 'is' . $functionName])) {
                         $fieldValue = call_user_func([$itemEntity, $fullFunctionName]);
                     } else {
                         throw new PropertyAccessDeniedException(sprintf('Property "%s" is not public or has no accessor.', $fieldName));
@@ -225,27 +164,16 @@ abstract class Source implements DriverInterface
         return $items;
     }
 
-    /**
-     * Find data from array|object.
-     *
-     * @param Column[] $columns
-     * @param int      $page
-     * @param int      $limit
-     * @param int      $maxResults
-     *
-     * @return Rows
-     */
-    public function executeFromData($columns, $page = 0, $limit = 0, $maxResults = null)
+    public function executeFromData(Columns $columns, int $page = 0, int $limit = 0, ?int $maxResults = null): Rows
     {
         // Populate from data
-        $items = $this->getItemsFromData($columns);
+        $items            = $this->getItemsFromData($columns);
         $serializeColumns = [];
 
         foreach ($this->data as $key => $item) {
-
             foreach ($columns as $column) {
-                $fieldName = $column->getField();
-                $fieldValue = $items[$key][$fieldName];
+                $fieldName     = $column->getField();
+                $fieldValue    = $items[$key][$fieldName];
                 $dataIsNumeric = ($column->getType() == 'number' || $column->getType() == 'boolean');
 
                 if ($column->getType() === 'array') {
@@ -259,16 +187,16 @@ abstract class Source implements DriverInterface
 
                     if ($column->getDataJunction() === Column::DATA_DISJUNCTION) {
                         $disjunction = true;
-                        $keep = false;
+                        $keep        = false;
                     } else {
                         $disjunction = false;
-                        $keep = true;
+                        $keep        = true;
                     }
 
                     $found = false;
                     foreach ($filters as $filter) {
                         $operator = $filter->getOperator();
-                        $value = $filter->getValue();
+                        $value    = $filter->getValue();
 
                         // Normalize value
                         if (!$dataIsNumeric && !($value instanceof \DateTime)) {
@@ -375,7 +303,7 @@ abstract class Source implements DriverInterface
         // Order
         foreach ($columns as $column) {
             if ($column->isSorted()) {
-                $sortType = SORT_REGULAR;
+                $sortType    = SORT_REGULAR;
                 $sortedItems = [];
                 foreach ($items as $key => $item) {
                     $value = $item[$column->getField()];
@@ -384,7 +312,7 @@ abstract class Source implements DriverInterface
                     switch ($column->getType()) {
                         case 'text':
                             $sortedItems[$key] = strtolower($value);
-                            $sortType = SORT_STRING;
+                            $sortType          = SORT_STRING;
                             break;
                         case 'datetime':
                         case 'date':
@@ -398,19 +326,19 @@ abstract class Source implements DriverInterface
                             break;
                         case 'boolean':
                             $sortedItems[$key] = $value ? 1 : 0;
-                            $sortType = SORT_NUMERIC;
+                            $sortType          = SORT_NUMERIC;
                             break;
                         case 'array':
                             $sortedItems[$key] = json_encode($value);
-                            $sortType = SORT_STRING;
+                            $sortType          = SORT_STRING;
                             break;
                         case 'number':
                             $sortedItems[$key] = $value;
-                            $sortType = SORT_NUMERIC;
+                            $sortType          = SORT_NUMERIC;
                             break;
                         default:
                             $sortedItems[$key] = $value;
-                            $sortType = SORT_REGULAR;
+                            $sortType          = SORT_REGULAR;
                     }
                 }
 
@@ -464,14 +392,13 @@ abstract class Source implements DriverInterface
         return $rows;
     }
 
-    public function populateSelectFiltersFromData($columns, $loop = false)
+    public function populateSelectFiltersFromData(Columns $columns, bool $loop = false): void
     {
         /* @var $column Column */
         foreach ($columns as $column) {
             $selectFrom = $column->getSelectFrom();
 
             if ($column->getFilterType() === 'select' && ($selectFrom === 'source' || $selectFrom === 'query')) {
-
                 // For negative operators, show all values
                 if ($selectFrom === 'query') {
                     foreach ($column->getFilters('vector') as $filter) {
@@ -496,17 +423,7 @@ abstract class Source implements DriverInterface
                         case 'datetime':
                         case 'date':
                         case 'time':
-                            // For document
-                            if ($value instanceof \MongoDate || $value instanceof \MongoTimestamp) {
-                                $value = $value->sec;
-                            }
-
-                            // Mongodb bug ? timestamp value is on the key 'i' instead of the key 't'
-                            if (is_array($value) && array_keys($value) == ['t', 'i']) {
-                                $value = $value['i'];
-                            }
-
-                            $displayedValue = $column->getDisplayedValue($value);
+                            $displayedValue          = $column->getDisplayedValue($value);
                             $values[$displayedValue] = $displayedValue;
                             break;
                         case 'array':
@@ -539,26 +456,12 @@ abstract class Source implements DriverInterface
         }
     }
 
-    /**
-     * Get Total count of data items.
-     *
-     * @return int
-     */
-    public function getTotalCountFromData($maxResults = null)
+    public function getTotalCountFromData(?int $maxResults = null): int
     {
         return $maxResults === null ? $this->count : min($this->count, $maxResults);
     }
 
-    /**
-     * Prepares string to have almost the same behaviour as with a database,
-     * removing accents and latin special chars.
-     *
-     * @param mixed  $inputString
-     * @param string $type        for array type, will serialize datas
-     *
-     * @return string the input, serialized for arrays or without accents for strings
-     */
-    protected function prepareStringForLikeCompare($input, $type = null)
+    protected function prepareStringForLikeCompare(string $input, ?string $type = null)
     {
         if ($type === 'array') {
             $outputString = str_replace(':{i:0;', ':{', serialize($input));
@@ -569,20 +472,20 @@ abstract class Source implements DriverInterface
         return $outputString;
     }
 
-    private function removeAccents($str)
+    private function removeAccents(string $str): string
     {
-        $entStr = htmlentities($str, ENT_NOQUOTES, 'UTF-8');
+        $entStr      = htmlentities($str, ENT_NOQUOTES, 'UTF-8');
         $noaccentStr = preg_replace('#&([A-za-z])(?:acute|cedil|circ|grave|orn|ring|slash|th|tilde|uml);#', '\1', $entStr);
 
         return preg_replace('#&([A-za-z]{2})(?:lig);#', '\1', $noaccentStr);
     }
 
-    protected function prepareColumnValues(Column $column, $values)
+    protected function prepareColumnValues(Column $column, array $values): array
     {
         $existingValues = $column->getValues();
         if (!empty($existingValues)) {
             $intersect = array_intersect_key($existingValues, $values);
-            $values = array_replace($values, $intersect);
+            $values    = array_replace($values, $intersect);
         }
 
         return $values;

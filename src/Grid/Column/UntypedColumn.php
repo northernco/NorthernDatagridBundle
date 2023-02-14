@@ -14,20 +14,22 @@ namespace APY\DataGridBundle\Grid\Column;
 
 class UntypedColumn extends Column
 {
-    protected $type = null;
+    protected ?string $type = null;
 
-    public function getParams()
+    public function getParams(): ?array
     {
         return $this->params;
     }
 
-    public function getType()
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function setType($type)
+    public function setType(string $type): self
     {
         $this->type = $type;
+
+        return $this;
     }
 }

@@ -12,25 +12,27 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
+use APY\DataGridBundle\Grid\Row;
 use Symfony\Component\Form\Extension\Core\DataTransformer\DateTimeToLocalizedStringTransformer;
+use Symfony\Component\Routing\RouterInterface;
 
 class DateTimeColumn extends Column
 {
-    protected $dateFormat = \IntlDateFormatter::MEDIUM;
+    protected int $dateFormat = \IntlDateFormatter::MEDIUM;
 
-    protected $timeFormat = \IntlDateFormatter::MEDIUM;
+    protected int $timeFormat = \IntlDateFormatter::MEDIUM;
 
-    protected $format;
+    protected string $format;
 
-    protected $fallbackFormat = 'Y-m-d H:i:s';
+    protected string $fallbackFormat = 'Y-m-d H:i:s';
 
-    protected $inputFormat;
+    protected string $inputFormat;
 
-    protected $fallbackInputFormat = 'Y-m-d H:i:s';
+    protected string $fallbackInputFormat = 'Y-m-d H:i:s';
 
-    protected $timezone;
+    protected string $timezone;
 
-    public function __initialize(array $params)
+    public function __initialize(array $params): void
     {
         parent::__initialize($params);
 
@@ -52,19 +54,19 @@ class DateTimeColumn extends Column
         $this->setTimezone($this->getParam('timezone', date_default_timezone_get()));
     }
 
-    public function isQueryValid($query)
+    public function isQueryValid(mixed $query): bool
     {
         $result = array_filter((array) $query, [$this, 'isDateTime']);
 
         return !empty($result);
     }
 
-    protected function isDateTime($query)
+    protected function isDateTime(mixed $query): bool
     {
         return false !== \DateTime::createFromFormat($this->inputFormat, $query);
     }
 
-    public function getFilters($source)
+    public function getFilters(string $source): array
     {
         $parentFilters = parent::getFilters($source);
 
@@ -76,7 +78,7 @@ class DateTimeColumn extends Column
         return $filters;
     }
 
-    public function renderCell($value, $row, $router)
+    public function renderCell(mixed $value, Row $row, RouterInterface $router): mixed
     {
         $value = $this->getDisplayedValue($value);
 
@@ -87,7 +89,7 @@ class DateTimeColumn extends Column
         return $value;
     }
 
-    public function getDisplayedValue($value)
+    public function getDisplayedValue(\Datetime|\DateTimeImmutable|string|int $value): string
     {
         if (!empty($value)) {
             $dateTime = $this->getDatetime($value, new \DateTimeZone($this->getTimezone()));
@@ -113,15 +115,7 @@ class DateTimeColumn extends Column
         return '';
     }
 
-    /**
-     * DateTimeHelper::getDatetime() from SonataIntlBundle.
-     *
-     * @param \Datetime|\DateTimeImmutable|string|int $data
-     * @param \DateTimeZone timezone
-     *
-     * @return \Datetime
-     */
-    protected function getDatetime($data, \DateTimeZone $timezone)
+    protected function getDatetime(\Datetime|\DateTimeImmutable|string|int $data, \DateTimeZone $timezone): \DateTimeInterface
     {
         if ($data instanceof \DateTime || $data instanceof \DateTimeImmutable) {
             return $data->setTimezone($timezone);
@@ -143,41 +137,43 @@ class DateTimeColumn extends Column
         return $date;
     }
 
-    public function setFormat($format)
+    public function setFormat(string $format): self
     {
         $this->format = $format;
 
         return $this;
     }
 
-    public function getFormat()
+    public function getFormat(): string
     {
         return $this->format;
     }
 
-    public function setInputFormat($inputFormat)
+    public function setInputFormat(string $inputFormat): self
     {
         $this->inputFormat = $inputFormat;
 
         return $this;
     }
 
-    public function getInputFormat()
+    public function getInputFormat(): string
     {
         return $this->inputFormat;
     }
 
-    public function getTimezone()
+    public function getTimezone(): string
     {
         return $this->timezone;
     }
 
-    public function setTimezone($timezone)
+    public function setTimezone(string $timezone): self
     {
         $this->timezone = $timezone;
+
+        return $this;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'datetime';
     }

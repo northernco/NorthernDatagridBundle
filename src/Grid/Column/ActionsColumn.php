@@ -12,31 +12,29 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
+use APY\DataGridBundle\Grid\Action\RowAction;
+use APY\DataGridBundle\Grid\Row;
+
 class ActionsColumn extends Column
 {
-    protected $rowActions;
+    private array $rowActions;
 
-     /**
-     * ActionsColumn constructor.
-     *
-     * @param string $column     Identifier of the column
-     * @param string $title      Title of the column
-     * @param array  $rowActions Array of rowAction
-     */
-    public function __construct($column, $title, array $rowActions = [])
+    public function __construct(string $column, string $title, array $rowActions = [])
     {
         $this->rowActions = $rowActions;
 
-        parent::__construct([
-            'id'         => $column,
-            'title'      => $title,
-            'sortable'   => false,
-            'source'     => false,
-            'filterable' => true, // Show a reset link instead of a filter
-        ]);
+        parent::__construct(
+            [
+                'id'         => $column,
+                'title'      => $title,
+                'sortable'   => false,
+                'source'     => false,
+                'filterable' => true,
+            ]
+        );
     }
 
-    public function getRouteParameters($row, $action)
+    public function getRouteParameters(Row $row, RowAction $action): array
     {
         $actionParameters = $action->getRouteParameters();
 
@@ -60,7 +58,7 @@ class ActionsColumn extends Column
         return [$row->getPrimaryField() => $row->getPrimaryFieldValue()];
     }
 
-    protected function getValidRouteParameters($name)
+    protected function getValidRouteParameters(string $name): string
     {
         $pos = 0;
         while (($pos = strpos($name, '.', ++$pos)) !== false) {
@@ -70,19 +68,19 @@ class ActionsColumn extends Column
         return $name;
     }
 
-    public function getRowActions()
-    {
-        return $this->rowActions;
-    }
-
-    public function setRowActions(array $rowActions)
+    public function setRowActions(array $rowActions): self
     {
         $this->rowActions = $rowActions;
 
         return $this;
     }
 
-    public function isVisible($isExported = false)
+    public function getRowActions(): array
+    {
+        return $this->rowActions;
+    }
+
+    public function isVisible(bool $isExported = false): bool
     {
         if ($isExported) {
             return false;
@@ -91,23 +89,16 @@ class ActionsColumn extends Column
         return parent::isVisible();
     }
 
-    public function getFilterType()
+    public function getFilterType(): string
     {
         return $this->getType();
     }
 
-    /**
-     * Get the list of actions to render.
-     *
-     * @param $row
-     *
-     * @return array
-     */
-    public function getActionsToRender($row)
+    public function getActionsToRender(Row $row): array
     {
         $list = $this->rowActions;
         foreach ($list as $i => $a) {
-            $action = clone $a;
+            $action   = clone $a;
             $list[$i] = $action->render($row);
             if (null === $list[$i]) {
                 unset($list[$i]);
@@ -117,7 +108,7 @@ class ActionsColumn extends Column
         return $list;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'actions';
     }

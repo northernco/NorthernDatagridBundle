@@ -14,22 +14,24 @@ namespace APY\DataGridBundle\Grid\Column;
 
 class MassActionColumn extends Column
 {
-    const ID = '__action';
+    public const ID = '__action';
 
     public function __construct()
     {
-        parent::__construct([
-            'id'         => self::ID,
-            'title'      => '',
-            'size'       => 15,
-            'filterable' => true,
-            'sortable'   => false,
-            'source'     => false,
-            'align'      => Column::ALIGN_CENTER,
-        ]);
+        parent::__construct(
+            [
+                'id'         => self::ID,
+                'title'      => '',
+                'size'       => 15,
+                'filterable' => true,
+                'sortable'   => false,
+                'source'     => false,
+                'align'      => Column::ALIGN_CENTER,
+            ]
+        );
     }
 
-    public function isVisible($isExported = false)
+    public function isVisible(bool $isExported = false): bool
     {
         if ($isExported) {
             return false;
@@ -38,12 +40,12 @@ class MassActionColumn extends Column
         return parent::isVisible();
     }
 
-    public function getFilterType()
+    public function getFilterType(): string
     {
         return $this->getType();
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'massaction';
     }

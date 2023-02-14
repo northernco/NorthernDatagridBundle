@@ -23,10 +23,7 @@ use Twig\Environment;
  */
 class GridFactory implements GridFactoryInterface
 {
-    /**
-     * @var GridRegistryInterface
-     */
-    private $registry;
+    private GridRegistryInterface $registry;
 
     private AuthorizationCheckerInterface $authorizationChecker;
 
@@ -73,7 +70,7 @@ class GridFactory implements GridFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create($type = null, Source $source = null, array $options = [])
+    public function create(string|GridTypeInterface|null $type = null, ?Source $source = null, array $options = []): Grid
     {
         return $this->createBuilder($type, $source, $options)->getGrid();
     }
@@ -81,7 +78,7 @@ class GridFactory implements GridFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createBuilder($type = 'grid', Source $source = null, array $options = [])
+    public function createBuilder(string|GridTypeInterface|null $type = 'grid', ?Source $source = null, array $options = []): GridBuilder
     {
         $type    = $this->resolveType($type);
         $options = $this->resolveOptions($type, $source, $options);
@@ -111,7 +108,7 @@ class GridFactory implements GridFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createColumn($name, $type, array $options = [])
+    public function createColumn(string $name, string|Column $type, array $options = []): Column
     {
         if (!$type instanceof Column) {
             if (!is_string($type)) {
@@ -139,14 +136,7 @@ class GridFactory implements GridFactoryInterface
         return $column;
     }
 
-    /**
-     * Returns an instance of type.
-     *
-     * @param string|GridTypeInterface $type The type of the grid
-     *
-     * @return GridTypeInterface
-     */
-    private function resolveType($type)
+    private function resolveType(string|GridTypeInterface $type): GridTypeInterface
     {
         if (!$type instanceof GridTypeInterface) {
             if (!is_string($type)) {
@@ -159,16 +149,7 @@ class GridFactory implements GridFactoryInterface
         return $type;
     }
 
-    /**
-     * Returns the options resolved.
-     *
-     * @param GridTypeInterface $type
-     * @param Source            $source
-     * @param array             $options
-     *
-     * @return array
-     */
-    private function resolveOptions(GridTypeInterface $type, Source $source = null, array $options = [])
+    private function resolveOptions(GridTypeInterface $type, ?Source $source = null, array $options = []): array
     {
         $resolver = new OptionsResolver();
 

@@ -14,44 +14,51 @@ namespace APY\DataGridBundle\Grid\Mapping\Driver;
 
 use APY\DataGridBundle\Grid\Mapping\Column as Column;
 use APY\DataGridBundle\Grid\Mapping\Source as Source;
+use Doctrine\Common\Annotations\AnnotationReader;
 
 class Annotation implements DriverInterface
 {
-    protected $columns;
-    protected $filterable;
-    protected $sortable;
-    protected $fields;
-    protected $loaded;
-    protected $groupBy;
+    private array $columns;
 
-    protected $reader;
+    private array $filterable;
 
-    public function __construct($reader)
-    {
-        $this->reader = $reader;
+    private array $sortable;
+
+    private array $fields;
+
+    private array $loaded;
+
+    private array $groupBy;
+
+    private AnnotationReader $reader;
+
+    public function __construct(
+        AnnotationReader $reader
+    ) {
+        $this->reader  = $reader;
         $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = $this->sortable = [];
     }
 
-    public function getClassColumns($class, $group = 'default')
+    public function getClassColumns(string $class, string $group = 'default'): array
     {
         $this->loadMetadataFromReader($class, $group);
 
         return $this->columns[$class][$group];
     }
 
-    public function getFieldsMetadata($class, $group = 'default')
+    public function getFieldsMetadata(string $class, string $group = 'default'): array
     {
         $this->loadMetadataFromReader($class, $group);
 
         return $this->fields[$class][$group];
     }
 
-    public function getGroupBy($class, $group = 'default')
+    public function getGroupBy(string $class, string $group = 'default'): array
     {
         return isset($this->groupBy[$class][$group]) ? $this->groupBy[$class][$group] : [];
     }
 
-    protected function loadMetadataFromReader($className, $group = 'default')
+    protected function loadMetadataFromReader($className, $group = 'default'): void
     {
         if (isset($this->loaded[$className][$group])) {
             return;
@@ -99,7 +106,7 @@ class Annotation implements DriverInterface
         $this->loaded[$className][$group] = true;
     }
 
-    protected function getMetadataFromClassProperty($className, $class, $name = null, $group = 'default')
+    protected function getMetadataFromClassProperty(string $className, Column|Source $class, ?string $name = null, string $group = 'default'): void
     {
         if ($class instanceof Column) {
             $metadata = $class->getMetadata();
@@ -110,7 +117,7 @@ class Annotation implements DriverInterface
 
             if ($name === null) { // Class Column annotation
                 if (isset($metadata['id'])) {
-                    $metadata['source'] = false;
+                    $metadata['source']                                = false;
                     $this->fields[$className][$group][$metadata['id']] = [];
                 } else {
                     throw new \Exception(sprintf('Missing parameter `id` in annotations for extra column of class %s', $className));
@@ -130,7 +137,7 @@ class Annotation implements DriverInterface
             }
 
             // Check the group of the annotation and don't override if an annotation with the group have already been defined
-            if (isset($metadata['groups']) && !in_array($group, (array) $metadata['groups'])
+            if (isset($metadata['groups']) && !in_array($group, (array)$metadata['groups'])
                 || isset($this->fields[$className][$group][$metadata['id']]['groups'])) {
                 return;
             }
@@ -155,14 +162,14 @@ class Annotation implements DriverInterface
         }
     }
 
-    protected function getMetadataFromClass($className, $class, $group)
+    protected function getMetadataFromClass(string $className, Column|Source $class, string $group): void
     {
         if ($class instanceof Source) {
             foreach ($class->getGroups() as $sourceGroup) {
-                $this->columns[$className][$sourceGroup] = $class->getColumns();
+                $this->columns[$className][$sourceGroup]    = $class->getColumns();
                 $this->filterable[$className][$sourceGroup] = $class->isFilterable();
-                $this->sortable[$className][$sourceGroup] = $class->isSortable();
-                $this->groupBy[$className][$sourceGroup] = $class->getGroupBy();
+                $this->sortable[$className][$sourceGroup]   = $class->isSortable();
+                $this->groupBy[$className][$sourceGroup]    = $class->getGroupBy();
             }
         } elseif ($class instanceof Column) {
             $this->getMetadataFromClassProperty($className, $class, null, $group);

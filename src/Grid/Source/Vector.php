@@ -218,7 +218,7 @@ class Vector extends Source
         $this->populateSelectFiltersFromData($columns, $loop);
     }
 
-    public function getTotalCount($maxResults = null)
+    public function getTotalCount(?int $maxResults = null): int
     {
         return $this->getTotalCountFromData($maxResults);
     }
@@ -282,7 +282,7 @@ class Vector extends Source
         }
     }
 
-    public function delete(array $ids)
+    public function delete(array $ids): void
     {
     }
 

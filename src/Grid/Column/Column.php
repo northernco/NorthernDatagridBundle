@@ -15,39 +15,34 @@ namespace APY\DataGridBundle\Grid\Column;
 use APY\DataGridBundle\Grid\Filter;
 use APY\DataGridBundle\Grid\Row;
 use Doctrine\Common\Version as DoctrineVersion;
+use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 abstract class Column
 {
-    const DEFAULT_VALUE = null;
+    public const DEFAULT_VALUE      = null;
+    public const DATA_CONJUNCTION   = 0;
+    public const DATA_DISJUNCTION   = 1;
+    public const OPERATOR_EQ        = 'eq';
+    public const OPERATOR_NEQ       = 'neq';
+    public const OPERATOR_LT        = 'lt';
+    public const OPERATOR_LTE       = 'lte';
+    public const OPERATOR_GT        = 'gt';
+    public const OPERATOR_GTE       = 'gte';
+    public const OPERATOR_BTW       = 'btw';
+    public const OPERATOR_BTWE      = 'btwe';
+    public const OPERATOR_LIKE      = 'like';
+    public const OPERATOR_NLIKE     = 'nlike';
+    public const OPERATOR_RLIKE     = 'rlike';
+    public const OPERATOR_LLIKE     = 'llike';
+    public const OPERATOR_SLIKE     = 'slike'; //simple/strict LIKE
+    public const OPERATOR_NSLIKE    = 'nslike';
+    public const OPERATOR_RSLIKE    = 'rslike';
+    public const OPERATOR_LSLIKE    = 'lslike';
+    public const OPERATOR_ISNULL    = 'isNull';
+    public const OPERATOR_ISNOTNULL = 'isNotNull';
 
-    /**
-     * Filter.
-     */
-    const DATA_CONJUNCTION = 0;
-    const DATA_DISJUNCTION = 1;
-
-    const OPERATOR_EQ = 'eq';
-    const OPERATOR_NEQ = 'neq';
-    const OPERATOR_LT = 'lt';
-    const OPERATOR_LTE = 'lte';
-    const OPERATOR_GT = 'gt';
-    const OPERATOR_GTE = 'gte';
-    const OPERATOR_BTW = 'btw';
-    const OPERATOR_BTWE = 'btwe';
-    const OPERATOR_LIKE = 'like';
-    const OPERATOR_NLIKE = 'nlike';
-    const OPERATOR_RLIKE = 'rlike';
-    const OPERATOR_LLIKE = 'llike';
-    const OPERATOR_SLIKE = 'slike'; //simple/strict LIKE
-    const OPERATOR_NSLIKE = 'nslike';
-    const OPERATOR_RSLIKE = 'rslike';
-    const OPERATOR_LSLIKE = 'lslike';
-
-    const OPERATOR_ISNULL = 'isNull';
-    const OPERATOR_ISNOTNULL = 'isNotNull';
-
-    protected static $availableOperators = [
+    protected static array $availableOperators = [
         self::OPERATOR_EQ,
         self::OPERATOR_NEQ,
         self::OPERATOR_LT,
@@ -71,11 +66,11 @@ abstract class Column
     /**
      * Align.
      */
-    const ALIGN_LEFT = 'left';
-    const ALIGN_RIGHT = 'right';
-    const ALIGN_CENTER = 'center';
+    public const ALIGN_LEFT   = 'left';
+    public const ALIGN_RIGHT  = 'right';
+    public const ALIGN_CENTER = 'center';
 
-    protected static $aligns = [
+    protected static array $aligns = [
         self::ALIGN_LEFT,
         self::ALIGN_RIGHT,
         self::ALIGN_CENTER,
@@ -84,58 +79,88 @@ abstract class Column
     /**
      * Internal parameters.
      */
-    protected $id;
-    protected $title;
-    protected $sortable;
-    protected $filterable;
-    protected $visible;
-    protected $callback;
-    protected $order;
-    protected $size;
-    protected $visibleForSource;
-    protected $primary;
-    protected $align;
-    protected $inputType;
-    protected $field;
-    protected $role;
-    protected $filterType;
-    protected $params;
-    protected $isSorted = false;
-    protected $orderUrl;
-    protected $authorizationChecker;
-    protected $data;
-    protected $operatorsVisible;
-    protected $operators;
-    protected $defaultOperator;
-    protected $values = [];
-    protected $selectFrom;
-    protected $selectMulti;
-    protected $selectExpanded;
-    protected $searchOnClick = false;
-    protected $safe;
-    protected $separator;
-    protected $joinType;
-    protected $export;
-    protected $class;
-    protected $isManualField;
-    protected $useHaving;
-    protected $isAggregate;
-    protected $usePrefixTitle;
-    protected $translationDomain;
+    private $id;
 
-    protected $dataJunction = self::DATA_CONJUNCTION;
+    private $title;
 
-    /**
-     * Default Column constructor.
-     *
-     * @param array $params
-     */
-    public function __construct($params = null)
+    private $sortable;
+
+    private $filterable;
+
+    private $visible;
+
+    private $callback;
+
+    private $order;
+
+    private $size;
+
+    private $visibleForSource;
+
+    private $primary;
+
+    private $align;
+
+    private $inputType;
+
+    private $field;
+
+    private $role;
+
+    private $filterType;
+
+    private $params;
+
+    private $isSorted = false;
+
+    private $authorizationChecker;
+
+    private $data;
+
+    private $operatorsVisible;
+
+    private $operators;
+
+    private $defaultOperator;
+
+    private $values = [];
+
+    private $selectFrom;
+
+    private $selectMulti;
+
+    private $selectExpanded;
+
+    private $searchOnClick = false;
+
+    private $safe;
+
+    private $separator;
+
+    private $joinType;
+
+    private $export;
+
+    private $class;
+
+    private $isManualField;
+
+    private $useHaving;
+
+    private $isAggregate;
+
+    private $usePrefixTitle;
+
+    private $translationDomain;
+
+    protected int $dataJunction = self::DATA_CONJUNCTION;
+
+    public function __construct(?array $params = null)
     {
-        $this->__initialize((array) $params);
+        $this->__initialize((array)$params);
     }
 
-    public function __initialize(array $params)
+    public function __initialize(array $params): void
     {
         $this->params = $params;
         $this->setId($this->getParam('id'));
@@ -162,26 +187,28 @@ abstract class Column
         $this->setUsePrefixTitle($this->getParam('usePrefixTitle', true));
 
         // Order is important for the order display
-        $this->setOperators($this->getParam('operators', [
-            self::OPERATOR_EQ,
-            self::OPERATOR_NEQ,
-            self::OPERATOR_LT,
-            self::OPERATOR_LTE,
-            self::OPERATOR_GT,
-            self::OPERATOR_GTE,
-            self::OPERATOR_BTW,
-            self::OPERATOR_BTWE,
-            self::OPERATOR_LIKE,
-            self::OPERATOR_NLIKE,
-            self::OPERATOR_RLIKE,
-            self::OPERATOR_LLIKE,
-            self::OPERATOR_SLIKE,
-            self::OPERATOR_NSLIKE,
-            self::OPERATOR_RSLIKE,
-            self::OPERATOR_LSLIKE,
-            self::OPERATOR_ISNULL,
-            self::OPERATOR_ISNOTNULL,
-        ]));
+        $this->setOperators(
+            $this->getParam('operators', [
+                self::OPERATOR_EQ,
+                self::OPERATOR_NEQ,
+                self::OPERATOR_LT,
+                self::OPERATOR_LTE,
+                self::OPERATOR_GT,
+                self::OPERATOR_GTE,
+                self::OPERATOR_BTW,
+                self::OPERATOR_BTWE,
+                self::OPERATOR_LIKE,
+                self::OPERATOR_NLIKE,
+                self::OPERATOR_RLIKE,
+                self::OPERATOR_LLIKE,
+                self::OPERATOR_SLIKE,
+                self::OPERATOR_NSLIKE,
+                self::OPERATOR_RSLIKE,
+                self::OPERATOR_LSLIKE,
+                self::OPERATOR_ISNULL,
+                self::OPERATOR_ISNOTNULL,
+            ])
+        );
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
         $this->setSelectMulti($this->getParam('selectMulti', false));
         $this->setSelectExpanded($this->getParam('selectExpanded', false));
@@ -193,7 +220,7 @@ abstract class Column
         $this->setTranslationDomain($this->getParam('translation_domain'));
     }
 
-    public function getParams()
+    public function getParams(): ?array
     {
         return $this->params;
     }
@@ -203,23 +230,14 @@ abstract class Column
         return isset($this->params[$id]) ? $this->params[$id] : $default;
     }
 
-    /**
-     * Draw cell.
-     *
-     * @param mixed  $value
-     * @param Row    $row
-     * @param $router
-     *
-     * @return string
-     */
-    public function renderCell($value, $row, $router)
+    public function renderCell(mixed $value, Row $row, RouterInterface $router): mixed
     {
         if (is_callable($this->callback)) {
             return call_user_func($this->callback, $value, $row, $router);
         }
 
-        $value = is_bool($value) ? (int) $value : $value;
-        if (array_key_exists((string) $value, $this->values)) {
+        $value = is_bool($value) ? (int)$value : $value;
+        if (array_key_exists((string)$value, $this->values)) {
             $value = $this->values[$value];
         }
 
@@ -240,7 +258,8 @@ abstract class Column
         return $this;
     }
 
-    public function getCallback(): mixed {
+    public function getCallback(): mixed
+    {
         return $this->callback;
     }
 
@@ -317,12 +336,7 @@ abstract class Column
         return $this;
     }
 
-    /**
-     * Return column visibility.
-     *
-     * @return bool return true when column is visible
-     */
-    public function isVisible($isExported = false)
+    public function isVisible(bool $isExported = false): bool
     {
         $visible = $isExported && $this->export !== null ? $this->export : $this->visible;
 
@@ -464,7 +478,7 @@ abstract class Column
     public function setOrder($order)
     {
         if ($order !== null) {
-            $this->order = $order;
+            $this->order    = $order;
             $this->isSorted = true;
         }
 
@@ -523,12 +537,12 @@ abstract class Column
         $hasValue = false;
         if (isset($data['from']) && $this->isQueryValid($data['from'])) {
             $this->data['from'] = $data['from'];
-            $hasValue = true;
+            $hasValue           = true;
         }
 
         if (isset($data['to']) && $this->isQueryValid($data['to'])) {
             $this->data['to'] = $data['to'];
-            $hasValue = true;
+            $hasValue         = true;
         }
 
         $isNullOperator = (isset($data['operator']) && ($data['operator'] === self::OPERATOR_ISNULL || $data['operator'] === self::OPERATOR_ISNOTNULL));
@@ -551,12 +565,12 @@ abstract class Column
         $hasValue = false;
         if (isset($this->data['from']) && $this->data['from'] != $this::DEFAULT_VALUE) {
             $result['from'] = $this->data['from'];
-            $hasValue = true;
+            $hasValue       = true;
         }
 
         if (isset($this->data['to']) && $this->data['to'] != $this::DEFAULT_VALUE) {
             $result['to'] = $this->data['to'];
-            $hasValue = true;
+            $hasValue     = true;
         }
 
         $isNullOperator = (isset($this->data['operator']) && ($this->data['operator'] === self::OPERATOR_ISNULL || $this->data['operator'] === self::OPERATOR_ISNOTNULL));
@@ -567,7 +581,8 @@ abstract class Column
         return $result;
     }
 
-    public function getDataAttribute(): array {
+    public function getDataAttribute(): array
+    {
         return $this->data;
     }
 
@@ -576,7 +591,7 @@ abstract class Column
      *
      * @return bool
      */
-    public function isQueryValid($query)
+    public function isQueryValid(mixed $query): bool
     {
         return true;
     }
@@ -700,7 +715,7 @@ abstract class Column
     {
         $this->filterType = strtolower($filterType);
 
-        return  $this;
+        return $this;
     }
 
     public function getFilterType()
@@ -708,7 +723,7 @@ abstract class Column
         return $this->filterType;
     }
 
-    public function getFilters($source)
+    public function getFilters(string $source): array
     {
         $filters = [];
 
@@ -750,7 +765,7 @@ abstract class Column
                     case self::OPERATOR_NEQ:
                     case self::OPERATOR_NLIKE:
                     case self::OPERATOR_NSLIKE:
-                        foreach ((array) $this->data['from'] as $value) {
+                        foreach ((array)$this->data['from'] as $value) {
                             $filters[] = new Filter($this->data['operator'], $value);
                         }
                         break;
@@ -799,14 +814,16 @@ abstract class Column
         // @see http://www.doctrine-project.org/jira/browse/DDC-1857
         // @see http://www.doctrine-project.org/jira/browse/DDC-1858
         if ($this->hasDQLFunction() && version_compare(DoctrineVersion::VERSION, '2.5') < 0) {
-            return array_intersect($this->operators, [self::OPERATOR_EQ,
+            return array_intersect($this->operators, [
+                self::OPERATOR_EQ,
                 self::OPERATOR_NEQ,
                 self::OPERATOR_LT,
                 self::OPERATOR_LTE,
                 self::OPERATOR_GT,
                 self::OPERATOR_GTE,
                 self::OPERATOR_BTW,
-                self::OPERATOR_BTWE, ]);
+                self::OPERATOR_BTWE,
+            ]);
         }
 
         return $this->operators;
@@ -918,7 +935,8 @@ abstract class Column
         return $this;
     }
 
-    public function getAuthorizationChecker(): ?AuthorizationCheckerInterface {
+    public function getAuthorizationChecker(): ?AuthorizationCheckerInterface
+    {
         return $this->authorizationChecker;
     }
 
@@ -927,7 +945,7 @@ abstract class Column
         return '';
     }
 
-    public function getType()
+    public function getType(): ?string
     {
         return '';
     }

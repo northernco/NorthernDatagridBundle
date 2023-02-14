@@ -14,5 +14,5 @@ interface GridConfigBuilderInterface extends GridConfigInterface
      *
      * @return GridConfigInterface
      */
-    public function getGridConfig();
+    public function getGridConfig(): GridConfigInterface;
 }

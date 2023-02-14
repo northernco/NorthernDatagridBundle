@@ -16,26 +16,17 @@ use Doctrine\ORM\EntityRepository;
 
 class Row
 {
-    /** @var array */
-    protected $fields;
+    private array $fields;
 
-    /** @var string */
-    protected $class;
+    private string $class;
 
-    /** @var string */
-    protected $color;
+    private string $color;
 
-    /** @var string|null */
-    protected $legend;
+    private ?string $legend;
 
-    /** @var mixed */
-    protected $primaryField;
+    private string $primaryField;
 
-    /** @var mixed */
-    protected $entity;
-
-    /** @var EntityRepository */
-    protected $repository;
+    private ?EntityRepository $repository;
 
     public function __construct()
     {
@@ -43,32 +34,26 @@ class Row
         $this->color  = '';
     }
 
-    /**
-     * @param EntityRepository $repository
-     */
-    public function setRepository(EntityRepository $repository)
+    public function setRepository(EntityRepository $repository): self
     {
         $this->repository = $repository;
+
+        return $this;
     }
 
-    public function getRepository(): ?EntityRepository {
+    public function getRepository(): ?EntityRepository
+    {
         return $this->repository;
     }
 
-    /**
-     * @return null|object
-     */
-    public function getEntity()
+    public function getEntity(): ?object
     {
         $primaryKeyValue = current($this->getPrimaryKeyValue());
 
         return $this->repository->find($primaryKeyValue);
     }
 
-    /**
-     * @return array
-     */
-    public function getPrimaryKeyValue()
+    public function getPrimaryKeyValue(): array
     {
         $primaryFieldValue = $this->getPrimaryFieldValue();
 
@@ -80,12 +65,7 @@ class Row
         return ['id' => $primaryFieldValue];
     }
 
-    /**
-     * @return array|mixed
-     * @throws \InvalidArgumentException
-     *
-     */
-    public function getPrimaryFieldValue()
+    public function getPrimaryFieldValue(): mixed
     {
         if (null === $this->primaryField) {
             throw new \InvalidArgumentException('Primary column must be defined');
@@ -102,12 +82,7 @@ class Row
         return $this->fields[$this->primaryField];
     }
 
-    /**
-     * @param mixed $primaryField
-     *
-     * @return $this
-     */
-    public function setPrimaryField($primaryField)
+    public function setPrimaryField(string $primaryField): self
     {
         $this->primaryField = $primaryField;
 
@@ -117,30 +92,25 @@ class Row
     /**
      * @return mixed
      */
-    public function getPrimaryField()
+    public function getPrimaryField(): string
     {
         return $this->primaryField;
     }
 
     /**
-     * @param mixed $columnId
-     * @param mixed $value
+     * @param string|int $columnId
+     * @param mixed      $value
      *
      * @return $this
      */
-    public function setField($columnId, $value)
+    public function setField(string|int $columnId, mixed $value): self
     {
         $this->fields[$columnId] = $value;
 
         return $this;
     }
 
-    /**
-     * @param mixed $columnId
-     *
-     * @return mixed
-     */
-    public function getField($columnId)
+    public function getField(string|int $columnId): mixed
     {
         return isset($this->fields[$columnId]) ? $this->fields[$columnId] : '';
     }
@@ -150,62 +120,38 @@ class Row
         return $this->fields;
     }
 
-    /**
-     * @param string $class
-     *
-     * @return $this
-     */
-    public function setClass($class)
+    public function setClass(string $class): self
     {
         $this->class = $class;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getClass()
+    public function getClass(): string
     {
         return $this->class;
     }
 
-    /**
-     * @param string $color
-     *
-     * @return $this
-     */
-    public function setColor($color)
+    public function setColor(string $color): self
     {
         $this->color = $color;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getColor()
+    public function getColor(): string
     {
         return $this->color;
     }
 
-    /**
-     * @param string $legend
-     *
-     * @return $this
-     */
-    public function setLegend($legend)
+    public function setLegend(string $legend): self
     {
         $this->legend = $legend;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getLegend()
+    public function getLegend(): ?string
     {
         return $this->legend;
     }

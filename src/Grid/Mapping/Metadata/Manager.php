@@ -14,43 +14,40 @@
 
 namespace APY\DataGridBundle\Grid\Mapping\Metadata;
 
+use APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface;
+
 class Manager
 {
     /**
      * @var \APY\DataGridBundle\Grid\Mapping\Driver\DriverInterface[]
      */
-    protected $drivers;
+    private DriverHeap $drivers;
 
     public function __construct()
     {
         $this->drivers = new DriverHeap();
     }
 
-    public function addDriver($driver, $priority)
+    public function addDriver(DriverInterface $driver, int $priority)
     {
         $this->drivers->insert($driver, $priority);
     }
 
-    /**
-     * @todo remove this hack
-     *
-     * @return \APY\DataGridBundle\Grid\Mapping\Metadata\DriverHeap
-     */
-    public function getDrivers()
+    public function getDrivers(): DriverHeap
     {
         return clone $this->drivers;
     }
 
-    public function getMetadata($className, $group = 'default')
+    public function getMetadata(string $className, string $group = 'default'): Metadata
     {
         $metadata = new Metadata();
 
         $columns = $fieldsMetadata = $groupBy = [];
 
         foreach ($this->getDrivers() as $driver) {
-            $columns = array_merge($columns, $driver->getClassColumns($className, $group));
+            $columns          = array_merge($columns, $driver->getClassColumns($className, $group));
             $fieldsMetadata[] = $driver->getFieldsMetadata($className, $group);
-            $groupBy = array_merge($groupBy, $driver->getGroupBy($className, $group));
+            $groupBy          = array_merge($groupBy, $driver->getGroupBy($className, $group));
         }
 
         $mappings = $cols = [];
@@ -59,14 +56,14 @@ class Manager
             $map = [];
 
             foreach ($fieldsMetadata as $field) {
-                if (isset($field[$fieldName]) && (!isset($field[$fieldName]['groups']) || in_array($group, (array) $field[$fieldName]['groups']))) {
+                if (isset($field[$fieldName]) && (!isset($field[$fieldName]['groups']) || in_array($group, (array)$field[$fieldName]['groups']))) {
                     $map = array_merge($map, $field[$fieldName]);
                 }
             }
 
             if (!empty($map)) {
                 $mappings[$fieldName] = $map;
-                $cols[] = $fieldName;
+                $cols[]               = $fieldName;
             }
         }
 

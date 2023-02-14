@@ -12,7 +12,9 @@
 
 namespace APY\DataGridBundle\Grid\Column;
 
+use APY\DataGridBundle\Grid\Row;
 use Symfony\Component\Form\Exception\TransformationFailedException;
+use Symfony\Component\Routing\RouterInterface;
 
 class NumberColumn extends Column
 {
@@ -26,25 +28,25 @@ class NumberColumn extends Column
         'spellout'   => \NumberFormatter::SPELLOUT,
     ];
 
-    protected $style;
+    private int $style;
 
-    protected $locale;
+    private string $locale;
 
-    protected $precision;
+    private ?int $precision;
 
-    protected $grouping;
+    private int|bool $grouping;
 
-    protected $roundingMode;
+    private int $roundingMode;
 
-    protected $ruleSet;
+    private int|string|null $ruleSet;
 
-    protected $currencyCode;
+    private string $currencyCode;
 
-    protected $fractional;
+    private bool $fractional;
 
-    protected $maxFractionDigits;
+    private ?int $maxFractionDigits;
 
-    public function __initialize(array $params)
+    public function __initialize(array $params): void
     {
         parent::__initialize($params);
 
@@ -63,29 +65,31 @@ class NumberColumn extends Column
             $this->setRuleSet($this->getParam('ruleSet', '%in-numerals')); // or '%with-words'
         }
 
-        $this->setOperators($this->getParam('operators', [
-            self::OPERATOR_EQ,
-            self::OPERATOR_NEQ,
-            self::OPERATOR_LT,
-            self::OPERATOR_LTE,
-            self::OPERATOR_GT,
-            self::OPERATOR_GTE,
-            self::OPERATOR_BTW,
-            self::OPERATOR_BTWE,
-            self::OPERATOR_ISNULL,
-            self::OPERATOR_ISNOTNULL,
-        ]));
+        $this->setOperators(
+            $this->getParam('operators', [
+                self::OPERATOR_EQ,
+                self::OPERATOR_NEQ,
+                self::OPERATOR_LT,
+                self::OPERATOR_LTE,
+                self::OPERATOR_GT,
+                self::OPERATOR_GTE,
+                self::OPERATOR_BTW,
+                self::OPERATOR_BTWE,
+                self::OPERATOR_ISNULL,
+                self::OPERATOR_ISNOTNULL,
+            ])
+        );
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_EQ));
     }
 
-    public function isQueryValid($query)
+    public function isQueryValid(mixed $query): bool
     {
-        $result = array_filter((array) $query, 'is_numeric');
+        $result = array_filter((array)$query, 'is_numeric');
 
         return !empty($result);
     }
 
-    public function renderCell($value, $row, $router)
+    public function renderCell(mixed $value, Row $row, RouterInterface $router): mixed
     {
         if (is_callable($this->callback)) {
             return call_user_func($this->callback, $value, $row, $router);
@@ -94,7 +98,7 @@ class NumberColumn extends Column
         return $this->getDisplayedValue($value);
     }
 
-    public function getDisplayedValue($value)
+    public function getDisplayedValue(mixed $value): mixed
     {
         if ($value !== null && $value !== '') {
             $formatter = new \NumberFormatter($this->locale, $this->style);
@@ -136,7 +140,7 @@ class NumberColumn extends Column
                 throw new TransformationFailedException($formatter->getErrorMessage());
             }
 
-            if (array_key_exists((string) $value, $this->values)) {
+            if (array_key_exists((string)$value, $this->values)) {
                 $value = $this->values[$value];
             }
 
@@ -146,7 +150,7 @@ class NumberColumn extends Column
         return '';
     }
 
-    public function getFilters($source)
+    public function getFilters(string $source): array
     {
         $parentFilters = parent::getFilters($source);
 
@@ -175,101 +179,103 @@ class NumberColumn extends Column
         return $this->style;
     }
 
-    public function setLocale($locale)
+    public function setLocale(string $locale): self
     {
         $this->locale = $locale;
 
         return $this;
     }
 
-    public function getLocale()
+    public function getLocale(): string
     {
         return $this->locale;
     }
 
-    public function setPrecision($precision)
+    public function setPrecision(?int $precision): self
     {
         $this->precision = $precision;
 
         return $this;
     }
 
-    public function getPrecision()
+    public function getPrecision(): ?int
     {
         return $this->precision;
     }
 
-    public function setGrouping($grouping)
+    public function setGrouping(int|bool $grouping): self
     {
         $this->grouping = $grouping;
 
         return $this;
     }
 
-    public function getGrouping()
+    public function getGrouping(): int|bool
     {
         return $this->grouping;
     }
 
-    public function setRoundingMode($roundingMode)
+    public function setRoundingMode(int $roundingMode): self
     {
         $this->roundingMode = $roundingMode;
 
         return $this;
     }
 
-    public function getRoundingMode()
+    public function getRoundingMode(): int
     {
         return $this->roundingMode;
     }
 
-    public function setRuleSet($ruleSet)
+    public function setRuleSet(string|int $ruleSet): self
     {
         $this->ruleSet = $ruleSet;
 
         return $this;
     }
 
-    public function getRuleSet()
+    public function getRuleSet(): int|string|null
     {
         return $this->ruleSet;
     }
 
-    public function setCurrencyCode($currencyCode)
+    public function setCurrencyCode(string $currencyCode): self
     {
         $this->currencyCode = $currencyCode;
 
         return $this;
     }
 
-    public function getCurrencyCode()
+    public function getCurrencyCode(): ?string
     {
         return $this->currencyCode;
     }
 
-    public function setFractional($fractional)
+    public function setFractional(bool $fractional): self
     {
         $this->fractional = $fractional;
 
         return $this;
     }
 
-    public function getFractional()
+    public function getFractional(): bool
     {
         return $this->fractional;
     }
 
-    public function setMaxFractionDigits($maxFractionDigits)
+    public function setMaxFractionDigits(?int $maxFractionDigits): self
     {
         $this->maxFractionDigits = $maxFractionDigits;
+
+        return $this;
     }
 
-    public function getMaxFractionDigits()
+    public function getMaxFractionDigits(): ?int
     {
         return $this->maxFractionDigits;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'number';
     }

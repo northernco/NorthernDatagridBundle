@@ -38,46 +38,46 @@ use Twig\Environment;
 
 class Grid implements GridInterface
 {
-    const REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED = '__action_all_keys';
-    const REQUEST_QUERY_MASS_ACTION                   = '__action_id';
-    const REQUEST_QUERY_EXPORT                        = '__export_id';
-    const REQUEST_QUERY_TWEAK                         = '__tweak_id';
-    const REQUEST_QUERY_PAGE                          = '_page';
-    const REQUEST_QUERY_LIMIT                         = '_limit';
-    const REQUEST_QUERY_ORDER                         = '_order';
-    const REQUEST_QUERY_TEMPLATE                      = '_template';
-    const REQUEST_QUERY_RESET                         = '_reset';
+    public const REQUEST_QUERY_MASS_ACTION_ALL_KEYS_SELECTED = '__action_all_keys';
+    public const REQUEST_QUERY_MASS_ACTION                   = '__action_id';
+    public const REQUEST_QUERY_EXPORT                        = '__export_id';
+    public const REQUEST_QUERY_TWEAK                         = '__tweak_id';
+    public const REQUEST_QUERY_PAGE                          = '_page';
+    public const REQUEST_QUERY_LIMIT                         = '_limit';
+    public const REQUEST_QUERY_ORDER                         = '_order';
+    public const REQUEST_QUERY_TEMPLATE                      = '_template';
+    public const REQUEST_QUERY_RESET                         = '_reset';
 
-    const SOURCE_ALREADY_SETTED_EX_MSG          = 'The source of the grid is already set.';
-    const SOURCE_NOT_SETTED_EX_MSG              = 'The source of the grid must be set.';
-    const TWEAK_MALFORMED_ID_EX_MSG             = 'Tweak id "%s" is malformed. The id have to match this regex ^[0-9a-zA-Z_\+-]+';
-    const TWIG_TEMPLATE_LOAD_EX_MSG             = 'Unable to load template';
-    const NOT_VALID_LIMIT_EX_MSG                = 'Limit has to be array or integer';
-    const NOT_VALID_PAGE_NUMBER_EX_MSG          = 'Page must be a positive number';
-    const NOT_VALID_MAX_RESULT_EX_MSG           = 'Max results must be a positive number.';
-    const MASS_ACTION_NOT_DEFINED_EX_MSG        = 'Action %s is not defined.';
-    const MASS_ACTION_CALLBACK_NOT_VALID_EX_MSG = 'Callback %s is not callable or Controller action';
-    const EXPORT_NOT_DEFINED_EX_MSG             = 'Export %s is not defined.';
-    const PAGE_NOT_VALID_EX_MSG                 = 'Page must be a positive number';
-    const COLUMN_ORDER_NOT_VALID_EX_MSG         = '%s is not a valid order.';
-    const DEFAULT_LIMIT_NOT_VALID_EX_MSG        = 'Limit must be a positive number';
-    const LIMIT_NOT_DEFINED_EX_MSG              = 'Limit %s is not defined in limits.';
-    const NO_ROWS_RETURNED_EX_MSG               = 'Source have to return Rows object.';
-    const INVALID_TOTAL_COUNT_EX_MSG            = 'Source function getTotalCount need to return integer result, returned: %s';
-    const NOT_VALID_TWEAK_ID_EX_MSG             = 'Tweak with id "%s" doesn\'t exists';
-    const GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG = 'getFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
-    const HAS_FILTER_NO_REQUEST_HANDLED_EX_MSG  = 'hasFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
-    const TWEAK_NOT_DEFINED_EX_MSG              = 'Tweak %s is not defined.';
+    public const SOURCE_ALREADY_SETTED_EX_MSG          = 'The source of the grid is already set.';
+    public const SOURCE_NOT_SETTED_EX_MSG              = 'The source of the grid must be set.';
+    public const TWEAK_MALFORMED_ID_EX_MSG             = 'Tweak id "%s" is malformed. The id have to match this regex ^[0-9a-zA-Z_\+-]+';
+    public const TWIG_TEMPLATE_LOAD_EX_MSG             = 'Unable to load template';
+    public const NOT_VALID_LIMIT_EX_MSG                = 'Limit has to be array or integer';
+    public const NOT_VALID_PAGE_NUMBER_EX_MSG          = 'Page must be a positive number';
+    public const NOT_VALID_MAX_RESULT_EX_MSG           = 'Max results must be a positive number.';
+    public const MASS_ACTION_NOT_DEFINED_EX_MSG        = 'Action %s is not defined.';
+    public const MASS_ACTION_CALLBACK_NOT_VALID_EX_MSG = 'Callback %s is not callable or Controller action';
+    public const EXPORT_NOT_DEFINED_EX_MSG             = 'Export %s is not defined.';
+    public const PAGE_NOT_VALID_EX_MSG                 = 'Page must be a positive number';
+    public const COLUMN_ORDER_NOT_VALID_EX_MSG         = '%s is not a valid order.';
+    public const DEFAULT_LIMIT_NOT_VALID_EX_MSG        = 'Limit must be a positive number';
+    public const LIMIT_NOT_DEFINED_EX_MSG              = 'Limit %s is not defined in limits.';
+    public const NO_ROWS_RETURNED_EX_MSG               = 'Source have to return Rows object.';
+    public const INVALID_TOTAL_COUNT_EX_MSG            = 'Source function getTotalCount need to return integer result, returned: %s';
+    public const NOT_VALID_TWEAK_ID_EX_MSG             = 'Tweak with id "%s" doesn\'t exists';
+    public const GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG = 'getFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
+    public const HAS_FILTER_NO_REQUEST_HANDLED_EX_MSG  = 'hasFilters method is only available in the manipulate callback function or after the call of the method isRedirected of the grid.';
+    public const TWEAK_NOT_DEFINED_EX_MSG              = 'Tweak %s is not defined.';
 
     /**
      * @var \Symfony\Component\DependencyInjection\Container
      */
-    protected $container;
+    private $container;
 
     /**
      * @var \Symfony\Component\Routing\Router
      */
-    protected $router;
+    private $router;
 
     private Environment $twig;
 
@@ -94,17 +94,17 @@ class Grid implements GridInterface
     /**
      * @var null|\Symfony\Component\HttpFoundation\Session\Session;
      */
-    protected $session;
+    private $session;
 
     /**
      * @var \Symfony\Component\HttpFoundation\Request
      */
-    protected $request;
+    private $request;
 
     /**
      * @var \Symfony\Component\Security\Core\Authorization\AuthorizationChecker
      */
-    protected $securityContext;
+    private $securityContext;
 
     /**
      * @var string
@@ -119,221 +119,221 @@ class Grid implements GridInterface
     /**
      * @var string
      */
-    protected $routeUrl;
+    private $routeUrl;
 
     /**
      * @var array
      */
-    protected $routeParameters;
+    private $routeParameters;
 
     /**
      * @var \APY\DataGridBundle\Grid\Source\Source
      */
-    protected $source;
+    private $source;
 
     /**
      * @var bool
      */
-    protected $prepared = false;
+    private $prepared = false;
 
     /**
      * @var int
      */
-    protected $totalCount;
+    private $totalCount;
 
     /**
      * @var int
      */
-    protected $page = 0;
+    private $page = 0;
 
     /**
      * @var int
      */
-    protected $limit;
+    private $limit;
 
     /**
      * @var array
      */
-    protected $limits = [];
+    private $limits = [];
 
     /**
      * @var \APY\DataGridBundle\Grid\Columns|\APY\DataGridBundle\Grid\Column\Column[]
      */
-    protected $columns;
+    private $columns;
 
     /**
      * @var \APY\DataGridBundle\Grid\Rows
      */
-    protected $rows;
+    private $rows;
 
     /**
      * @var \APY\DataGridBundle\Grid\Action\MassAction[]
      */
-    protected $massActions = [];
+    private $massActions = [];
 
     /**
      * @var \APY\DataGridBundle\Grid\Action\RowAction[]
      */
-    protected $rowActions = [];
+    private $rowActions = [];
 
     /**
      * @var bool
      */
-    protected $showFilters = true;
+    private $showFilters = true;
 
     /**
      * @var bool
      */
-    protected $showTitles = true;
+    private $showTitles = true;
 
     /**
      * @var array|object request
      */
-    protected $requestData;
+    private $requestData;
 
     /**
      * @var array|object session
      */
-    protected $sessionData = [];
+    private $sessionData = [];
 
     /**
      * @var string
      */
-    protected $prefixTitle = '';
+    private $prefixTitle = '';
 
     /**
      * @var bool
      */
-    protected $persistence = false;
+    private $persistence = false;
 
     /**
      * @var bool
      */
-    protected $newSession = false;
+    private $newSession = false;
 
     /**
      * @var string
      */
-    protected $noDataMessage;
+    private $noDataMessage;
 
     /**
      * @var string
      */
-    protected $noResultMessage;
+    private $noResultMessage;
 
     /**
      * @var \APY\DataGridBundle\Grid\Export\Export[]
      */
-    protected $exports = [];
+    private $exports = [];
 
     /**
      * @var bool
      */
-    protected $redirect = null;
+    private $redirect = null;
 
     /**
      * @var bool
      */
-    protected $isReadyForExport = false;
+    private $isReadyForExport = false;
 
     /**
      * @var Response
      */
-    protected $exportResponse;
+    private $exportResponse;
 
     /**
      * @var Response
      */
-    protected $massActionResponse;
+    private $massActionResponse;
 
     /**
      * @var int
      */
-    protected $maxResults;
+    private $maxResults;
 
     /**
      * @var array
      */
-    protected $items = [];
+    private $items = [];
 
     /**
      * Data junction of the grid.
      *
      * @var int
      */
-    protected $dataJunction = Column::DATA_CONJUNCTION;
+    private $dataJunction = Column::DATA_CONJUNCTION;
 
     /**
      * Permanent filters.
      *
      * @var array
      */
-    protected $permanentFilters = [];
+    private $permanentFilters = [];
 
     /**
      * Default filters.
      *
      * @var array
      */
-    protected $defaultFilters = [];
+    private $defaultFilters = [];
 
     /**
      * Default order (e.g. my_column_id|asc).
      *
      * @var string
      */
-    protected $defaultOrder;
+    private $defaultOrder;
 
     /**
      * Default limit.
      *
      * @var int
      */
-    protected $defaultLimit;
+    private $defaultLimit;
 
     /**
      * Default page.
      *
      * @var int
      */
-    protected $defaultPage;
+    private $defaultPage;
 
     /**
      * Tweaks.
      *
      * @var array
      */
-    protected $tweaks = [];
+    private $tweaks = [];
 
     /**
      * Default Tweak.
      *
      * @var string
      */
-    protected $defaultTweak;
+    private $defaultTweak;
 
     /**
      * Filters in session.
      *
      * @var array
      */
-    protected $sessionFilters;
+    private $sessionFilters;
 
     // Lazy parameters
-    protected $lazyAddColumn = [];
+    private $lazyAddColumn = [];
 
-    protected $lazyHiddenColumns = [];
+    private $lazyHiddenColumns = [];
 
-    protected $lazyVisibleColumns = [];
+    private $lazyVisibleColumns = [];
 
-    protected $lazyHideShowColumns = [];
+    private $lazyHideShowColumns = [];
 
     // Lazy parameters for the action column
-    protected $actionsColumnSize;
+    private $actionsColumnSize;
 
-    protected $actionsColumnTitle;
+    private $actionsColumnTitle;
 
-    protected $massActionsInNewTab;
+    private $massActionsInNewTab;
 
     /**
      * The grid configuration.
@@ -397,7 +397,7 @@ class Grid implements GridInterface
     /**
      * {@inheritdoc}
      */
-    public function initialize()
+    public function initialize(): self
     {
         $config = $this->config;
 
@@ -482,7 +482,7 @@ class Grid implements GridInterface
     /**
      * {@inheritdoc}
      */
-    public function handleRequest(Request $request)
+    public function handleRequest(Request $request): self
     {
         if (null === $this->source) {
             throw new \LogicException(self::SOURCE_NOT_SETTED_EX_MSG);

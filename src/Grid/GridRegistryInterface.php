@@ -18,7 +18,7 @@ interface GridRegistryInterface
      *
      * @return GridTypeInterface The type
      */
-    public function getType($name);
+    public function getType(string $name): GridTypeInterface;
 
     /**
      * Returns whether the given grid type is supported.
@@ -27,7 +27,7 @@ interface GridRegistryInterface
      *
      * @return bool Whether the type is supported.
      */
-    public function hasType($name);
+    public function hasType(string $name): bool;
 
     /**
      * Returns a column by type.
@@ -36,7 +36,7 @@ interface GridRegistryInterface
      *
      * @return Column The column
      */
-    public function getColumn($type);
+    public function getColumn(string $type): Column;
 
     /**
      * Returns whether the given column type is supported.
@@ -45,5 +45,5 @@ interface GridRegistryInterface
      *
      * @return bool
      */
-    public function hasColumn($type);
+    public function hasColumn(string $type): bool;
 }

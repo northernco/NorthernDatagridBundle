@@ -14,187 +14,101 @@ namespace APY\DataGridBundle\Grid\Action;
 
 class MassAction implements MassActionInterface
 {
-    /** @var string */
-    protected $title;
+    private string $title;
 
-    /** @var string|null */
-    protected $callback;
+    private ?string $callback;
 
-    /** @var bool */
-    protected $confirm;
+    private bool $confirm;
 
-    /** @var string */
-    protected $confirmMessage;
+    private string $confirmMessage;
 
-    /** @var array  */
-    protected $parameters = [];
+    private array $parameters = [];
 
-    /** @var string|null  */
-    protected $role;
+    private ?string $role;
 
-    /**
-     * Default MassAction constructor.
-     *
-     * @param string $title      Title of the mass action
-     * @param string $callback   Callback of the mass action
-     * @param bool   $confirm    Show confirm message if true
-     * @param array  $parameters Additional parameters
-     * @param string $role       Security role
-     */
-    public function __construct($title, $callback = null, $confirm = false, $parameters = [], $role = null)
-    {
-        $this->title = $title;
-        $this->callback = $callback;
-        $this->confirm = $confirm;
+    public function __construct(
+        string $title,
+        ?string $callback = null,
+        bool $confirm = false,
+        array $parameters = [],
+        ?string $role = null
+    ) {
+        $this->title          = $title;
+        $this->callback       = $callback;
+        $this->confirm        = $confirm;
         $this->confirmMessage = 'Do you want to ' . strtolower($title) . ' the selected rows?';
-        $this->parameters = $parameters;
-        $this->role = $role;
+        $this->parameters     = $parameters;
+        $this->role           = $role;
     }
 
-    // @todo: has this setter sense? we passed the title from constructor
-    /**
-     * Set action title.
-     *
-     * @param string $title
-     *
-     * @return self
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * get action title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * Set action callback.
-     *
-     * @param string $callback
-     *
-     * @return self
-     */
-    public function setCallback($callback)
+    public function setCallback(string $callback): self
     {
         $this->callback = $callback;
 
         return $this;
     }
 
-    /**
-     * get action callback.
-     *
-     * @return string
-     */
-    public function getCallback()
+    public function getCallback(): ?string
     {
         return $this->callback;
     }
 
-    // @todo: we should change this to something like "enableConfirm" as "false" is the default value and has pretty much
-    // nosense to use setConfirm with false parameter.
-    /**
-     * Set action confirm.
-     *
-     * @param bool $confirm
-     *
-     * @return self
-     */
-    public function setConfirm($confirm)
+    public function setConfirm(bool $confirm): self
     {
         $this->confirm = $confirm;
 
         return $this;
     }
 
-    // @todo: could we change this to neddConfirm?
-    /**
-     * Get action confirm.
-     *
-     * @return bool
-     */
-    public function getConfirm()
+    public function getConfirm(): bool
     {
         return $this->confirm;
     }
 
-    /**
-     * Set action confirmMessage.
-     *
-     * @param string $confirmMessage
-     *
-     * @return self
-     */
-    public function setConfirmMessage($confirmMessage)
+    public function setConfirmMessage(string $confirmMessage): self
     {
         $this->confirmMessage = $confirmMessage;
 
         return $this;
     }
 
-    /**
-     * get action confirmMessage.
-     *
-     * @return string
-     */
-    public function getConfirmMessage()
+    public function getConfirmMessage(): string
     {
         return $this->confirmMessage;
     }
 
-    /**
-     * Set action/controller parameters.
-     *
-     * @param array $parameters
-     *
-     * @return $this
-     */
-    public function setParameters(array $parameters)
+    public function setParameters(array $parameters): self
     {
         $this->parameters = $parameters;
 
         return $this;
     }
 
-    /**
-     * Get action/controller parameters.
-     *
-     * @return array
-     */
-    public function getParameters()
+    public function getParameters(): array
     {
         return $this->parameters;
     }
 
-    /**
-     * set role.
-     *
-     * @param string $role
-     *
-     * @return self
-     */
-    public function setRole($role)
+    public function setRole(string $role): self
     {
         $this->role = $role;
 
         return $this;
     }
 
-    /**
-     * Get role.
-     *
-     * @return string
-     */
-    public function getRole()
+    public function getRole(): ?string
     {
         return $this->role;
     }

@@ -17,7 +17,7 @@ namespace APY\DataGridBundle\Grid\Export;
  */
 class PHPExcel2003Export extends PHPExcel2007Export
 {
-    protected function getWriter()
+    protected function getWriter(): \PHPExcel_Writer_Excel2007
     {
         $writer = parent::getWriter();
         $writer->setOffice2003Compatibility(true);

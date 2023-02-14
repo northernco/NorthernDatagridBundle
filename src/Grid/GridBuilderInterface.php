@@ -20,7 +20,7 @@ interface GridBuilderInterface
      *
      * @return GridBuilderInterface
      */
-    public function add($name, $type, array $options = []);
+    public function add(string $name, string|Column $type, array $options = []): self;
 
     /**
      * Returns a column.
@@ -29,7 +29,7 @@ interface GridBuilderInterface
      *
      * @return Column
      */
-    public function get($name);
+    public function get(string $name): Column;
 
     /**
      * Removes the column with the given name.
@@ -38,7 +38,7 @@ interface GridBuilderInterface
      *
      * @return GridBuilderInterface
      */
-    public function remove($name);
+    public function remove(string $name): self;
 
     /**
      * Returns whether a column with the given name exists.
@@ -47,12 +47,12 @@ interface GridBuilderInterface
      *
      * @return bool
      */
-    public function has($name);
+    public function has(string $name): bool;
 
     /**
      * Creates the grid.
      *
      * @return Grid The grid
      */
-    public function getGrid();
+    public function getGrid(): Grid;
 }
