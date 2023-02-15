@@ -506,7 +506,7 @@ class Grid implements GridInterface
         $this->saveSession();
     }
 
-    protected function processMassActions(int|string|null $actionId): void
+    protected function processMassActions(int|string|bool|null $actionId): void
     {
         if ($actionId > -1 && '' !== $actionId) {
             if (array_key_exists($actionId, $this->massActions)) {
@@ -552,7 +552,7 @@ class Grid implements GridInterface
         }
     }
 
-    protected function processExports(?int $exportId): bool
+    protected function processExports(int|string|bool|null $exportId): bool
     {
         if ($exportId > -1 && '' !== $exportId) {
             if (array_key_exists($exportId, $this->exports)) {
@@ -585,7 +585,7 @@ class Grid implements GridInterface
         return false;
     }
 
-    protected function processTweaks(int|string|null $tweakId): bool
+    protected function processTweaks(int|string|bool|null $tweakId): bool
     {
         if ($tweakId !== null) {
             if (array_key_exists($tweakId, $this->tweaks)) {
