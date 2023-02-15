@@ -124,7 +124,7 @@ class RowAction implements RowActionInterface
         return $this;
     }
 
-    public function getColumn(): string
+    public function getColumn(): ?string
     {
         return $this->column;
     }

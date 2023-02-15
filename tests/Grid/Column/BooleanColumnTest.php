@@ -125,11 +125,11 @@ class BooleanColumnTest extends TestCase
     {
         $this->column->manipulateRenderCell(
             function ($value, $row, $router) {
-                return 'true';
+                return true;
             }
         );
-        $this->assertEquals(
-            'true',
+
+        $this->assertTrue(
             $this->column->renderCell(
                 0,
                 $this->createMock(Row::class),
@@ -139,11 +139,11 @@ class BooleanColumnTest extends TestCase
 
         $this->column->manipulateRenderCell(
             function ($value, $row, $router) {
-                return 'false';
+                return false;
             }
         );
-        $this->assertEquals(
-            'false',
+
+        $this->assertFalse(
             $this->column->renderCell(
                 1,
                 $this->createMock(Row::class),
@@ -156,8 +156,8 @@ class BooleanColumnTest extends TestCase
                 return;
             }
         );
-        $this->assertEquals(
-            'false',
+
+        $this->assertFalse(
             $this->column->renderCell(
                 1,
                 $this->createMock(Row::class),

@@ -308,9 +308,9 @@ class Entity extends Source
     }
 
     public function execute(
-        ColumnsIterator $columns,
-        int $page = 0,
-        int $limit = 0,
+        ColumnsIterator|Columns|array $columns,
+        ?int $page = 0,
+        ?int $limit = 0,
         ?int $maxResults = null,
         int $gridDataJunction = Column::DATA_CONJUNCTION
     ): Rows {
@@ -504,7 +504,7 @@ class Entity extends Source
         return str_replace([self::DOT_DQL_ALIAS_PH, self::COLON_DQL_ALIAS_PH], ['.', ':'], $alias);
     }
 
-    public function getTotalCount(?int $maxResults = null): int
+    public function getTotalCount(?int $maxResults = null): ?int
     {
         // Doctrine Bug Workaround: http://www.doctrine-project.org/jira/browse/DDC-1927
         $countQueryBuilder = clone $this->query;
@@ -611,7 +611,7 @@ class Entity extends Source
         return $result;
     }
 
-    public function populateSelectFilters(array $columns, bool $loop = false): void
+    public function populateSelectFilters(Columns|array $columns, bool $loop = false): void
     {
         /* @var $column Column */
         foreach ($columns as $column) {
@@ -733,7 +733,7 @@ class Entity extends Source
         return $this->manager->getRepository($this->entityName);
     }
 
-    public function getHash(): string
+    public function getHash(): ?string
     {
         return $this->entityName;
     }

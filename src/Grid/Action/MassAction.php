@@ -16,7 +16,7 @@ class MassAction implements MassActionInterface
 {
     private string $title;
 
-    private ?string $callback;
+    private \Closure|string|null $callback;
 
     private bool $confirm;
 
@@ -53,14 +53,14 @@ class MassAction implements MassActionInterface
         return $this->title;
     }
 
-    public function setCallback(string $callback): self
+    public function setCallback(\Closure|string $callback): self
     {
         $this->callback = $callback;
 
         return $this;
     }
 
-    public function getCallback(): ?string
+    public function getCallback(): \Closure|string|null
     {
         return $this->callback;
     }

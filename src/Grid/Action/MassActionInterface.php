@@ -26,7 +26,7 @@ interface MassActionInterface
      *
      * @return string
      */
-    public function getCallback(): ?string;
+    public function getCallback(): \Closure|string|null;
 
     /**
      * get action confirm.

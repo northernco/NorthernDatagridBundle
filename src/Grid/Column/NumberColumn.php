@@ -28,21 +28,21 @@ class NumberColumn extends Column
         'spellout'   => \NumberFormatter::SPELLOUT,
     ];
 
-    private int $style;
+    private ?int $style = null;
 
-    private string $locale;
+    private ?string $locale;
 
     private ?int $precision;
 
-    private int|bool $grouping;
+    private int|bool|null $grouping;
 
-    private int $roundingMode;
+    private ?int $roundingMode;
 
     private int|string|null $ruleSet;
 
-    private string $currencyCode;
+    private ?string $currencyCode;
 
-    private bool $fractional;
+    private ?bool $fractional;
 
     private ?int $maxFractionDigits;
 
@@ -163,7 +163,7 @@ class NumberColumn extends Column
         return $filters;
     }
 
-    public function setStyle($style)
+    public function setStyle(string $style): self
     {
         if (!isset(static::$styles[$style])) {
             throw new \InvalidArgumentException(sprintf('Expected parameter of style "%s", "%s" given', implode('", "', array_keys(static::$styles)), $this->style));
@@ -174,19 +174,19 @@ class NumberColumn extends Column
         return $this;
     }
 
-    public function getStyle()
+    public function getStyle(): ?int
     {
         return $this->style;
     }
 
-    public function setLocale(string $locale): self
+    public function setLocale(?string $locale): self
     {
         $this->locale = $locale;
 
         return $this;
     }
 
-    public function getLocale(): string
+    public function getLocale(): ?string
     {
         return $this->locale;
     }
@@ -203,31 +203,31 @@ class NumberColumn extends Column
         return $this->precision;
     }
 
-    public function setGrouping(int|bool $grouping): self
+    public function setGrouping(int|bool|null $grouping): self
     {
         $this->grouping = $grouping;
 
         return $this;
     }
 
-    public function getGrouping(): int|bool
+    public function getGrouping(): int|bool|null
     {
         return $this->grouping;
     }
 
-    public function setRoundingMode(int $roundingMode): self
+    public function setRoundingMode(?int $roundingMode): self
     {
         $this->roundingMode = $roundingMode;
 
         return $this;
     }
 
-    public function getRoundingMode(): int
+    public function getRoundingMode(): ?int
     {
         return $this->roundingMode;
     }
 
-    public function setRuleSet(string|int $ruleSet): self
+    public function setRuleSet(string|int|null $ruleSet): self
     {
         $this->ruleSet = $ruleSet;
 
@@ -239,7 +239,7 @@ class NumberColumn extends Column
         return $this->ruleSet;
     }
 
-    public function setCurrencyCode(string $currencyCode): self
+    public function setCurrencyCode(?string $currencyCode): self
     {
         $this->currencyCode = $currencyCode;
 
@@ -251,14 +251,14 @@ class NumberColumn extends Column
         return $this->currencyCode;
     }
 
-    public function setFractional(bool $fractional): self
+    public function setFractional(?bool $fractional): self
     {
         $this->fractional = $fractional;
 
         return $this;
     }
 
-    public function getFractional(): bool
+    public function getFractional(): ?bool
     {
         return $this->fractional;
     }

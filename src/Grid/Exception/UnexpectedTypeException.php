@@ -9,7 +9,7 @@ namespace APY\DataGridBundle\Grid\Exception;
  */
 class UnexpectedTypeException extends \InvalidArgumentException
 {
-    public function __construct(string $value, int $expectedType)
+    public function __construct(mixed $value, mixed $expectedType)
     {
         parent::__construct(
             sprintf(

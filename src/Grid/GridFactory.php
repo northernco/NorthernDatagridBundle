@@ -70,7 +70,7 @@ class GridFactory implements GridFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function create(string|GridTypeInterface|null $type = null, ?Source $source = null, array $options = []): Grid
+    public function create(string|array|GridTypeInterface|null $type = null, ?Source $source = null, array $options = []): Grid
     {
         return $this->createBuilder($type, $source, $options)->getGrid();
     }
@@ -78,7 +78,7 @@ class GridFactory implements GridFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createBuilder(string|GridTypeInterface|null $type = 'grid', ?Source $source = null, array $options = []): GridBuilder
+    public function createBuilder(string|GridTypeInterface|array|null $type = 'grid', ?Source $source = null, array $options = []): GridBuilder
     {
         $type    = $this->resolveType($type);
         $options = $this->resolveOptions($type, $source, $options);
@@ -108,7 +108,7 @@ class GridFactory implements GridFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createColumn(string $name, string|Column $type, array $options = []): Column
+    public function createColumn(string $name, string|int|Column $type, array $options = []): Column
     {
         if (!$type instanceof Column) {
             if (!is_string($type)) {
@@ -136,7 +136,7 @@ class GridFactory implements GridFactoryInterface
         return $column;
     }
 
-    private function resolveType(string|GridTypeInterface $type): GridTypeInterface
+    private function resolveType(string|array|GridTypeInterface $type): GridTypeInterface
     {
         if (!$type instanceof GridTypeInterface) {
             if (!is_string($type)) {

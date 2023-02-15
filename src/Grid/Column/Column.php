@@ -14,7 +14,7 @@ namespace APY\DataGridBundle\Grid\Column;
 
 use APY\DataGridBundle\Grid\Filter;
 use APY\DataGridBundle\Grid\Row;
-use Doctrine\Common\Version as DoctrineVersion;
+use Doctrine\ORM\Version;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
@@ -76,82 +76,79 @@ abstract class Column
         self::ALIGN_CENTER,
     ];
 
-    /**
-     * Internal parameters.
-     */
-    private $id;
+    protected string|int|null $id;
 
-    private $title;
+    protected ?string $title;
 
-    private $sortable;
+    protected ?bool $sortable;
 
-    private $filterable;
+    protected ?bool $filterable;
 
-    private $visible;
+    protected ?bool $visible;
 
-    private $callback;
+    protected ?\Closure $callback = null;
 
-    private $order;
+    protected ?int $order = null;
 
-    private $size;
+    protected ?int $size;
 
-    private $visibleForSource;
+    protected ?bool $visibleForSource;
 
-    private $primary;
+    protected ?bool $primary;
 
-    private $align;
+    protected ?string $align;
 
-    private $inputType;
+    protected ?string $inputType;
 
-    private $field;
+    protected ?string $field;
 
-    private $role;
+    protected ?string $role;
 
-    private $filterType;
+    protected ?string $filterType;
 
-    private $params;
+    protected ?array $params;
 
-    private $isSorted = false;
+    protected bool $isSorted = false;
 
-    private $authorizationChecker;
+    protected ?AuthorizationCheckerInterface $authorizationChecker = null;
 
-    private $data;
+    protected ?array $data;
 
-    private $operatorsVisible;
+    protected ?bool $operatorsVisible;
 
-    private $operators;
+    protected ?array $operators;
 
-    private $defaultOperator;
+    protected ?string $defaultOperator;
 
-    private $values = [];
+    protected array $values = [];
 
-    private $selectFrom;
+    protected ?string $selectFrom;
 
-    private $selectMulti;
+    protected ?bool $selectMulti;
 
-    private $selectExpanded;
+    protected ?bool $selectExpanded;
 
-    private $searchOnClick = false;
+    protected bool $searchOnClick = false;
 
-    private $safe;
+    protected string|bool|null $safe;
 
-    private $separator;
+    protected ?string $separator;
 
-    private $joinType;
+    protected ?string $joinType;
 
-    private $export;
+    protected ?bool $export;
 
-    private $class;
+    protected ?string $class;
 
-    private $isManualField;
+    protected ?bool $isManualField;
 
-    private $useHaving;
+    protected ?bool $useHaving;
 
-    private $isAggregate;
+    protected ?bool $isAggregate;
 
-    private $usePrefixTitle;
+    protected ?bool $usePrefixTitle;
 
-    private $translationDomain;
+    protected ?string $translationDomain;
 
     protected int $dataJunction = self::DATA_CONJUNCTION;
 
@@ -225,7 +222,7 @@ abstract class Column
         return $this->params;
     }
 
-    public function getParam($id, $default = null)
+    public function getParam(string|int $id, mixed $default = null): mixed
     {
         return isset($this->params[$id]) ? $this->params[$id] : $default;
     }
@@ -251,85 +248,49 @@ abstract class Column
      *
      * @return self
      */
-    public function manipulateRenderCell($callback)
+    public function manipulateRenderCell(\Closure $callback): self
     {
         $this->callback = $callback;
 
         return $this;
     }
 
-    public function getCallback(): mixed
+    public function getCallback(): ?\Closure
     {
         return $this->callback;
     }
 
-    /**
-     * Set column identifier.
-     *
-     * @param $id
-     *
-     * @return self
-     */
-    public function setId($id)
+    public function setId(string|int|null $id): self
     {
         $this->id = $id;
 
         return $this;
     }
 
-    /**
-     * get column identifier.
-     *
-     * @return int|string
-     */
-    public function getId()
+    public function getId(): string|int|null
     {
         return $this->id;
     }
 
-    /**
-     * get column render block identifier.
-     *
-     * @return int|string
-     */
-    public function getRenderBlockId()
+    public function getRenderBlockId(): string|int
     {
         // For Mapping fields and aggregate dql functions
         return str_replace(['.', ':'], '_', $this->id);
     }
 
-    /**
-     * Set column title.
-     *
-     * @param string $title
-     *
-     * @return \APY\DataGridBundle\Grid\Column\Column
-     */
-    public function setTitle($title)
+    public function setTitle(?string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * Get column title.
-     *
-     * @return string
-     */
-    public function getTitle()
+    public function getTitle(): string|bool|null
     {
         return $this->title;
     }
 
-    /**
-     * Set column visibility.
-     *
-     * @param bool $visible
-     *
-     * @return $this
-     */
-    public function setVisible($visible)
+    public function setVisible(?bool $visible): self
     {
         $this->visible = $visible;
 
@@ -347,39 +308,24 @@ abstract class Column
         return $visible;
     }
 
-    /**
-     * Return true if column is sorted.
-     *
-     * @return bool return true when column is sorted
-     */
-    public function isSorted()
+    public function isSorted(): bool
     {
         return $this->isSorted;
     }
 
-    public function setSortable($sortable)
+    public function setSortable(?bool $sortable): self
     {
         $this->sortable = $sortable;
 
         return $this;
     }
 
-    /**
-     * column ability to sort.
-     *
-     * @return bool return true when column can be sorted
-     */
-    public function isSortable()
+    public function isSortable(): bool
     {
         return $this->sortable;
     }
 
-    /**
-     * Return true if column is filtered.
-     *
-     * @return bool return true when column is filtered
-     */
-    public function isFiltered()
+    public function isFiltered(): bool
     {
         if ($this->hasFromOperandFilter()) {
             return true;
@@ -392,10 +338,7 @@ abstract class Column
         return $this->hasOperatorFilter();
     }
 
-    /**
-     * @return bool
-     */
-    private function hasFromOperandFilter()
+    private function hasFromOperandFilter(): bool
     {
         if (!isset($this->data['from'])) {
             return false;
@@ -408,10 +351,7 @@ abstract class Column
         return $this->data['from'] != static::DEFAULT_VALUE;
     }
 
-    /**
-     * @return bool
-     */
-    private function hasToOperandFilter()
+    private function hasToOperandFilter(): bool
     {
         if (!isset($this->data['to'])) {
             return false;
@@ -424,10 +364,7 @@ abstract class Column
         return $this->data['to'] != static::DEFAULT_VALUE;
     }
 
-    /**
-     * @return bool
-     */
-    private function hasOperatorFilter()
+    private function hasOperatorFilter(): bool
     {
         if (!isset($this->data['operator'])) {
             return false;
@@ -436,46 +373,24 @@ abstract class Column
         return $this->data['operator'] === self::OPERATOR_ISNULL || $this->data['operator'] === self::OPERATOR_ISNOTNULL;
     }
 
-    /**
-     * @param bool $filterable
-     *
-     * @return $this
-     */
-    public function setFilterable($filterable)
+    public function setFilterable(?bool $filterable): self
     {
         $this->filterable = $filterable;
 
         return $this;
     }
 
-    /**
-     * column ability to filter.
-     *
-     * @return bool return true when column can be filtred
-     */
-    public function isFilterable()
+    public function isFilterable(): bool
     {
         return $this->filterable;
     }
 
-    /**
-     * get default column order.
-     *
-     * @return string asc|desc
-     */
-    public function getDefaultOrder()
+    public function getDefaultOrder(): string
     {
         return 'asc';
     }
 
-    /**
-     * set column order.
-     *
-     * @param string $order asc|desc
-     *
-     * @return \APY\DataGridBundle\Grid\Column\Column
-     */
-    public function setOrder($order)
+    public function setOrder(?string $order): self
     {
         if ($order !== null) {
             $this->order    = $order;
@@ -485,24 +400,12 @@ abstract class Column
         return $this;
     }
 
-    /**
-     * get column order.
-     *
-     * @return string asc|desc
-     */
-    public function getOrder()
+    public function getOrder(): ?string
     {
         return $this->order;
     }
 
-    /**
-     * Set column width.
-     *
-     * @param int $size in pixels
-     *
-     * @return \APY\DataGridBundle\Grid\Column\Column
-     */
-    public function setSize($size)
+    public function setSize(?int $size): self
     {
         if ($size < -1) {
             throw new \InvalidArgumentException(sprintf('Unsupported column size %s, use positive value or -1 for auto resize', $size));
@@ -513,24 +416,12 @@ abstract class Column
         return $this;
     }
 
-    /**
-     * get column width.
-     *
-     * @return int column width in pixels
-     */
-    public function getSize()
+    public function getSize(): ?int
     {
         return $this->size;
     }
 
-    /**
-     * set filter data from session | request.
-     *
-     * @param  $data
-     *
-     * @return \APY\DataGridBundle\Grid\Column\Column
-     */
-    public function setData($data)
+    public function setData(array|string|null $data): self
     {
         $this->data = ['operator' => $this->getDefaultOperator(), 'from' => static::DEFAULT_VALUE, 'to' => static::DEFAULT_VALUE];
 
@@ -553,12 +444,7 @@ abstract class Column
         return $this;
     }
 
-    /**
-     * get filter data from session | request.
-     *
-     * @return array data
-     */
-    public function getData()
+    public function getData(): array
     {
         $result = [];
 
@@ -581,77 +467,41 @@ abstract class Column
         return $result;
     }
 
-    public function getDataAttribute(): array
+    public function getDataAttribute(): ?array
     {
         return $this->data;
     }
 
-    /**
-     * Return true if filter value is correct (has to be overridden in each Column class that can be filtered, in order to catch wrong values).
-     *
-     * @return bool
-     */
     public function isQueryValid(mixed $query): bool
     {
         return true;
     }
 
-    /**
-     * Set column visibility for source class.
-     *
-     * @param $visibleForSource
-     *
-     * @return \APY\DataGridBundle\Grid\Column\Column
-     */
-    public function setVisibleForSource($visibleForSource)
+    public function setVisibleForSource(?bool $visibleForSource): self
     {
         $this->visibleForSource = $visibleForSource;
 
         return $this;
     }
 
-    /**
-     * Return true is column in visible for source class.
-     *
-     * @return bool
-     */
-    public function isVisibleForSource()
+    public function isVisibleForSource(): bool
     {
         return $this->visibleForSource;
     }
 
-    /**
-     * Set column as primary.
-     *
-     * @param bool $primary
-     *
-     * @return $this
-     */
-    public function setPrimary($primary)
+    public function setPrimary(?bool $primary): self
     {
         $this->primary = $primary;
 
         return $this;
     }
 
-    /**
-     * Return true is column in primary.
-     *
-     * @return bool
-     */
-    public function isPrimary()
+    public function isPrimary(): bool
     {
         return $this->primary;
     }
 
-    /**
-     * Set column align.
-     *
-     * @param string $align left/right/center
-     *
-     * @return $this
-     */
-    public function setAlign($align)
+    public function setAlign(?string $align): self
     {
         if (!in_array($align, self::$aligns)) {
             throw new \InvalidArgumentException(sprintf('Unsupported align %s, just left, right and center are supported', $align));
@@ -662,63 +512,55 @@ abstract class Column
         return $this;
     }
 
-    /**
-     * get column align.
-     *
-     * @return bool
-     */
-    public function getAlign()
+    public function getAlign(): ?string
     {
         return $this->align;
     }
 
-    public function setInputType($inputType)
+    public function setInputType(?string $inputType): self
     {
         $this->inputType = $inputType;
 
         return $this;
     }
 
-    public function getInputType()
+    public function getInputType(): ?string
     {
         return $this->inputType;
     }
 
-    public function setField($field)
+    public function setField(?string $field): self
     {
         $this->field = $field;
 
         return $this;
     }
 
-    public function getField()
+    public function getField(): ?string
     {
         return $this->field;
     }
 
-    public function setRole($role)
+    public function setRole(?string $role): self
     {
         $this->role = $role;
 
         return $this;
     }
 
-    public function getRole()
+    public function getRole(): ?string
     {
         return $this->role;
     }
 
-    /**
-     * Filter.
-     */
-    public function setFilterType($filterType)
+    public function setFilterType(?string $filterType): self
     {
         $this->filterType = strtolower($filterType);
 
         return $this;
     }
 
-    public function getFilterType()
+    public function getFilterType(): ?string
     {
         return $this->filterType;
     }
@@ -778,42 +620,32 @@ abstract class Column
         return $filters;
     }
 
-    public function setDataJunction($dataJunction)
+    public function setDataJunction(?int $dataJunction): self
     {
         $this->dataJunction = $dataJunction;
 
         return $this;
     }
 
-    /**
-     * get data filter junction (how column filters are connected with column data).
-     *
-     * @return bool self::DATA_CONJUNCTION | self::DATA_DISJUNCTION
-     */
-    public function getDataJunction()
+    public function getDataJunction(): int
     {
         return $this->dataJunction;
     }
 
-    public function setOperators(array $operators)
+    public function setOperators(?array $operators): self
     {
         $this->operators = $operators;
 
         return $this;
     }
 
-    /**
-     * Return column filter operators.
-     *
-     * @return array $operators
-     */
-    public function getOperators()
+    public function getOperators(): array
     {
         // Issue with Doctrine
         // -------------------
         // @see http://www.doctrine-project.org/jira/browse/DDC-1857
         // @see http://www.doctrine-project.org/jira/browse/DDC-1858
-        if ($this->hasDQLFunction() && version_compare(DoctrineVersion::VERSION, '2.5') < 0) {
+        if ($this->hasDQLFunction() && version_compare(Version::VERSION, '2.5') < 0) {
             return array_intersect($this->operators, [
                 self::OPERATOR_EQ,
                 self::OPERATOR_NEQ,
@@ -829,7 +661,7 @@ abstract class Column
         return $this->operators;
     }
 
-    public function setDefaultOperator($defaultOperator)
+    public function setDefaultOperator(?string $defaultOperator): self
     {
         // @todo: should this be \InvalidArgumentException?
         if (!$this->hasOperator($defaultOperator)) {
@@ -841,94 +673,84 @@ abstract class Column
         return $this;
     }
 
-    public function getDefaultOperator()
+    public function getDefaultOperator(): ?string
     {
         return $this->defaultOperator;
     }
 
-    /**
-     * Return true if $operator is in $operators.
-     *
-     * @param string $operator
-     *
-     * @return bool
-     */
-    public function hasOperator($operator)
+    public function hasOperator(string $operator): bool
     {
         return in_array($operator, $this->operators);
     }
 
-    public function setOperatorsVisible($operatorsVisible)
+    public function setOperatorsVisible(?bool $operatorsVisible): self
     {
         $this->operatorsVisible = $operatorsVisible;
 
         return $this;
     }
 
-    public function getOperatorsVisible()
+    public function getOperatorsVisible(): ?bool
     {
         return $this->operatorsVisible;
     }
 
-    public function setValues(array $values)
+    public function setValues(array $values): self
     {
         $this->values = $values;
 
         return $this;
     }
 
-    public function getValues()
+    public function getValues(): array
     {
         return $this->values;
     }
 
-    public function setSelectFrom($selectFrom)
+    public function setSelectFrom(?string $selectFrom): self
     {
         $this->selectFrom = $selectFrom;
 
         return $this;
     }
 
-    public function getSelectFrom()
+    public function getSelectFrom(): ?string
     {
         return $this->selectFrom;
     }
 
-    public function getSelectMulti()
+    public function getSelectMulti(): ?bool
     {
         return $this->selectMulti;
     }
 
-    public function setSelectMulti($selectMulti)
+    public function setSelectMulti(?bool $selectMulti): self
     {
         $this->selectMulti = $selectMulti;
+
+        return $this;
     }
 
-    public function getSelectExpanded()
+    public function getSelectExpanded(): ?bool
     {
         return $this->selectExpanded;
     }
 
-    public function setSelectExpanded($selectExpanded)
+    public function setSelectExpanded(?bool $selectExpanded): self
     {
         $this->selectExpanded = $selectExpanded;
+
+        return $this;
     }
 
-    public function hasDQLFunction(&$matches = null)
+    public function hasDQLFunction(?array &$matches = null): false|int
     {
         $regex = '/(?P<all>(?P<field>\w+):(?P<function>\w+)(:)?(?P<parameters>\w*))$/';
 
         return ($matches === null) ? preg_match($regex, $this->field) : preg_match($regex, $this->field, $matches);
     }
 
-    /**
-     * Internal function.
-     *
-     * @param $authorizationChecker
-     *
-     * @return $this
-     */
-    public function setAuthorizationChecker(AuthorizationCheckerInterface $authorizationChecker)
+    public function setAuthorizationChecker(?AuthorizationCheckerInterface $authorizationChecker): self
     {
         $this->authorizationChecker = $authorizationChecker;
 
@@ -940,7 +762,7 @@ abstract class Column
         return $this->authorizationChecker;
     }
 
-    public function getParentType()
+    public function getParentType(): string
     {
         return '';
     }
@@ -950,167 +772,144 @@ abstract class Column
         return '';
     }
 
-    /**
-     * By default all filers include a JavaScript onchange=submit block.  This
-     * does not make sense in some cases, such as with multi-select filters.
-     *
-     * @todo Eventaully make this configurable via annotations?
-     */
-    public function isFilterSubmitOnChange()
+    public function isFilterSubmitOnChange(): bool
     {
         return !$this->getSelectMulti();
     }
 
-    public function setSearchOnClick($searchOnClick)
+    public function setSearchOnClick(?bool $searchOnClick): self
     {
         $this->searchOnClick = $searchOnClick;
 
         return $this;
     }
 
-    public function getSearchOnClick()
+    public function getSearchOnClick(): bool
     {
         return $this->searchOnClick;
     }
 
-    /**
-     * Allows to set twig escaping parameter (html, js, css, url, html_attr)
-     * or to display raw value if type is false.
-     *
-     * @param string|bool $safeOption can be one of false, html, js, css, url, html_attr
-     *
-     * @return \APY\DataGridBundle\Grid\Column\Column
-     */
-    public function setSafe($safeOption)
+    public function setSafe(string|bool|null $safeOption): self
     {
         $this->safe = $safeOption;
 
         return $this;
     }
 
-    public function getSafe()
+    public function getSafe(): string|bool|null
     {
         return $this->safe;
     }
 
-    public function setSeparator($separator)
+    public function setSeparator(?string $separator): self
     {
         $this->separator = $separator;
 
         return $this;
     }
 
-    public function getSeparator()
+    public function getSeparator(): ?string
     {
         return $this->separator;
     }
 
-    public function setJoinType($type)
+    public function setJoinType(?string $type): self
     {
         $this->joinType = $type;
 
         return $this;
     }
 
-    public function getJoinType()
+    public function getJoinType(): ?string
     {
         return $this->joinType;
     }
 
-    public function setExport($export)
+    public function setExport(?bool $export): self
     {
         $this->export = $export;
 
         return $this;
     }
 
-    public function getExport()
+    public function getExport(): ?bool
     {
         return $this->export;
     }
 
-    public function setClass($class)
+    public function setClass(?string $class): self
     {
         $this->class = $class;
 
         return $this;
     }
 
-    public function getClass()
+    public function getClass(): ?string
     {
         return $this->class;
     }
 
-    public function setIsManualField($isManualField)
+    public function setIsManualField(?bool $isManualField): self
     {
         $this->isManualField = $isManualField;
+
+        return $this;
     }
 
-    public function getIsManualField()
+    public function getIsManualField(): ?bool
     {
         return $this->isManualField;
     }
 
-    public function setUseHaving($useHaving)
+    public function setUseHaving(?bool $useHaving): self
     {
         $this->useHaving = $useHaving;
+
+        return $this;
     }
 
-    public function getUseHaving()
+    public function getUseHaving(): ?bool
     {
         return $this->useHaving;
     }
 
-    public function setIsAggregate($isAggregate)
+    public function setIsAggregate(?bool $isAggregate): self
     {
         $this->isAggregate = $isAggregate;
+
+        return $this;
     }
 
-    public function getIsAggregate()
+    public function getIsAggregate(): ?bool
     {
         return $this->isAggregate;
     }
 
-    public function getUsePrefixTitle()
+    public function getUsePrefixTitle(): ?bool
     {
         return $this->usePrefixTitle;
     }
 
-    public function setUsePrefixTitle($usePrefixTitle)
+    public function setUsePrefixTitle(?bool $usePrefixTitle): self
     {
         $this->usePrefixTitle = $usePrefixTitle;
 
         return $this;
     }
 
-    /**
-     * Get TranslationDomain.
-     *
-     * @return string
-     */
-    public function getTranslationDomain()
+    public function getTranslationDomain(): ?string
     {
         return $this->translationDomain;
     }
 
-    /**
-     * Set TranslationDomain.
-     *
-     * @param string $translationDomain
-     *
-     * @return $this
-     */
-    public function setTranslationDomain($translationDomain)
+    public function setTranslationDomain(?string $translationDomain): self
     {
         $this->translationDomain = $translationDomain;
 
         return $this;
     }
 
-    /**
-     * @return array
-     */
-    public static function getAvailableOperators()
+    public static function getAvailableOperators(): array
     {
         return self::$availableOperators;
     }

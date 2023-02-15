@@ -22,15 +22,15 @@ class DateTimeColumn extends Column
 
     protected int $timeFormat = \IntlDateFormatter::MEDIUM;
 
-    protected string $format;
+    protected ?string $format;
 
     protected string $fallbackFormat = 'Y-m-d H:i:s';
 
-    protected string $inputFormat;
+    protected ?string $inputFormat;
 
     protected string $fallbackInputFormat = 'Y-m-d H:i:s';
 
-    protected string $timezone;
+    protected ?string $timezone;
 
     public function __initialize(array $params): void
     {
@@ -137,36 +137,36 @@ class DateTimeColumn extends Column
         return $date;
     }
 
-    public function setFormat(string $format): self
+    public function setFormat(?string $format): self
     {
         $this->format = $format;
 
         return $this;
     }
 
-    public function getFormat(): string
+    public function getFormat(): ?string
     {
         return $this->format;
     }
 
-    public function setInputFormat(string $inputFormat): self
+    public function setInputFormat(?string $inputFormat): self
     {
         $this->inputFormat = $inputFormat;
 
         return $this;
     }
 
-    public function getInputFormat(): string
+    public function getInputFormat(): ?string
     {
         return $this->inputFormat;
     }
 
-    public function getTimezone(): string
+    public function getTimezone(): ?string
     {
         return $this->timezone;
     }
 
-    public function setTimezone(string $timezone): self
+    public function setTimezone(?string $timezone): self
     {
         $this->timezone = $timezone;
 

@@ -7,7 +7,6 @@ use APY\DataGridBundle\Grid\Exception\InvalidArgumentException;
 use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -76,7 +75,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function add(string $name, string|Column $type, array $options = []): self
+    public function add(string $name, string|array|Column $type, array $options = []): self
     {
         if (!$type instanceof Column) {
             if (!is_string($type)) {

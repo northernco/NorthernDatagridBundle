@@ -32,7 +32,7 @@ interface GridFactoryInterface
      *
      * @return GridBuilder
      */
-    public function createBuilder(string|GridTypeInterface|null $type = null, ?Source $source = null, array $options = []): GridBuilder;
+    public function createBuilder(string|array|GridTypeInterface|null $type = null, ?Source $source = null, array $options = []): GridBuilder;
 
     /**
      * Returns a column.

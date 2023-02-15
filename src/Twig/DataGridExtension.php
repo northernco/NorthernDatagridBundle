@@ -214,9 +214,9 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
      * @param \APY\DataGridBundle\Grid\Grid          $grid
      * @param \APY\DataGridBundle\Grid\Column\Column $param
      *
-     * @return string
+     * @return string|void
      */
-    public function getGridUrl($section, Grid $grid, ?Column $param = null): string
+    public function getGridUrl($section, Grid $grid, Column|string|int|null $param = null)
     {
         $prefix = $grid->getRouteUrl() . (strpos($grid->getRouteUrl(), '?') ? '&' : '?') . $grid->getHash() . '[';
 

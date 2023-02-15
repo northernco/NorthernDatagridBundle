@@ -23,7 +23,7 @@ interface GridConfigInterface
      *
      * @return Source The source of the grid.
      */
-    public function getSource(): Source;
+    public function getSource(): ?Source;
 
     /**
      * Returns the grid type used to construct the grid.
@@ -37,7 +37,7 @@ interface GridConfigInterface
      *
      * @return string The route of the grid.
      */
-    public function getRoute(): string;
+    public function getRoute(): ?string;
 
     /**
      * Returns the route parameters of the grid.
@@ -51,7 +51,7 @@ interface GridConfigInterface
      *
      * @return bool Whether the grid is persisted.
      */
-    public function isPersisted(): bool;
+    public function isPersisted(): ?bool;
 
     /**
      * Returns the default page.
@@ -105,14 +105,14 @@ interface GridConfigInterface
      *
      * @return int The maximum number of results of the grid.
      */
-    public function getMaxResults(): int;
+    public function getMaxResults(): ?int;
 
     /**
      * Returns the maximum number of items per page.
      *
      * @return int The maximum number of items per page.
      */
-    public function getMaxPerPage(): int;
+    public function getMaxPerPage(): ?int;
 
     /**
      * Returns the default order.
@@ -126,14 +126,14 @@ interface GridConfigInterface
      *
      * @return string The default sort field.
      */
-    public function getSortBy(): string;
+    public function getSortBy(): ?string;
 
     /**
      * Returns the default group field.
      *
      * @return string|array
      */
-    public function getGroupBy(): string|array;
+    public function getGroupBy(): string|array|null;
 
     /**
      * Returns whether or not mass actions should be opened in a new tab.

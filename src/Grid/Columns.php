@@ -12,7 +12,6 @@
 
 namespace APY\DataGridBundle\Grid;
 
-use APY\DataGridBundle\Grid\Column\ActionsColumn;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
@@ -110,7 +109,7 @@ class Columns implements \IteratorAggregate, \Countable
         return isset($this->extensions[$type]);
     }
 
-    public function getExtensionForColumnType(string $type): bool
+    public function getExtensionForColumnType(string $type): mixed
     {
         // @todo: should not index be checked?
         return $this->extensions[$type];

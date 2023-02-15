@@ -24,7 +24,7 @@ class Row
 
     private ?string $legend;
 
-    private string $primaryField;
+    private string|array|null $primaryField = null;
 
     private ?EntityRepository $repository;
 
@@ -82,17 +82,14 @@ class Row
         return $this->fields[$this->primaryField];
     }
 
-    public function setPrimaryField(string $primaryField): self
+    public function setPrimaryField(string|array|null $primaryField): self
     {
         $this->primaryField = $primaryField;
 
         return $this;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getPrimaryField(): string
+    public function getPrimaryField(): string|array|null
     {
         return $this->primaryField;
     }

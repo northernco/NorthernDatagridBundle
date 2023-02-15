@@ -61,7 +61,7 @@ class GridManager implements \IteratorAggregate, \Countable
         return $grid;
     }
 
-    public function isReadyForRedirect(): bool
+    public function isReadyForRedirect(): ?bool
     {
         if ($this->grids->count() == 0) {
             throw new \RuntimeException(self::NO_GRID_EX_MSG);
@@ -97,7 +97,7 @@ class GridManager implements \IteratorAggregate, \Countable
         return $isReadyForRedirect;
     }
 
-    public function isReadyForExport(): bool
+    public function isReadyForExport(): ?bool
     {
         if ($this->grids->count() == 0) {
             throw new \RuntimeException(self::NO_GRID_EX_MSG);
@@ -190,7 +190,7 @@ class GridManager implements \IteratorAggregate, \Countable
         }
     }
 
-    public function getRouteUrl(): string
+    public function getRouteUrl(): ?string
     {
         return $this->routeUrl;
     }

@@ -71,9 +71,9 @@ abstract class Source implements DriverInterface
         return $this;
     }
 
-    abstract public function execute(ColumnsIterator $columns, int $page = 0, int $limit = 0, ?int $maxResults = null, int $gridDataJunction = Column::DATA_CONJUNCTION): Rows;
+    abstract public function execute(ColumnsIterator|Columns|array $columns, ?int $page = 0, ?int $limit = 0, ?int $maxResults = null, int $gridDataJunction = Column::DATA_CONJUNCTION): Rows|array;
 
-    abstract public function getTotalCount(?int $maxResults = null): int;
+    abstract public function getTotalCount(?int $maxResults = null): ?int;
 
     abstract public function initialise(ManagerRegistry $doctrine, Manager $mapping): void;
 
@@ -94,9 +94,9 @@ abstract class Source implements DriverInterface
         return [];
     }
 
-    abstract public function populateSelectFilters(array $columns, bool $loop = false): void;
+    abstract public function populateSelectFilters(Columns|array $columns, bool $loop = false): void;
 
-    abstract public function getHash(): string;
+    abstract public function getHash(): ?string;
 
     abstract public function delete(array $ids): void;
 
@@ -164,7 +164,7 @@ abstract class Source implements DriverInterface
         return $items;
     }
 
-    public function executeFromData(Columns $columns, int $page = 0, int $limit = 0, ?int $maxResults = null): Rows
+    public function executeFromData(Columns|ColumnsIterator|array $columns, ?int $page = 0, ?int $limit = 0, ?int $maxResults = null): Rows|array
     {
         // Populate from data
         $items            = $this->getItemsFromData($columns);
@@ -456,12 +456,12 @@ abstract class Source implements DriverInterface
         }
     }
 
-    public function getTotalCountFromData(?int $maxResults = null): int
+    public function getTotalCountFromData(?int $maxResults = null): ?int
     {
         return $maxResults === null ? $this->count : min($this->count, $maxResults);
     }
 
-    protected function prepareStringForLikeCompare(string $input, ?string $type = null)
+    protected function prepareStringForLikeCompare(string $input, ?string $type = null): string
     {
         if ($type === 'array') {
             $outputString = str_replace(':{i:0;', ':{', serialize($input));

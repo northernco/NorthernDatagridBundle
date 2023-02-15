@@ -57,7 +57,7 @@ interface RowActionInterface
      *
      * @return string
      */
-    public function getColumn(): string;
+    public function getColumn(): ?string;
 
     /**
      * get route parameters.

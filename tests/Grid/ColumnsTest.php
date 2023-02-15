@@ -38,16 +38,15 @@ class ColumnsTest extends TestCase
 
     public function testAddColumnsOrder()
     {
-        [$column1, $column2, $column3, $column4, $column5] = $this->buildColumnMocks(5);
+        [$column1, $column2, $column3, $column4] = $this->buildColumnMocks(4);
 
         $this->columns
             ->addColumn($column1)
             ->addColumn($column2, 1)
             ->addColumn($column3, 2)
-            ->addColumn($column4, -1)
-            ->addColumn($column5, 'foo');
+            ->addColumn($column4, -1);
 
-        $this->assertSame([$column2, $column3, $column4, $column1, $column5], iterator_to_array($this->columns->getIterator()));
+        $this->assertSame([$column2, $column3, $column4, $column1], iterator_to_array($this->columns->getIterator()));
     }
 
     public function testRaiseExceptionIfGetColumnByIdDoesNotExists()

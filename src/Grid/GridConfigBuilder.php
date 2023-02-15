@@ -12,39 +12,39 @@ use APY\DataGridBundle\Grid\Source\Source;
  */
 class GridConfigBuilder implements GridConfigBuilderInterface
 {
-    private string $name;
+    protected string $name;
 
-    private GridTypeInterface $type;
+    protected GridTypeInterface $type;
 
-    private Source $source;
+    protected ?Source $source = null;
 
-    private string $route;
+    protected ?string $route = null;
 
-    private array $routeParameters = [];
+    protected array $routeParameters = [];
 
-    private bool $persistence;
+    protected ?bool $persistence = null;
 
-    private int $page = 0;
+    protected int $page = 0;
 
-    private int $limit;
+    protected ?int $limit = null;
 
-    private int $maxResults;
+    protected ?int $maxResults = null;
 
-    private bool $filterable = true;
+    protected bool $filterable = true;
 
-    private bool $sortable = true;
+    protected bool $sortable = true;
 
-    private string $sortBy;
+    protected ?string $sortBy = null;
 
-    private string $order = 'asc';
+    protected string $order = 'asc';
 
-    private string|array $groupBy;
+    protected string|array|null $groupBy = null;
 
-    private bool $massActionsInNewTab;
+    protected bool $massActionsInNewTab = false;
 
-    private array $actions;
+    protected array $actions;
 
-    private array $options;
+    protected array $options;
 
     public function __construct(string $name, array $options = [])
     {
@@ -63,12 +63,12 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getSource(): Source
+    public function getSource(): ?Source
     {
         return $this->source;
     }
 
-    public function setSource(Source $source): self
+    public function setSource(?Source $source): self
     {
         $this->source = $source;
 
@@ -93,7 +93,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getRoute(): string
+    public function getRoute(): ?string
     {
         return $this->route;
     }
@@ -123,12 +123,12 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function isPersisted(): bool
+    public function isPersisted(): ?bool
     {
         return $this->persistence;
     }
 
-    public function setPersistence(bool $persistence): self
+    public function setPersistence(?bool $persistence): self
     {
         $this->persistence = $persistence;
 
@@ -177,24 +177,24 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getMaxPerPage(): int
+    public function getMaxPerPage(): ?int
     {
         return $this->limit;
     }
 
-    public function setMaxPerPage(int $limit): self
+    public function setMaxPerPage(?int $limit): self
     {
         $this->limit = $limit;
 
         return $this;
     }
 
-    public function getMaxResults(): int
+    public function getMaxResults(): ?int
     {
         return $this->maxResults;
     }
 
-    public function setMaxResults(int $maxResults): self
+    public function setMaxResults(?int $maxResults): self
     {
         $this->maxResults = $maxResults;
 
@@ -231,12 +231,12 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getOrder(): int
+    public function getOrder(): string
     {
         return $this->order;
     }
 
-    public function setOrder(int $order): self
+    public function setOrder(string $order): self
     {
         $this->order = $order;
 
@@ -246,12 +246,12 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getSortBy(): string
+    public function getSortBy(): ?string
     {
         return $this->sortBy;
     }
 
-    public function setSortBy(string $sortBy): self
+    public function setSortBy(?string $sortBy): self
     {
         $this->sortBy = $sortBy;
 
@@ -261,12 +261,12 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getGroupBy(): array|string
+    public function getGroupBy(): array|string|null
     {
         return $this->groupBy;
     }
 
-    public function setGroupBy(array|string $groupBy): self
+    public function setGroupBy(array|string|null $groupBy): self
     {
         $this->groupBy = $groupBy;
 
