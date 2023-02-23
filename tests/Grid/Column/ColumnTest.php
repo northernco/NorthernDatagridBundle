@@ -12,7 +12,7 @@ use Symfony\Component\Security\Core\Role\Role;
 
 class ColumnTest extends TestCase
 {
-    public function testInitializeDefaultValues()
+    public function testInitializeDefaultValues(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -45,7 +45,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('<br />', $mock->getSeparator());
     }
 
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -151,7 +151,7 @@ class ColumnTest extends TestCase
         $this->assertEquals($translationDomain, $mock->getTranslationDomain());
     }
 
-    public function testRenderCellWithCallback()
+    public function testRenderCellWithCallback(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -166,7 +166,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(1, $mock->renderCell($value, $row, $router));
     }
 
-    public function testRenderCellWithBoolValue()
+    public function testRenderCellWithBoolValue(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -180,7 +180,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('bar', $mock->renderCell('1', $row, $router));
     }
 
-    public function testRenderCell()
+    public function testRenderCell(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -191,7 +191,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('bar', $mock->renderCell('foo', $row, $router));
     }
 
-    public function testManipulateRenderCell()
+    public function testManipulateRenderCell(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -207,7 +207,7 @@ class ColumnTest extends TestCase
         $this->assertEquals($callback, $mock->getCallback());
     }
 
-    public function testGetId()
+    public function testGetId(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setId(1);
@@ -215,7 +215,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(1, $mock->getId());
     }
 
-    public function testGetRenderBlockId()
+    public function testGetRenderBlockId(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setId('foo.bar:foobar');
@@ -223,7 +223,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('foo_bar_foobar', $mock->getRenderBlockId());
     }
 
-    public function testGetTitle()
+    public function testGetTitle(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -233,7 +233,7 @@ class ColumnTest extends TestCase
         $this->assertEquals($title, $mock->getTitle());
     }
 
-    public function testSetVisible()
+    public function testSetVisible(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -243,7 +243,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isVisible());
     }
 
-    public function testItIsNotVisibleWhenNotExported()
+    public function testItIsNotVisibleWhenNotExported(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -254,7 +254,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->isVisible($exported));
     }
 
-    public function testItIsVisibleIfNotExported()
+    public function testItIsVisibleIfNotExported(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -265,7 +265,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isVisible($exported));
     }
 
-    public function testItIsVisibleIfNotExportedAndRoleNotSetted()
+    public function testItIsVisibleIfNotExportedAndRoleNotSetted(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -277,7 +277,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isVisible($exported));
     }
 
-    public function testItIsVisibleIfNotExportedAndGranted()
+    public function testItIsVisibleIfNotExportedAndGranted(): void
     {
         $mock        = $this->getMockForAbstractClass(Column::class);
         $role        = $this->createMock(Role::class);
@@ -293,7 +293,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isVisible($exported));
     }
 
-    public function testItIsNotVisibleIfNotExportedButNotGranted()
+    public function testItIsNotVisibleIfNotExportedButNotGranted(): void
     {
         $mock        = $this->getMockForAbstractClass(Column::class);
         $role        = $this->createMock(Role::class);
@@ -309,7 +309,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->isVisible($exported));
     }
 
-    public function testItIsNotVisibleWhenExported()
+    public function testItIsNotVisibleWhenExported(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -320,7 +320,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->isVisible($exported));
     }
 
-    public function testItIsVisibleIfExported()
+    public function testItIsVisibleIfExported(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -331,7 +331,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isVisible($exported));
     }
 
-    public function testItIsVisibleIfExportedAndRoleNotSetted()
+    public function testItIsVisibleIfExportedAndRoleNotSetted(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -343,7 +343,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isVisible($exported));
     }
 
-    public function testItIsVisibleIfExportedAndGranted()
+    public function testItIsVisibleIfExportedAndGranted(): void
     {
         $mock        = $this->getMockForAbstractClass(Column::class);
         $role        = $this->createMock(Role::class);
@@ -359,7 +359,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isVisible($exported));
     }
 
-    public function testItIsNotVisibleIfExportedButNotGranted()
+    public function testItIsNotVisibleIfExportedButNotGranted(): void
     {
         $mock        = $this->getMockForAbstractClass(Column::class);
         $role        = $this->createMock(Role::class);
@@ -375,14 +375,14 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->isVisible($exported));
     }
 
-    public function testIsNotSortedWhenNotOrdered()
+    public function testIsNotSortedWhenNotOrdered(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
         $this->assertFalse($mock->isSorted());
     }
 
-    public function testIsSortedWhenOrdered()
+    public function testIsSortedWhenOrdered(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setOrder(1);
@@ -390,7 +390,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isSorted());
     }
 
-    public function testSetSortable()
+    public function testSetSortable(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSortable(true);
@@ -398,7 +398,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isSortable());
     }
 
-    public function testIsSortable()
+    public function testIsSortable(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSortable(true);
@@ -406,14 +406,14 @@ class ColumnTest extends TestCase
         $this->assertTrue(true, $mock->isSortable());
     }
 
-    public function testIsNotFilteredIfNeitherOperatorNorOperandsSetted()
+    public function testIsNotFilteredIfNeitherOperatorNorOperandsSetted(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
         $this->assertFalse($mock->isFiltered());
     }
 
-    public function testIsNotFilteredIfFromOperandHasDefaultValue()
+    public function testIsNotFilteredIfFromOperandHasDefaultValue(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['from' => Column::DEFAULT_VALUE]);
@@ -421,7 +421,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->isFiltered());
     }
 
-    public function testIsNotFilteredIfToOperandHasDefaultValue()
+    public function testIsNotFilteredIfToOperandHasDefaultValue(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['to' => Column::DEFAULT_VALUE]);
@@ -429,7 +429,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->isFiltered());
     }
 
-    public function testIsNotFilteredIfOperatorNeitherIsIsNullNorIsNotNull()
+    public function testIsNotFilteredIfOperatorNeitherIsIsNullNorIsNotNull(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_LIKE]);
@@ -437,7 +437,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->isFiltered());
     }
 
-    public function testIsFilteredIfFromOperandHasValueDifferentThanDefault()
+    public function testIsFilteredIfFromOperandHasValueDifferentThanDefault(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['from' => 1]);
@@ -445,7 +445,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isFiltered());
     }
 
-    public function testIsFilteredIfToOperandHasValueDifferentThanDefault()
+    public function testIsFilteredIfToOperandHasValueDifferentThanDefault(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['to' => 1]);
@@ -453,7 +453,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isFiltered());
     }
 
-    public function testIsFilteredIfOperatorIsNull()
+    public function testIsFilteredIfOperatorIsNull(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_ISNULL]);
@@ -461,7 +461,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isFiltered());
     }
 
-    public function testIsFilteredIfOperatorIsNotNull()
+    public function testIsFilteredIfOperatorIsNotNull(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_ISNOTNULL]);
@@ -469,7 +469,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isFiltered());
     }
 
-    public function testIsFilterable()
+    public function testIsFilterable(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setFilterable(true);
@@ -477,7 +477,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isFilterable());
     }
 
-    public function testItDoesNotSetOrderIfOrderIsNull()
+    public function testItDoesNotSetOrderIfOrderIsNull(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setOrder(null);
@@ -486,7 +486,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->isSorted());
     }
 
-    public function testItDoesSetOrderIfZero()
+    public function testItDoesSetOrderIfZero(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setOrder(0);
@@ -495,7 +495,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isSorted());
     }
 
-    public function testItDoesSetOrder()
+    public function testItDoesSetOrder(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setOrder(1);
@@ -504,7 +504,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isSorted());
     }
 
-    public function testGetOrder()
+    public function testGetOrder(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setOrder(1);
@@ -512,7 +512,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(1, $mock->getOrder());
     }
 
-    public function testRaiseExceptionIfSizeNotAllowed()
+    public function testRaiseExceptionIfSizeNotAllowed(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -521,7 +521,7 @@ class ColumnTest extends TestCase
         $mock->setSize(-2);
     }
 
-    public function testAutoResize()
+    public function testAutoResize(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSize(-1);
@@ -529,7 +529,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(-1, $mock->getSize());
     }
 
-    public function testGetSize()
+    public function testGetSize(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSize(3);
@@ -537,7 +537,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(3, $mock->getSize());
     }
 
-    public function testDataDefaultIfNoDataSetted()
+    public function testDataDefaultIfNoDataSetted(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData([]);
@@ -552,7 +552,7 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testSetNullOperatorWithoutFromToValues()
+    public function testSetNullOperatorWithoutFromToValues(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_ISNULL]);
@@ -567,7 +567,7 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testSetNotNullOperatorWithoutFromToValues()
+    public function testSetNotNullOperatorWithoutFromToValues(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_ISNOTNULL]);
@@ -582,7 +582,7 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testDoesNotSetDataIfOperatorNotNotNullOrNullNoFromToValues()
+    public function testDoesNotSetDataIfOperatorNotNotNullOrNullNoFromToValues(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -604,7 +604,7 @@ class ColumnTest extends TestCase
         }
     }
 
-    public function testItSetsData()
+    public function testItSetsData(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -626,7 +626,7 @@ class ColumnTest extends TestCase
         }
     }
 
-    public function testGetDataNullOpearatorWithoutValues()
+    public function testGetDataNullOpearatorWithoutValues(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_ISNULL]);
@@ -639,7 +639,7 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testGetDataNotNullOpearatorWithoutValues()
+    public function testGetDataNotNullOpearatorWithoutValues(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -653,7 +653,7 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testGetEmptyDataIfOperatorNotNotNullOrNullNoFromToValues()
+    public function testGetEmptyDataIfOperatorNotNotNullOrNullNoFromToValues(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -668,7 +668,7 @@ class ColumnTest extends TestCase
         }
     }
 
-    public function testGetData()
+    public function testGetData(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -690,14 +690,14 @@ class ColumnTest extends TestCase
         }
     }
 
-    public function testQueryIsAlwaysValid()
+    public function testQueryIsAlwaysValid(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
         $this->assertTrue($mock->isQueryValid('foo'));
     }
 
-    public function testIsVisibleForSource()
+    public function testIsVisibleForSource(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setVisibleForSource(true);
@@ -705,7 +705,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isVisibleForSource());
     }
 
-    public function testIsPrimary()
+    public function testIsPrimary(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setPrimary(true);
@@ -713,7 +713,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isPrimary());
     }
 
-    public function testItThrowsExceptionIfSetAnAlignNotAllowed()
+    public function testItThrowsExceptionIfSetAnAlignNotAllowed(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -722,7 +722,7 @@ class ColumnTest extends TestCase
         $mock->setAlign('foo');
     }
 
-    public function testGetAlign()
+    public function testGetAlign(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setAlign(Column::ALIGN_RIGHT);
@@ -730,7 +730,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(Column::ALIGN_RIGHT, $mock->getAlign());
     }
 
-    public function testGetInputType()
+    public function testGetInputType(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setInputType('string');
@@ -738,7 +738,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('string', $mock->getInputType());
     }
 
-    public function testGetField()
+    public function testGetField(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setField('foo');
@@ -746,7 +746,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('foo', $mock->getField());
     }
 
-    public function testGetRole()
+    public function testGetRole(): void
     {
         $role = $this->createMock(Role::class);
         $mock = $this->getMockForAbstractClass(Column::class);
@@ -755,7 +755,7 @@ class ColumnTest extends TestCase
         $this->assertEquals($role, $mock->getRole());
     }
 
-    public function testGetFilterType()
+    public function testGetFilterType(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setFilterType('TEXTBOX');
@@ -763,7 +763,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('textbox', $mock->getFilterType());
     }
 
-    public function testGetDataJunction()
+    public function testGetDataJunction(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setDataJunction(Column::DATA_DISJUNCTION);
@@ -771,7 +771,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(Column::DATA_DISJUNCTION, $mock->getDataJunction());
     }
 
-    public function testItThrowsExceptionIfSetDefaultOperatorWithOperatorNotAllowed()
+    public function testItThrowsExceptionIfSetDefaultOperatorWithOperatorNotAllowed(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -780,7 +780,7 @@ class ColumnTest extends TestCase
         $mock->setDefaultOperator('foo');
     }
 
-    public function testGetDefaultOperator()
+    public function testGetDefaultOperator(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setDefaultOperator(Column::OPERATOR_LTE);
@@ -788,7 +788,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(Column::OPERATOR_LTE, $mock->getDefaultOperator());
     }
 
-    public function testHasOperator()
+    public function testHasOperator(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -796,7 +796,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->hasOperator('foo'));
     }
 
-    public function testGetOperatorsVisible()
+    public function testGetOperatorsVisible(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setOperatorsVisible(false);
@@ -804,7 +804,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->getOperatorsVisible());
     }
 
-    public function testGetValues()
+    public function testGetValues(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -814,7 +814,7 @@ class ColumnTest extends TestCase
         $this->assertEquals($values, $mock->getValues());
     }
 
-    public function testGetSelectFrom()
+    public function testGetSelectFrom(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSelectFrom('source');
@@ -822,7 +822,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('source', $mock->getSelectFrom());
     }
 
-    public function testGetSelectMulti()
+    public function testGetSelectMulti(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSelectMulti(true);
@@ -830,7 +830,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->getSelectMulti());
     }
 
-    public function testGetSelectExpanded()
+    public function testGetSelectExpanded(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSelectExpanded(true);
@@ -838,7 +838,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->getSelectExpanded());
     }
 
-    public function testSetAuthChecker()
+    public function testSetAuthChecker(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -848,21 +848,21 @@ class ColumnTest extends TestCase
         $this->assertEquals($authChecker, $mock->getAuthorizationChecker());
     }
 
-    public function testNoParentType()
+    public function testNoParentType(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
         $this->assertEmpty($mock->getParentType());
     }
 
-    public function testNoType()
+    public function testNoType(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
         $this->assertEmpty($mock->getType());
     }
 
-    public function testIsFilterSubmitOnChange()
+    public function testIsFilterSubmitOnChange(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSelectMulti(true);
@@ -875,7 +875,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->isFilterSubmitOnChange());
     }
 
-    public function testGetSearchOnClick()
+    public function testGetSearchOnClick(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSearchOnClick(false);
@@ -883,7 +883,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->getSearchOnClick());
     }
 
-    public function testGetSafe()
+    public function testGetSafe(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSafe('html');
@@ -891,7 +891,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('html', $mock->getSafe());
     }
 
-    public function testGetSeparator()
+    public function testGetSeparator(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSeparator(';');
@@ -899,7 +899,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(';', $mock->getSeparator());
     }
 
-    public function testGetJoinType()
+    public function testGetJoinType(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setJoinType('left');
@@ -907,7 +907,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('left', $mock->getJoinType());
     }
 
-    public function testGetExport()
+    public function testGetExport(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setExport(true);
@@ -915,7 +915,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->getExport());
     }
 
-    public function testGetClass()
+    public function testGetClass(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setClass('aClass');
@@ -923,7 +923,7 @@ class ColumnTest extends TestCase
         $this->assertEquals('aClass', $mock->getClass());
     }
 
-    public function testGetIsManualField()
+    public function testGetIsManualField(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setIsManualField(true);
@@ -931,7 +931,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->getIsManualField());
     }
 
-    public function testGetIsAggregate()
+    public function testGetIsAggregate(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setIsAggregate(true);
@@ -939,7 +939,7 @@ class ColumnTest extends TestCase
         $this->assertTrue($mock->getIsAggregate());
     }
 
-    public function testGetUsePrefixTitle()
+    public function testGetUsePrefixTitle(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setUsePrefixTitle(false);
@@ -947,7 +947,7 @@ class ColumnTest extends TestCase
         $this->assertFalse($mock->getUsePrefixTitle());
     }
 
-    public function testGetTranslationDomain()
+    public function testGetTranslationDomain(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setTranslationDomain('it');
@@ -955,14 +955,14 @@ class ColumnTest extends TestCase
         $this->assertEquals('it', $mock->getTranslationDomain());
     }
 
-    public function testGetFiltersWithoutOperator()
+    public function testGetFiltersWithoutOperator(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
         $this->assertEmpty($mock->getFilters('aSource'));
     }
 
-    public function testGetFiltersBtwWithoutFrom()
+    public function testGetFiltersBtwWithoutFrom(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_BTW, 'to' => 10]);
@@ -975,7 +975,7 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testGetFiltersBtwWithoutTo()
+    public function testGetFiltersBtwWithoutTo(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_BTW, 'from' => 1]);
@@ -988,7 +988,7 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testGetFiltersBtw()
+    public function testGetFiltersBtw(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_BTW, 'from' => 1, 'to' => 10]);
@@ -1002,7 +1002,7 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testGetFiltersBtweWithoutFrom()
+    public function testGetFiltersBtweWithoutFrom(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_BTWE, 'to' => 10]);
@@ -1012,7 +1012,7 @@ class ColumnTest extends TestCase
                             ], $mock->getFilters('aSource'));
     }
 
-    public function testGetFiltersBtweWithoutTo()
+    public function testGetFiltersBtweWithoutTo(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_BTWE, 'from' => 1]);
@@ -1025,7 +1025,7 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testGetFiltersBtwe()
+    public function testGetFiltersBtwe(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => Column::OPERATOR_BTWE, 'from' => 1, 'to' => 10]);
@@ -1036,7 +1036,7 @@ class ColumnTest extends TestCase
                             ], $mock->getFilters('aSource'));
     }
 
-    public function testGetFiltersNullNoNull()
+    public function testGetFiltersNullNoNull(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -1047,7 +1047,7 @@ class ColumnTest extends TestCase
         $this->assertEquals([new Filter(Column::OPERATOR_ISNOTNULL)], $mock->getFilters('aSource'));
     }
 
-    public function testGetFiltersLikeCombinationsNoMulti()
+    public function testGetFiltersLikeCombinationsNoMulti(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -1068,7 +1068,7 @@ class ColumnTest extends TestCase
         }
     }
 
-    public function testGetFiltersLikeCombinationsMulti()
+    public function testGetFiltersLikeCombinationsMulti(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setSelectMulti(true);
@@ -1090,7 +1090,7 @@ class ColumnTest extends TestCase
         }
     }
 
-    public function testGetFiltersNotLikeCombination()
+    public function testGetFiltersNotLikeCombination(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
@@ -1113,7 +1113,7 @@ class ColumnTest extends TestCase
         }
     }
 
-    public function testGetFiltersWithNotHandledOperator()
+    public function testGetFiltersWithNotHandledOperator(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setData(['operator' => 'foo', 'from' => 'bar']);
@@ -1126,7 +1126,7 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testSetOperators()
+    public function testSetOperators(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setOperators(
@@ -1145,14 +1145,14 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testGetOperators()
+    public function testGetOperators(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
 
         $this->assertEquals(Column::getAvailableOperators(), $mock->getOperators());
     }
 
-    public function testItHasDqlFunctionWithoutMatchesResultArray()
+    public function testItHasDqlFunctionWithoutMatchesResultArray(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setField('foo:bar:foobar');
@@ -1160,7 +1160,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(1, $mock->hasDQLFunction());
     }
 
-    public function testItHasDqlFunctionWithMatchesResultArray()
+    public function testItHasDqlFunctionWithMatchesResultArray(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setField('foo:bar:foobar');
@@ -1184,7 +1184,7 @@ class ColumnTest extends TestCase
         );
     }
 
-    public function testItHasNotDqlFunctionWithoutMatchesResultArray()
+    public function testItHasNotDqlFunctionWithoutMatchesResultArray(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setField('foo');
@@ -1192,7 +1192,7 @@ class ColumnTest extends TestCase
         $this->assertEquals(0, $mock->hasDQLFunction());
     }
 
-    public function testItHasNotDqlFunctionWithMatchesResultArray()
+    public function testItHasNotDqlFunctionWithMatchesResultArray(): void
     {
         $mock = $this->getMockForAbstractClass(Column::class);
         $mock->setField('foo');

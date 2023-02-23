@@ -14,7 +14,7 @@ class MetadataTest extends TestCase
         $this->metadata = new Metadata();
     }
 
-    public function testGetFields()
+    public function testGetFields(): void
     {
         $field = ['foo' => 'bar'];
 
@@ -23,7 +23,7 @@ class MetadataTest extends TestCase
         $this->assertEquals($field, $this->metadata->getFields());
     }
 
-    public function testHasFieldMappingWithField()
+    public function testHasFieldMappingWithField(): void
     {
         $field        = 'foo';
         $value        = 'bar';
@@ -35,7 +35,7 @@ class MetadataTest extends TestCase
         $this->assertFalse($this->metadata->hasFieldMapping('notAddedField'));
     }
 
-    public function testGetterFieldMappingReturnDefaultTypeText()
+    public function testGetterFieldMappingReturnDefaultTypeText(): void
     {
         $field        = 'foo';
         $value        = 'bar';
@@ -46,7 +46,7 @@ class MetadataTest extends TestCase
         $this->assertEquals('text', $this->metadata->getFieldMappingType($field));
     }
 
-    public function testGetterMappingFieldWithType()
+    public function testGetterMappingFieldWithType(): void
     {
         $field        = 'foo';
         $value        = 'bar';
@@ -56,7 +56,7 @@ class MetadataTest extends TestCase
         $this->assertEquals($value, $this->metadata->getFieldMappingType($field));
     }
 
-    public function testGetterGroupBy()
+    public function testGetterGroupBy(): void
     {
         $groupBy = 'groupBy';
 
@@ -64,7 +64,7 @@ class MetadataTest extends TestCase
         $this->assertEquals($groupBy, $this->metadata->getGroupBy());
     }
 
-    public function testGetterName()
+    public function testGetterName(): void
     {
         $name = 'name';
 
@@ -73,7 +73,7 @@ class MetadataTest extends TestCase
         $this->assertEquals($name, $this->metadata->getName());
     }
 
-    public function testGetColumnsFromMappingWithoutTypeReturnException()
+    public function testGetColumnsFromMappingWithoutTypeReturnException(): void
     {
         $this->expectException(\Exception::class);
 
@@ -91,7 +91,7 @@ class MetadataTest extends TestCase
         $this->metadata->getColumnsFromMapping($columnsMock);
     }
 
-    public function testGetColumnsFromMapping()
+    public function testGetColumnsFromMapping(): void
     {
         $field        = 'foo';
         $field2       = 'foo2';

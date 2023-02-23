@@ -20,6 +20,7 @@ use APY\DataGridBundle\Grid\Rows;
 use APY\DataGridBundle\Grid\Source\Entity;
 use APY\DataGridBundle\Grid\Source\Source;
 use Doctrine\Persistence\ManagerRegistry;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -39,72 +40,34 @@ use Twig\TemplateWrapper;
 
 class GridTest extends TestCase
 {
-    /**
-     * @var Grid
-     */
-    private $grid;
+    private Grid $grid;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $router;
+    private MockObject $router;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $container;
+    private MockObject $authChecker;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $authChecker;
+    private MockObject $registry;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $registry;
+    private MockObject $manager;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $manager;
+    private MockObject $request;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $request;
+    private MockObject $requestStack;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $requestStack;
+    private MockObject $session;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $session;
+    private MockObject $environment;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $environment;
+    private ?string $gridId;
 
-    /**
-     * @var string
-     */
-    private $gridId;
-
-    /**
-     * @var string
-     */
-    private $gridHash;
+    private string $gridHash;
 
     public function setUp(): void
     {
         $this->arrange($this->createMock(GridConfigInterface::class));
     }
 
-    public function testInitializeWithoutAnyConfiguration()
+    public function testInitializeWithoutAnyConfiguration(): void
     {
         $this->arrange();
 
@@ -125,7 +88,7 @@ class GridTest extends TestCase
         $column->expects($this->never())->method($this->anything());
     }
 
-    public function testInitializePersistence()
+    public function testInitializePersistence(): void
     {
         $gridConfig = $this->createMock(GridConfigInterface::class);
         $gridConfig
@@ -139,7 +102,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->getPersistence());
     }
 
-    public function testInitializeRouteParams()
+    public function testInitializeRouteParams(): void
     {
         $routeParams = ['foo' => 1, 'bar' => 2];
 
@@ -155,7 +118,7 @@ class GridTest extends TestCase
         $this->assertSame($routeParams, $this->grid->getRouteParameters());
     }
 
-    public function testInitializeRouteUrlWithoutParams()
+    public function testInitializeRouteUrlWithoutParams(): void
     {
         $route       = 'vendor.bundle.controller.route_name';
         $routeParams = ['foo' => 1, 'bar' => 2];
@@ -182,7 +145,7 @@ class GridTest extends TestCase
         $this->assertSame($url, $this->grid->getRouteUrl());
     }
 
-    public function testInitializeRouteUrlWithParams()
+    public function testInitializeRouteUrlWithParams(): void
     {
         $route = 'vendor.bundle.controller.route_name';
         $url   = 'aRandomUrl';
@@ -204,7 +167,7 @@ class GridTest extends TestCase
         $this->assertSame($url, $this->grid->getRouteUrl());
     }
 
-    public function testInizializeColumnsNotFilterableAsGridIsNotFilterable()
+    public function testInizializeColumnsNotFilterableAsGridIsNotFilterable(): void
     {
         $gridConfig = $this->createMock(GridConfigInterface::class);
         $gridConfig
@@ -224,7 +187,7 @@ class GridTest extends TestCase
         $this->grid->initialize();
     }
 
-    public function testInizializeColumnsNotSortableAsGridIsNotSortable()
+    public function testInizializeColumnsNotSortableAsGridIsNotSortable(): void
     {
         $gridConfig = $this->createMock(GridConfigInterface::class);
         $gridConfig
@@ -244,7 +207,7 @@ class GridTest extends TestCase
         $this->grid->initialize();
     }
 
-    public function testInitializeNotEntitySource()
+    public function testInitializeNotEntitySource(): void
     {
         $source = $this->createMock(Source::class);
 
@@ -263,7 +226,7 @@ class GridTest extends TestCase
         $this->grid->initialize();
     }
 
-    public function testInitializeEntitySourceWithoutGroupByFunction()
+    public function testInitializeEntitySourceWithoutGroupByFunction(): void
     {
         $source = $this->createMock(Entity::class);
 
@@ -285,7 +248,7 @@ class GridTest extends TestCase
         $this->grid->initialize();
     }
 
-    public function testInitializeEntitySourceWithoutGroupByScalarValue()
+    public function testInitializeEntitySourceWithoutGroupByScalarValue(): void
     {
         $groupByField = 'groupBy';
 
@@ -313,7 +276,7 @@ class GridTest extends TestCase
         $this->grid->initialize();
     }
 
-    public function testInitializeEntitySourceWithoutGroupByArrayValues()
+    public function testInitializeEntitySourceWithoutGroupByArrayValues(): void
     {
         $groupByArray = ['groupByFoo', 'groupByBar'];
 
@@ -341,7 +304,7 @@ class GridTest extends TestCase
         $this->grid->initialize();
     }
 
-    public function testInizializeDefaultOrder()
+    public function testInizializeDefaultOrder(): void
     {
         $sortBy  = 'SORTBY';
         $orderBy = 'ORDERBY';
@@ -361,7 +324,7 @@ class GridTest extends TestCase
         $this->assertSame(sprintf('%s|%s', $sortBy, strtolower($orderBy)), $this->grid->getDefaultOrder());
     }
 
-    public function testInizializeDefaultOrderWithoutOrder()
+    public function testInizializeDefaultOrderWithoutOrder(): void
     {
         $sortBy = 'SORTBY';
 
@@ -378,7 +341,7 @@ class GridTest extends TestCase
         $this->assertSame("$sortBy|", $this->grid->getDefaultOrder());
     }
 
-    public function testInizializeLimits()
+    public function testInizializeLimits(): void
     {
         $maxPerPage = 10;
 
@@ -394,7 +357,7 @@ class GridTest extends TestCase
         $this->assertSame([$maxPerPage => (string)$maxPerPage], $this->grid->getLimits());
     }
 
-    public function testInizializeMaxResults()
+    public function testInizializeMaxResults(): void
     {
         $maxResults = 50;
 
@@ -410,7 +373,7 @@ class GridTest extends TestCase
         $this->assertSame($maxResults, $this->grid->getMaxResults());
     }
 
-    public function testInizializePage()
+    public function testInizializePage(): void
     {
         $page = 1;
 
@@ -426,7 +389,7 @@ class GridTest extends TestCase
         $this->assertSame($page, $this->grid->getPage());
     }
 
-    public function testSetSourceOneThanOneTime()
+    public function testSetSourceOneThanOneTime(): void
     {
         $source = $this->createMock(Source::class);
 
@@ -438,7 +401,7 @@ class GridTest extends TestCase
         $this->grid->setSource($source);
     }
 
-    public function testSetSource()
+    public function testSetSource(): void
     {
         $source = $this->createMock(Source::class);
 
@@ -456,7 +419,7 @@ class GridTest extends TestCase
         $this->assertSame($source, $this->grid->getSource());
     }
 
-    public function testGetSource()
+    public function testGetSource(): void
     {
         $source = $this->createMock(Source::class);
 
@@ -465,12 +428,12 @@ class GridTest extends TestCase
         $this->assertEquals($source, $this->grid->getSource());
     }
 
-    public function testGetNullHashIfNotCreated()
+    public function testGetNullHashIfNotCreated(): void
     {
         $this->assertNull($this->grid->getHash());
     }
 
-    public function testHandleRequestRaiseExceptionIfSourceNotSetted()
+    public function testHandleRequestRaiseExceptionIfSourceNotSetted(): void
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage(Grid::SOURCE_NOT_SETTED_EX_MSG);
@@ -482,7 +445,7 @@ class GridTest extends TestCase
         );
     }
 
-    public function testAddColumnToLazyColumnsWithoutPosition()
+    public function testAddColumnToLazyColumnsWithoutPosition(): void
     {
         $column = $this->stubColumn();
         $this->grid->addColumn($column);
@@ -490,7 +453,7 @@ class GridTest extends TestCase
         $this->assertSame([['column' => $column, 'position' => 0]], $this->grid->getLazyAddColumn());
     }
 
-    public function testAddColumnToLazyColumnsWithPosition()
+    public function testAddColumnToLazyColumnsWithPosition(): void
     {
         $column = $this->stubColumn();
         $this->grid->addColumn($column, 1);
@@ -498,7 +461,7 @@ class GridTest extends TestCase
         $this->assertSame([['column' => $column, 'position' => 1]], $this->grid->getLazyAddColumn());
     }
 
-    public function testAddColumnsToLazyColumnsWithSamePosition()
+    public function testAddColumnsToLazyColumnsWithSamePosition(): void
     {
         $column1 = $this->stubColumn();
         $column2 = $this->stubColumn();
@@ -515,7 +478,7 @@ class GridTest extends TestCase
         );
     }
 
-    public function testGetColumnFromLazyColumns()
+    public function testGetColumnFromLazyColumns(): void
     {
         $columnId = 'foo';
         $column   = $this->stubColumn($columnId);
@@ -525,7 +488,7 @@ class GridTest extends TestCase
         $this->assertEquals($column, $this->grid->getColumn($columnId));
     }
 
-    public function testGetColumnFromColumns()
+    public function testGetColumnFromColumns(): void
     {
         $columnId = 'foo';
         $column   = $this->stubColumn();
@@ -541,7 +504,7 @@ class GridTest extends TestCase
         $this->assertEquals($column, $this->grid->getColumn($columnId));
     }
 
-    public function testRaiseExceptionIfGetNonExistentColumn()
+    public function testRaiseExceptionIfGetNonExistentColumn(): void
     {
         $columnId = 'foo';
 
@@ -551,12 +514,12 @@ class GridTest extends TestCase
         $this->grid->getColumn($columnId);
     }
 
-    public function testGetColumns()
+    public function testGetColumns(): void
     {
         $this->assertInstanceOf(Columns::class, $this->grid->getColumns());
     }
 
-    public function testHasColumnInLazyColumns()
+    public function testHasColumnInLazyColumns(): void
     {
         $columnId = 'foo';
         $column   = $this->stubColumn($columnId);
@@ -565,7 +528,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->hasColumn($columnId));
     }
 
-    public function testHasColumnInColumns()
+    public function testHasColumnInColumns(): void
     {
         $columnId = 'foo';
 
@@ -580,7 +543,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->hasColumn($columnId));
     }
 
-    public function testSetColumns()
+    public function testSetColumns(): void
     {
         $columns = $this->createMock(Columns::class);
         $this->grid->setColumns($columns);
@@ -588,7 +551,7 @@ class GridTest extends TestCase
         $this->assertSame($columns, $this->grid->getColumns());
     }
 
-    public function testColumnsReorderAndKeepOtherColumns()
+    public function testColumnsReorderAndKeepOtherColumns(): void
     {
         $ids = ['col1', 'col3', 'col2'];
 
@@ -603,7 +566,7 @@ class GridTest extends TestCase
         $this->grid->setColumnsOrder($ids, true);
     }
 
-    public function testColumnsReorderAndDontKeepOtherColumns()
+    public function testColumnsReorderAndDontKeepOtherColumns(): void
     {
         $ids = ['col1', 'col3', 'col2'];
 
@@ -618,7 +581,7 @@ class GridTest extends TestCase
         $this->grid->setColumnsOrder($ids, false);
     }
 
-    public function testAddMassActionWithoutRole()
+    public function testAddMassActionWithoutRole(): void
     {
         $massAction = $this->stubMassAction();
         $this->grid->addMassAction($massAction);
@@ -626,7 +589,7 @@ class GridTest extends TestCase
         $this->assertSame([$massAction], $this->grid->getMassActions());
     }
 
-    public function testAddMassActionWithGrantForActionRole()
+    public function testAddMassActionWithGrantForActionRole(): void
     {
         $role       = 'aRole';
         $massAction = $this->stubMassAction($role);
@@ -642,7 +605,7 @@ class GridTest extends TestCase
         $this->assertSame([$massAction], $this->grid->getMassActions());
     }
 
-    public function testAddMassActionWithoutGrantForActionRole()
+    public function testAddMassActionWithoutGrantForActionRole(): void
     {
         $role       = 'aRole';
         $massAction = $this->stubMassAction($role);
@@ -658,7 +621,7 @@ class GridTest extends TestCase
         $this->assertEmpty($this->grid->getMassActions());
     }
 
-    public function testGetMassActions()
+    public function testGetMassActions(): void
     {
         $massAction = $this->stubMassAction();
         $this->grid->addMassAction($massAction);
@@ -666,7 +629,7 @@ class GridTest extends TestCase
         $this->assertEquals([$massAction], $this->grid->getMassActions());
     }
 
-    public function testRaiseExceptionIfAddTweakWithNotValidId()
+    public function testRaiseExceptionIfAddTweakWithNotValidId(): void
     {
         $tweakId = '#tweakNotValidId';
 
@@ -676,7 +639,7 @@ class GridTest extends TestCase
         $this->grid->addTweak('title', [], $tweakId);
     }
 
-    public function testAddTweakWithId()
+    public function testAddTweakWithId(): void
     {
         $title = 'aTweak';
         $tweak = ['filters' => [], 'order' => 'columnId', 'page' => 1, 'limit' => 50, 'export' => 1, 'massAction' => 1];
@@ -690,7 +653,7 @@ class GridTest extends TestCase
         $this->assertEquals($result, $this->grid->getAllTweaks());
     }
 
-    public function testAddTweakWithoutId()
+    public function testAddTweakWithoutId(): void
     {
         $title = 'aTweak';
         $tweak = ['filters' => [], 'order' => 'columnId', 'page' => 1, 'limit' => 50, 'export' => 1, 'massAction' => 1];
@@ -703,7 +666,7 @@ class GridTest extends TestCase
         $this->assertEquals($result, $this->grid->getAllTweaks());
     }
 
-    public function testAddRowActionWithoutRole()
+    public function testAddRowActionWithoutRole(): void
     {
         $colId     = 'aColId';
         $rowAction = $this->stubRowAction(null, $colId);
@@ -712,7 +675,7 @@ class GridTest extends TestCase
         $this->assertSame([$colId => [$rowAction]], $this->grid->getRowActions());
     }
 
-    public function testAddRowActionWithGrantForActionRole()
+    public function testAddRowActionWithGrantForActionRole(): void
     {
         $role      = 'aRole';
         $colId     = 'aColId';
@@ -729,7 +692,7 @@ class GridTest extends TestCase
         $this->assertSame([$colId => [$rowAction]], $this->grid->getRowActions());
     }
 
-    public function testAddRowActionWithoutGrantForActionRole()
+    public function testAddRowActionWithoutGrantForActionRole(): void
     {
         $role      = 'aRole';
         $rowAction = $this->stubRowAction($role);
@@ -745,7 +708,7 @@ class GridTest extends TestCase
         $this->assertEmpty($this->grid->getRowActions());
     }
 
-    public function testGetRowActions()
+    public function testGetRowActions(): void
     {
         $colId     = 'aColId';
         $rowAction = $this->stubRowAction(null, $colId);
@@ -754,7 +717,7 @@ class GridTest extends TestCase
         $this->assertEquals([$colId => [$rowAction]], $this->grid->getRowActions());
     }
 
-    public function testSetExportTwigTemplateInstance()
+    public function testSetExportTwigTemplateInstance(): void
     {
         $templateName = 'templateName';
 
@@ -777,7 +740,7 @@ class GridTest extends TestCase
         $this->grid->setTemplate($template);
     }
 
-    public function testSetExportStringTemplate()
+    public function testSetExportStringTemplate(): void
     {
         $template = 'templateString';
 
@@ -793,7 +756,7 @@ class GridTest extends TestCase
         $this->grid->setTemplate($template);
     }
 
-    public function testRaiseExceptionIfSetTemplateWithNoValidValue()
+    public function testRaiseExceptionIfSetTemplateWithNoValidValue(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(Grid::TWIG_TEMPLATE_LOAD_EX_MSG);
@@ -807,7 +770,7 @@ class GridTest extends TestCase
         $this->grid->setTemplate(true);
     }
 
-    public function testSetExportNullTemplate()
+    public function testSetExportNullTemplate(): void
     {
         $this
             ->session
@@ -818,7 +781,7 @@ class GridTest extends TestCase
         $this->grid->setTemplate(null);
     }
 
-    public function testReturnTwigTemplate()
+    public function testReturnTwigTemplate(): void
     {
         $templateName = 'templateName';
 
@@ -837,7 +800,7 @@ class GridTest extends TestCase
         $this->assertEquals($result, $this->grid->getTemplate());
     }
 
-    public function testReturnStringTemplate()
+    public function testReturnStringTemplate(): void
     {
         $template = 'templateString';
 
@@ -846,7 +809,7 @@ class GridTest extends TestCase
         $this->assertEquals($template, $this->grid->getTemplate());
     }
 
-    public function testAddExportWithoutRole()
+    public function testAddExportWithoutRole(): void
     {
         $export = $this->createMock(ExportInterface::class);
         $export
@@ -858,7 +821,7 @@ class GridTest extends TestCase
         $this->assertSame([$export], $this->grid->getExports());
     }
 
-    public function testAddExportWithGrantForActionRole()
+    public function testAddExportWithGrantForActionRole(): void
     {
         $role = 'aRole';
 
@@ -878,7 +841,7 @@ class GridTest extends TestCase
         $this->assertSame([$export], $this->grid->getExports());
     }
 
-    public function testAddExportWithoutGrantForActionRole()
+    public function testAddExportWithoutGrantForActionRole(): void
     {
         $role = 'aRole';
 
@@ -898,7 +861,7 @@ class GridTest extends TestCase
         $this->assertEmpty($this->grid->getExports());
     }
 
-    public function testGetExports()
+    public function testGetExports(): void
     {
         $export = $this->createMock(ExportInterface::class);
         $export
@@ -910,7 +873,7 @@ class GridTest extends TestCase
         $this->assertEquals([$export], $this->grid->getExports());
     }
 
-    public function testSetRouteParameter()
+    public function testSetRouteParameter(): void
     {
         $paramName  = 'name';
         $paramValue = 'value';
@@ -927,7 +890,7 @@ class GridTest extends TestCase
         );
     }
 
-    public function testGetRouteParameters()
+    public function testGetRouteParameters(): void
     {
         $paramName  = 'name';
         $paramValue = 'value';
@@ -944,7 +907,7 @@ class GridTest extends TestCase
         );
     }
 
-    public function testSetRouteUrl()
+    public function testSetRouteUrl(): void
     {
         $url = 'url';
 
@@ -953,7 +916,7 @@ class GridTest extends TestCase
         $this->assertSame($url, $this->grid->getRouteUrl());
     }
 
-    public function testGetRouteUrl()
+    public function testGetRouteUrl(): void
     {
         $url = 'url';
 
@@ -962,7 +925,7 @@ class GridTest extends TestCase
         $this->assertEquals($url, $this->grid->getRouteUrl());
     }
 
-    public function testGetRouteUrlFromRequest()
+    public function testGetRouteUrlFromRequest(): void
     {
         $url = 'url';
 
@@ -981,7 +944,7 @@ class GridTest extends TestCase
         $this->assertEquals($url, $this->grid->getRouteUrl());
     }
 
-    public function testGetId()
+    public function testGetId(): void
     {
         $id = 'id';
         $this->grid->setId($id);
@@ -989,21 +952,21 @@ class GridTest extends TestCase
         $this->assertEquals($id, $this->grid->getId());
     }
 
-    public function testGetPersistence()
+    public function testGetPersistence(): void
     {
         $this->grid->setPersistence(true);
 
         $this->assertTrue($this->grid->getPersistence());
     }
 
-    public function testGetDataJunction()
+    public function testGetDataJunction(): void
     {
         $this->grid->setDataJunction(Column::DATA_DISJUNCTION);
 
         $this->assertEquals(Column::DATA_DISJUNCTION, $this->grid->getDataJunction());
     }
 
-    public function testSetInvalidLimitsRaiseException()
+    public function testSetInvalidLimitsRaiseException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(Grid::NOT_VALID_LIMIT_EX_MSG);
@@ -1011,7 +974,7 @@ class GridTest extends TestCase
         $this->grid->setLimits('foo');
     }
 
-    public function testSetIntLimit()
+    public function testSetIntLimit(): void
     {
         $limit = 10;
         $this->grid->setLimits($limit);
@@ -1019,7 +982,7 @@ class GridTest extends TestCase
         $this->assertSame([$limit => (string)$limit], $this->grid->getLimits());
     }
 
-    public function testSetArrayLimits()
+    public function testSetArrayLimits(): void
     {
         $limits = [10, 50, 100];
         $this->grid->setLimits($limits);
@@ -1027,7 +990,7 @@ class GridTest extends TestCase
         $this->assertSame(array_combine($limits, $limits), $this->grid->getLimits());
     }
 
-    public function testSetAssociativeArrayLimits()
+    public function testSetAssociativeArrayLimits(): void
     {
         $limits = [10 => '10', 50 => '50', 100 => '100'];
         $this->grid->setLimits($limits);
@@ -1035,7 +998,7 @@ class GridTest extends TestCase
         $this->assertSame(array_combine($limits, $limits), $this->grid->getLimits());
     }
 
-    public function testGetLimits()
+    public function testGetLimits(): void
     {
         $limits = [10, 50, 100];
         $this->grid->setLimits($limits);
@@ -1043,7 +1006,7 @@ class GridTest extends TestCase
         $this->assertEquals(array_combine($limits, $limits), $this->grid->getLimits());
     }
 
-    public function testSetDefaultPage()
+    public function testSetDefaultPage(): void
     {
         $page = 1;
         $this->grid->setDefaultPage($page);
@@ -1051,7 +1014,7 @@ class GridTest extends TestCase
         $this->assertSame($page - 1, $this->grid->getPage());
     }
 
-    public function testSetDefaultTweak()
+    public function testSetDefaultTweak(): void
     {
         $tweakId = 1;
         $this->grid->setDefaultTweak($tweakId);
@@ -1059,7 +1022,7 @@ class GridTest extends TestCase
         $this->assertEquals($tweakId, $this->grid->getDefaultTweak());
     }
 
-    public function testSetPageWithInvalidValueRaiseException()
+    public function testSetPageWithInvalidValueRaiseException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(Grid::NOT_VALID_PAGE_NUMBER_EX_MSG);
@@ -1068,7 +1031,7 @@ class GridTest extends TestCase
         $this->grid->setPage($page);
     }
 
-    public function testSetPageWithZeroValue()
+    public function testSetPageWithZeroValue(): void
     {
         $page = 0;
         $this->grid->setPage($page);
@@ -1076,7 +1039,7 @@ class GridTest extends TestCase
         $this->assertSame($page, $this->grid->getPage());
     }
 
-    public function testGetPage()
+    public function testGetPage(): void
     {
         $page = 10;
         $this->grid->setPage($page);
@@ -1084,13 +1047,13 @@ class GridTest extends TestCase
         $this->assertEquals($page, $this->grid->getPage());
     }
 
-    public function testSetMaxResultWithNullValue()
+    public function testSetMaxResultWithNullValue(): void
     {
         $this->grid->setMaxResults();
         $this->assertNull($this->grid->getMaxResults());
     }
 
-    public function testSetMaxResultWithInvalidValueRaiseException()
+    public function testSetMaxResultWithInvalidValueRaiseException(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(Grid::NOT_VALID_MAX_RESULT_EX_MSG);
@@ -1098,7 +1061,7 @@ class GridTest extends TestCase
         $this->grid->setMaxResults(-1);
     }
 
-    public function testSetMaxResult()
+    public function testSetMaxResult(): void
     {
         $maxResult = 1;
         $this->grid->setMaxResults($maxResult);
@@ -1106,7 +1069,7 @@ class GridTest extends TestCase
         $this->assertSame($maxResult, $this->grid->getMaxResults());
     }
 
-    public function testIsNotFilteredIfNoColumnIsFiltered()
+    public function testIsNotFilteredIfNoColumnIsFiltered(): void
     {
         $column1 = $this->stubColumn();
         $column2 = $this->stubColumn();
@@ -1120,7 +1083,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isFiltered());
     }
 
-    public function testIsFilteredIfAtLeastAColumnIsFiltered()
+    public function testIsFilteredIfAtLeastAColumnIsFiltered(): void
     {
         $column1 = $this->stubColumn();
         $column2 = $this->stubFilteredColumn();
@@ -1134,7 +1097,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isFiltered());
     }
 
-    public function testShowTitlesIfAtLeastOneColumnHasATitle()
+    public function testShowTitlesIfAtLeastOneColumnHasATitle(): void
     {
         $column1 = $this->stubColumn();
         $column2 = $this->stubTitledColumn();
@@ -1148,7 +1111,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isTitleSectionVisible());
     }
 
-    public function testDontShowTitlesIfNoColumnsHasATitle()
+    public function testDontShowTitlesIfNoColumnsHasATitle(): void
     {
         $column1 = $this->stubColumn();
         $column2 = $this->stubColumn();
@@ -1162,7 +1125,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isTitleSectionVisible());
     }
 
-    public function testDontShowTitles()
+    public function testDontShowTitles(): void
     {
         $column = $this->stubTitledColumn();
 
@@ -1175,7 +1138,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isTitleSectionVisible());
     }
 
-    public function testShowFilterSectionIfAtLeastOneColumnFilterable()
+    public function testShowFilterSectionIfAtLeastOneColumnFilterable(): void
     {
         $column1 = $this->stubColumn();
         $column2 = $this->stubFilterableColumn('text');
@@ -1189,7 +1152,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isFilterSectionVisible());
     }
 
-    public function testDontShowFilterSectionIfColumnVisibleTypeIsMassAction()
+    public function testDontShowFilterSectionIfColumnVisibleTypeIsMassAction(): void
     {
         $column = $this->stubFilterableColumn('massaction');
 
@@ -1201,7 +1164,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isFilterSectionVisible());
     }
 
-    public function testDontShowFilterSectionIfColumnVisibleTypeIsActions()
+    public function testDontShowFilterSectionIfColumnVisibleTypeIsActions(): void
     {
         $column = $this->stubFilterableColumn('actions');
 
@@ -1213,7 +1176,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isFilterSectionVisible());
     }
 
-    public function testDontShowFilterSectionIfNoColumnFilterable()
+    public function testDontShowFilterSectionIfNoColumnFilterable(): void
     {
         $column1 = $this->stubColumn();
         $column2 = $this->stubColumn();
@@ -1227,28 +1190,28 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isFilterSectionVisible());
     }
 
-    public function testDontShowFilterSection()
+    public function testDontShowFilterSection(): void
     {
         $this->grid->hideFilters();
 
         $this->assertFalse($this->grid->isFilterSectionVisible());
     }
 
-    public function testHideFilters()
+    public function testHideFilters(): void
     {
         $this->grid->hideFilters();
 
         $this->assertFalse($this->grid->getShowFilters());
     }
 
-    public function testHideTitles()
+    public function testHideTitles(): void
     {
         $this->grid->hideTitles();
 
         $this->assertFalse($this->grid->getShowTitles());
     }
 
-    public function testAddsColumnExtension()
+    public function testAddsColumnExtension(): void
     {
         $extension = $this->stubColumn();
 
@@ -1266,7 +1229,7 @@ class GridTest extends TestCase
         $this->grid->addColumnExtension($extension);
     }
 
-    public function testGetPrefixTitle()
+    public function testGetPrefixTitle(): void
     {
         $prefixTitle = 'prefixTitle';
         $this->grid->setPrefixTitle($prefixTitle);
@@ -1274,7 +1237,7 @@ class GridTest extends TestCase
         $this->assertEquals($prefixTitle, $this->grid->getPrefixTitle());
     }
 
-    public function testGetNoDataMessage()
+    public function testGetNoDataMessage(): void
     {
         $message = 'foo';
         $this->grid->setNoDataMessage($message);
@@ -1282,7 +1245,7 @@ class GridTest extends TestCase
         $this->assertEquals($message, $this->grid->getNoDataMessage());
     }
 
-    public function testGetNoResultMessage()
+    public function testGetNoResultMessage(): void
     {
         $message = 'foo';
         $this->grid->setNoResultMessage($message);
@@ -1290,7 +1253,7 @@ class GridTest extends TestCase
         $this->assertEquals($message, $this->grid->getNoResultMessage());
     }
 
-    public function testSetHiddenColumnsWithIntegerId()
+    public function testSetHiddenColumnsWithIntegerId(): void
     {
         $id = 1;
         $this->grid->setHiddenColumns([$id]);
@@ -1298,7 +1261,7 @@ class GridTest extends TestCase
         $this->assertSame([$id], $this->grid->getHiddenColumns());
     }
 
-    public function testSetHiddenColumnWithArrayOfIds()
+    public function testSetHiddenColumnWithArrayOfIds(): void
     {
         $ids = [1, 2, 3];
         $this->grid->setHiddenColumns($ids);
@@ -1306,7 +1269,7 @@ class GridTest extends TestCase
         $this->assertSame($ids, $this->grid->getHiddenColumns());
     }
 
-    public function testSetVisibleColumnsWithIntegerId()
+    public function testSetVisibleColumnsWithIntegerId(): void
     {
         $id = 1;
         $this->grid->setVisibleColumns($id);
@@ -1314,7 +1277,7 @@ class GridTest extends TestCase
         $this->assertSame([$id], $this->grid->getVisibleColumns());
     }
 
-    public function testSetVisibleColumnWithArrayOfIds()
+    public function testSetVisibleColumnWithArrayOfIds(): void
     {
         $ids = [1, 2, 3];
         $this->grid->setVisibleColumns($ids);
@@ -1322,7 +1285,7 @@ class GridTest extends TestCase
         $this->assertSame($ids, $this->grid->getVisibleColumns());
     }
 
-    public function testShowColumnsWithIntegerId()
+    public function testShowColumnsWithIntegerId(): void
     {
         $id = 1;
         $this->grid->showColumns($id);
@@ -1330,7 +1293,7 @@ class GridTest extends TestCase
         $this->assertSame([$id => true], $this->grid->getLazyHideShowColumns());
     }
 
-    public function testShowColumnsArrayOfIds()
+    public function testShowColumnsArrayOfIds(): void
     {
         $ids = [1, 2, 3];
         $this->grid->showColumns($ids);
@@ -1338,7 +1301,7 @@ class GridTest extends TestCase
         $this->assertSame([1 => true, 2 => true, 3 => true], $this->grid->getLazyHideShowColumns());
     }
 
-    public function testHideColumnsWithIntegerId()
+    public function testHideColumnsWithIntegerId(): void
     {
         $id = 1;
         $this->grid->hideColumns($id);
@@ -1346,7 +1309,7 @@ class GridTest extends TestCase
         $this->assertSame([$id => false], $this->grid->getLazyHideShowColumns());
     }
 
-    public function testHideColumnsArrayOfIds()
+    public function testHideColumnsArrayOfIds(): void
     {
         $ids = [1, 2, 3];
         $this->grid->hideColumns($ids);
@@ -1354,7 +1317,7 @@ class GridTest extends TestCase
         $this->assertSame([1 => false, 2 => false, 3 => false], $this->grid->getLazyHideShowColumns());
     }
 
-    public function testSetActionsColumnSize()
+    public function testSetActionsColumnSize(): void
     {
         $size = 2;
         $this->grid->setActionsColumnSize($size);
@@ -1362,7 +1325,7 @@ class GridTest extends TestCase
         $this->assertSame($size, $this->grid->getActionsColumnSize());
     }
 
-    public function testSetActionsColumnTitle()
+    public function testSetActionsColumnTitle(): void
     {
         $title = 'aTitle';
         $this->grid->setActionsColumnTitle($title);
@@ -1370,7 +1333,7 @@ class GridTest extends TestCase
         $this->assertSame($title, $this->grid->getActionsColumnTitle());
     }
 
-    public function testClone()
+    public function testClone(): void
     {
         $column1 = $this->stubColumn();
         $column2 = $this->stubColumn();
@@ -1385,7 +1348,7 @@ class GridTest extends TestCase
         $this->assertNotSame($columns, $grid->getColumns());
     }
 
-    public function testRaiseExceptionDuringHandleRequestIfNoSourceSetted()
+    public function testRaiseExceptionDuringHandleRequestIfNoSourceSetted(): void
     {
         $this->expectException(\LogicException::class);
         $this->expectExceptionMessage(Grid::SOURCE_NOT_SETTED_EX_MSG);
@@ -1398,7 +1361,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($request);
     }
 
-    public function testCreateHashWithIdDuringHandleRequest()
+    public function testCreateHashWithIdDuringHandleRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -1408,7 +1371,7 @@ class GridTest extends TestCase
         $this->assertEquals($this->gridHash, $this->grid->getHash());
     }
 
-    public function testCreateHashWithMd5DuringHandleRequest()
+    public function testCreateHashWithMd5DuringHandleRequest(): void
     {
         $this->arrange($this->createMock(GridConfigInterface::class), null);
 
@@ -1435,7 +1398,7 @@ class GridTest extends TestCase
         $this->assertSame('grid_' . md5($controller . $columns->getHash() . $sourceHash), $this->grid->getHash());
     }
 
-    public function testResetGridSessionWhenChangeGridDuringHandleRequest()
+    public function testResetGridSessionWhenChangeGridDuringHandleRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -1456,14 +1419,14 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testResetGridSessionWhenResetFiltersIsPressedDuringHandleRequest()
+    public function testResetGridSessionWhenResetFiltersIsPressedDuringHandleRequest(): void
     {
         $this->mockResetGridSessionWhenResetFilterIsPressed();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testNotResetGridSessionWhenXmlHttpRequestDuringHandleRequest()
+    public function testNotResetGridSessionWhenXmlHttpRequestDuringHandleRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -1482,7 +1445,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testNotResetGridSessionWhenPersistenceSettedDuringHandleRequest()
+    public function testNotResetGridSessionWhenPersistenceSettedDuringHandleRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -1503,14 +1466,14 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testNotResetGridSessionWhenRefererIsSameGridDuringHandleRequest()
+    public function testNotResetGridSessionWhenRefererIsSameGridDuringHandleRequest(): void
     {
         $this->mockNotResetGridSessionWhenSameGridReferer();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testStartNewSessionDuringHandleRequestOnFirstGridRequest()
+    public function testStartNewSessionDuringHandleRequestOnFirstGridRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -1520,7 +1483,7 @@ class GridTest extends TestCase
         $this->assertTrue(true, $this->grid->getNewSession());
     }
 
-    public function testStartKeepSessionDuringHandleRequestNotOnFirstGridRequest()
+    public function testStartKeepSessionDuringHandleRequestNotOnFirstGridRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -1536,7 +1499,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->getNewSession());
     }
 
-    public function testMassActionRedirect()
+    public function testMassActionRedirect(): void
     {
         $this->mockMassActionCallbackResponse();
 
@@ -1545,7 +1508,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isMassActionRedirect());
     }
 
-    public function testRaiseExceptionIfMassActionIdNotValidDuringHandleRequest()
+    public function testRaiseExceptionIfMassActionIdNotValidDuringHandleRequest(): void
     {
         $massActionId = 10;
 
@@ -1560,7 +1523,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testRaiseExceptionIfMassActionCallbackNotValidDuringHandleRequest()
+    public function testRaiseExceptionIfMassActionCallbackNotValidDuringHandleRequest(): void
     {
         $invalidCallback = 'invalidCallback';
 
@@ -1579,7 +1542,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testResetPageAndLimitIfMassActionHandleAllDataDuringHandleRequest()
+    public function testResetPageAndLimitIfMassActionHandleAllDataDuringHandleRequest(): void
     {
         $this->mockResetPageAndLimitIfMassActionAndAllKeys();
 
@@ -1588,7 +1551,7 @@ class GridTest extends TestCase
         $this->assertEquals(0, $this->grid->getLimit());
     }
 
-    public function testMassActionResponseFromCallbackDuringHandleRequest()
+    public function testMassActionResponseFromCallbackDuringHandleRequest(): void
     {
         $callbackResponse = $this->mockMassActionCallbackResponse();
 
@@ -1597,7 +1560,7 @@ class GridTest extends TestCase
         $this->assertEquals($callbackResponse, $this->grid->getMassActionResponse());
     }
 
-    public function testMassActionResponseFromControllerActionDuringHandleRequest()
+    public function testMassActionResponseFromControllerActionDuringHandleRequest(): void
     {
         $callbackResponse = $this->mockMassActionControllerResponse();
 
@@ -1606,7 +1569,7 @@ class GridTest extends TestCase
         $this->assertEquals($callbackResponse, $this->grid->getMassActionResponse());
     }
 
-    public function testRaiseExceptionIfExportIdNotValidDuringHandleRequest()
+    public function testRaiseExceptionIfExportIdNotValidDuringHandleRequest(): void
     {
         $exportId = 10;
 
@@ -1621,7 +1584,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessExportsDuringHandleRequest()
+    public function testProcessExportsDuringHandleRequest(): void
     {
         $response = $this->mockExports();
 
@@ -1633,63 +1596,63 @@ class GridTest extends TestCase
         $this->assertEquals($response, $this->grid->getExportResponse());
     }
 
-    public function testProcessExportsButNotFiltersPageOrderLimitDuringHandleRequest()
+    public function testProcessExportsButNotFiltersPageOrderLimitDuringHandleRequest(): void
     {
         $this->mockExportsButNotFiltersPageOrderLimit();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessPageDuringHandleRequest()
+    public function testProcessPageDuringHandleRequest(): void
     {
         $this->mockPageRequestData();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessPageWithQueryOrderingDuringHandleRequest()
+    public function testProcessPageWithQueryOrderingDuringHandleRequest(): void
     {
         $this->mockPageQueryOrderRequestData();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessPageWithQueryLimitDuringHandleRequest()
+    public function testProcessPageWithQueryLimitDuringHandleRequest(): void
     {
         $this->mockPageLimitRequestData();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessPageWithMassActionDuringHandleRequest()
+    public function testProcessPageWithMassActionDuringHandleRequest(): void
     {
         $this->mockPageMassActionRequestData();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessPageWithFiltersAndRequestDataDuringHandleRequest()
+    public function testProcessPageWithFiltersAndRequestDataDuringHandleRequest(): void
     {
         $this->mockPageFiltersRequestData();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessPageWithFiltersDifferentFromSelectDuringHandleRequest()
+    public function testProcessPageWithFiltersDifferentFromSelectDuringHandleRequest(): void
     {
         $this->mockPageNotSelectFilterRequestData();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessPageWithSelectFilterColumnNotSelectMultiDuringHandleRequest()
+    public function testProcessPageWithSelectFilterColumnNotSelectMultiDuringHandleRequest(): void
     {
         $this->mockPageColumnNotSelectMultiRequestData();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessOrderDescDuringHandleRequest()
+    public function testProcessOrderDescDuringHandleRequest(): void
     {
         $colId      = 'colId';
         $order      = 'desc';
@@ -1711,7 +1674,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessOrderAscDuringHandleRequest()
+    public function testProcessOrderAscDuringHandleRequest(): void
     {
         $colId      = 'colId';
         $order      = 'asc';
@@ -1733,14 +1696,14 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessOrderColumnNotSortableDuringHandleRequest()
+    public function testProcessOrderColumnNotSortableDuringHandleRequest(): void
     {
         $this->mockOrderColumnNotSortable();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testColumnsNotOrderedDuringHandleRequestIfNoOrderRequested()
+    public function testColumnsNotOrderedDuringHandleRequestIfNoOrderRequested(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -1764,14 +1727,14 @@ class GridTest extends TestCase
         $this->assertSame(0, $this->grid->getPage());
     }
 
-    public function testProcessConfiguredLimitDuringHandleRequest()
+    public function testProcessConfiguredLimitDuringHandleRequest(): void
     {
         $this->mockConfiguredLimitRequestData();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessNonConfiguredLimitDuringHandleRequest()
+    public function testProcessNonConfiguredLimitDuringHandleRequest(): void
     {
         $this->mockNonConfiguredLimitRequestData();
 
@@ -1780,14 +1743,14 @@ class GridTest extends TestCase
         $this->assertEmpty($this->grid->getLimit());
     }
 
-    public function testSetDefaultSessionFiltersDuringHandleRequest()
+    public function testSetDefaultSessionFiltersDuringHandleRequest(): void
     {
         $this->mockDefaultSessionFiltersWithoutRequestData();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetDefaultPageRaiseExceptionIfPageHasNegativeValueDuringHandleRequest()
+    public function testSetDefaultPageRaiseExceptionIfPageHasNegativeValueDuringHandleRequest(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(Grid::PAGE_NOT_VALID_EX_MSG);
@@ -1800,14 +1763,14 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetDefaultPageDuringHandleRequest()
+    public function testSetDefaultPageDuringHandleRequest(): void
     {
         $this->mockDefaultPage();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetDefaultOrderRaiseExceptionIfOrderNotAscNeitherDescDuringHandleRequest()
+    public function testSetDefaultOrderRaiseExceptionIfOrderNotAscNeitherDescDuringHandleRequest(): void
     {
         $columnOrder = 'foo';
 
@@ -1826,7 +1789,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetDefaultOrderRaiseExceptionIfColumnDoesNotExistsDuringHandleRequest()
+    public function testSetDefaultOrderRaiseExceptionIfColumnDoesNotExistsDuringHandleRequest(): void
     {
         $colId = 'col';
 
@@ -1843,14 +1806,14 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetDefaultOrderAscDuringHandleRequest()
+    public function testSetDefaultOrderAscDuringHandleRequest(): void
     {
         $this->mockDefaultOrder('asc');
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetDefaultOrderDescDuringHandleRequest()
+    public function testSetDefaultOrderDescDuringHandleRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -1878,7 +1841,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetDefaultLimitRaiseExceptionIfLimitIsNotAPositiveDuringHandleRequest()
+    public function testSetDefaultLimitRaiseExceptionIfLimitIsNotAPositiveDuringHandleRequest(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(Grid::DEFAULT_LIMIT_NOT_VALID_EX_MSG);
@@ -1891,7 +1854,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetDefaultLimitRaiseExceptionIfLimitIsNotDefinedInGridLimitsDuringHandleRequest()
+    public function testSetDefaultLimitRaiseExceptionIfLimitIsNotDefinedInGridLimitsDuringHandleRequest(): void
     {
         $limit = 2;
 
@@ -1906,14 +1869,14 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetDefaultLimitDuringHandleRequest()
+    public function testSetDefaultLimitDuringHandleRequest(): void
     {
         $this->mockDefaultLimit();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessDefaultTweaksDuringHandleRequest()
+    public function testProcessDefaultTweaksDuringHandleRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -1935,7 +1898,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetPermanentSessionFiltersDuringHandleRequest()
+    public function testSetPermanentSessionFiltersDuringHandleRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -2024,7 +1987,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testPrepareRowsFromDataIfDataAlreadyLoadedDuringHandleRequest()
+    public function testPrepareRowsFromDataIfDataAlreadyLoadedDuringHandleRequest(): void
     {
         $source  = $this->arrangeGridSourceDataLoadedWithoutRowsReturned();
         $columns = $this->arrangeGridWithColumnsIterator();
@@ -2051,7 +2014,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testPrepareRowsFromExecutionIfDataNotLoadedDuringHandleRequest()
+    public function testPrepareRowsFromExecutionIfDataNotLoadedDuringHandleRequest(): void
     {
         $source  = $this->arrangeGridSourceDataNotLoadedWithoutRowsReturned();
         $columns = $this->arrangeGridWithColumnsIterator();
@@ -2079,7 +2042,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testRaiseExceptionIfNotRowInstanceReturnedFromSurceIfDataAlreadyLoadedDuringHandleRequest()
+    public function testRaiseExceptionIfNotRowInstanceReturnedFromSurceIfDataAlreadyLoadedDuringHandleRequest(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(Grid::NO_ROWS_RETURNED_EX_MSG);
@@ -2089,7 +2052,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testRaiseExceptionIfNotRowInstanceReturnedFromSurceIfDataNotLoadedLoadedDuringHandleRequest()
+    public function testRaiseExceptionIfNotRowInstanceReturnedFromSurceIfDataNotLoadedLoadedDuringHandleRequest(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(Grid::NO_ROWS_RETURNED_EX_MSG);
@@ -2099,7 +2062,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetFirstPageIfNoRowsFromSourceIfDataAlreadyDataAndRequestedPageNotFirst()
+    public function testSetFirstPageIfNoRowsFromSourceIfDataAlreadyDataAndRequestedPageNotFirst(): void
     {
         $source  = $this->arrangeGridSourceDataLoadedWithoutRowsReturned();
         $columns = $this->arrangeGridWithColumnsIterator();
@@ -2126,7 +2089,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetFirstPageIfNoRowsFromSourceIfDataNotLoadedAndRequestedPageNotFirst()
+    public function testSetFirstPageIfNoRowsFromSourceIfDataNotLoadedAndRequestedPageNotFirst(): void
     {
         $source  = $this->arrangeGridSourceDataNotLoadedWithoutRowsReturned();
         $columns = $this->arrangeGridWithColumnsIterator();
@@ -2153,7 +2116,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testAddRowActionsToAllColumnsDuringHandleRequest()
+    public function testAddRowActionsToAllColumnsDuringHandleRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -2215,7 +2178,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testAddRowActionsToNotExistingColumnDuringHandleRequest()
+    public function testAddRowActionsToNotExistingColumnDuringHandleRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -2253,7 +2216,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testAddMassActionColumnsDuringHandleRequest()
+    public function testAddMassActionColumnsDuringHandleRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -2269,7 +2232,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetPrimaryFieldOnEachRow()
+    public function testSetPrimaryFieldOnEachRow(): void
     {
         $row  = $this->createMock(Row::class);
         $row2 = $this->createMock(Row::class);
@@ -2293,7 +2256,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testPopulateSelectFiltersInSourceFromDataIfDataLoadedDuringHandleRequest()
+    public function testPopulateSelectFiltersInSourceFromDataIfDataLoadedDuringHandleRequest(): void
     {
         $columns = $this->arrangeGridWithColumnsIterator();
 
@@ -2306,7 +2269,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testPopulateSelectFiltersInSourceIfDataNotLoadedDuringHandleRequest()
+    public function testPopulateSelectFiltersInSourceIfDataNotLoadedDuringHandleRequest(): void
     {
         $source = $this->arrangeGridSourceDataNotLoadedWithEmptyRows();
 
@@ -2320,7 +2283,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testSetTotalCountFromDataDuringHandleRequest()
+    public function testSetTotalCountFromDataDuringHandleRequest(): void
     {
         $totalCount = 2;
         $this->arrangeGridSourceDataLoadedWithEmptyRows($totalCount);
@@ -2331,7 +2294,7 @@ class GridTest extends TestCase
         $this->assertSame($totalCount, $this->grid->getTotalCount());
     }
 
-    public function testSetTotalCountDuringHandleRequest()
+    public function testSetTotalCountDuringHandleRequest(): void
     {
         $totalCount = 2;
         $this->arrangeGridSourceDataNotLoadedWithEmptyRows($totalCount);
@@ -2342,7 +2305,7 @@ class GridTest extends TestCase
         $this->assertSame($totalCount, $this->grid->getTotalCount());
     }
 
-    public function testThrowsExceptionIfTotalCountNotIntegerFromDataDuringHandleRequest()
+    public function testThrowsExceptionIfTotalCountNotIntegerFromDataDuringHandleRequest(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(sprintf(Grid::INVALID_TOTAL_COUNT_EX_MSG, 'NULL'));
@@ -2353,7 +2316,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testThrowsExceptionIfTotalCountNotIntegerDuringHandleRequest()
+    public function testThrowsExceptionIfTotalCountNotIntegerDuringHandleRequest(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(sprintf(Grid::INVALID_TOTAL_COUNT_EX_MSG, 'NULL'));
@@ -2364,7 +2327,7 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testRaiseExceptionIfTweakDoesNotExistsDuringHandleRequest()
+    public function testRaiseExceptionIfTweakDoesNotExistsDuringHandleRequest(): void
     {
         $tweakId = 'aValidTweakId';
 
@@ -2383,105 +2346,105 @@ class GridTest extends TestCase
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessTweakResetDuringHandleRequest()
+    public function testProcessTweakResetDuringHandleRequest(): void
     {
         $this->mockTweakReset();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessTweakFiltersDuringHandleRequest()
+    public function testProcessTweakFiltersDuringHandleRequest(): void
     {
         $this->mockTweakFilters();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessTweakOrderDuringHandleRequest()
+    public function testProcessTweakOrderDuringHandleRequest(): void
     {
         $this->mockTweakOrder();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessTweakMassActionDuringHandleRequest()
+    public function testProcessTweakMassActionDuringHandleRequest(): void
     {
         $this->mockTweakMassAction();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessTweakPageDuringHandleRequest()
+    public function testProcessTweakPageDuringHandleRequest(): void
     {
         $this->mockTweakPage();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessTweakLimitDuringHandleRequest()
+    public function testProcessTweakLimitDuringHandleRequest(): void
     {
         $this->mockTweakLimit();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessTweakExportDuringHandleRequest()
+    public function testProcessTweakExportDuringHandleRequest(): void
     {
         $this->mockTweakExport();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessTweakExportButNotFiltersPageOrderLimitDuringHandleRequest()
+    public function testProcessTweakExportButNotFiltersPageOrderLimitDuringHandleRequest(): void
     {
         $this->mockTweakExportButNotFiltersPageOrderLimit();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessRemoveActiveTweakGroupsDuringHandleRequest()
+    public function testProcessRemoveActiveTweakGroupsDuringHandleRequest(): void
     {
         $this->mockRemoveActiveTweakGroups();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessRemoveActiveTweakDuringHandleRequest()
+    public function testProcessRemoveActiveTweakDuringHandleRequest(): void
     {
         $this->mockRemoveActiveTweak();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessAddActiveTweakDuringHandleRequest()
+    public function testProcessAddActiveTweakDuringHandleRequest(): void
     {
         $this->mockAddActiveTweak();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessHiddenColumnsDuringHandleRequest()
+    public function testProcessHiddenColumnsDuringHandleRequest(): void
     {
         $this->mockHiddenColumns();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessVisibleColumnsDuringHandleRequest()
+    public function testProcessVisibleColumnsDuringHandleRequest(): void
     {
         $this->mockVisibleColumns();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testProcessColumnVisibilityDuringHandleRequest()
+    public function testProcessColumnVisibilityDuringHandleRequest(): void
     {
         $this->mockColumnVisibility();
 
         $this->grid->handleRequest($this->request);
     }
 
-    public function testGetTweaksWithUrlWithoutGetParameters()
+    public function testGetTweaksWithUrlWithoutGetParameters(): void
     {
         $routeUrl = 'http://www.foo.com';
 
@@ -2511,7 +2474,7 @@ class GridTest extends TestCase
         $this->assertEquals($result, $this->grid->getTweaks());
     }
 
-    public function testGetTweaksWithUrlWithGetParameters()
+    public function testGetTweaksWithUrlWithGetParameters(): void
     {
         $routeUrl = 'http://www.foo.com?foo=foo';
 
@@ -2541,7 +2504,7 @@ class GridTest extends TestCase
         $this->assertEquals($result, $this->grid->getTweaks());
     }
 
-    public function testRaiseExceptionIfGetNonExistentTweak()
+    public function testRaiseExceptionIfGetNonExistentTweak(): void
     {
         $nonExistentTweak = 'aNonExistentTweak';
 
@@ -2559,7 +2522,7 @@ class GridTest extends TestCase
         $this->grid->getTweak($nonExistentTweak);
     }
 
-    public function testGetTweak()
+    public function testGetTweak(): void
     {
         $title = 'aTweak';
         $id    = 'aValidTweakId';
@@ -2578,7 +2541,7 @@ class GridTest extends TestCase
         $this->assertEquals($tweakResult, $this->grid->getTweak($id));
     }
 
-    public function testGetTweaksByGroupExcludingThoseWhoDoNotHaveTheGroup()
+    public function testGetTweaksByGroupExcludingThoseWhoDoNotHaveTheGroup(): void
     {
         $title = 'aTweak';
         $id    = 'aValidTweakId';
@@ -2600,7 +2563,7 @@ class GridTest extends TestCase
         $this->assertEquals($tweakResult, $this->grid->getTweaksGroup($group));
     }
 
-    public function testGetActiveTweaks()
+    public function testGetActiveTweaks(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -2633,7 +2596,7 @@ class GridTest extends TestCase
         $this->assertEquals([$tweakGroup => $tweakId], $this->grid->getActiveTweaks());
     }
 
-    public function testGetActiveTweakGroup()
+    public function testGetActiveTweakGroup(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -2667,7 +2630,7 @@ class GridTest extends TestCase
         $this->assertEquals(-1, $this->grid->getActiveTweakGroup('invalidGroup'));
     }
 
-    public function testGetExportResponse()
+    public function testGetExportResponse(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -2691,7 +2654,7 @@ class GridTest extends TestCase
         $this->assertEquals($response, $this->grid->getExportResponse());
     }
 
-    public function testIsReadyForExport()
+    public function testIsReadyForExport(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -2715,7 +2678,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForExport());
     }
 
-    public function testSetPermanentFilters()
+    public function testSetPermanentFilters(): void
     {
         $filters = [
             'colId1' => 'value',
@@ -2727,7 +2690,7 @@ class GridTest extends TestCase
         $this->assertSame($filters, $this->grid->getPermanentFilters());
     }
 
-    public function testSetDefaultFilters()
+    public function testSetDefaultFilters(): void
     {
         $filters = [
             'colId1' => 'value',
@@ -2739,7 +2702,7 @@ class GridTest extends TestCase
         $this->assertSame($filters, $this->grid->getDefaultFilters());
     }
 
-    public function testSetDefaultOrder()
+    public function testSetDefaultOrder(): void
     {
         $colId = 'COLID';
         $order = 'ASC';
@@ -2749,7 +2712,7 @@ class GridTest extends TestCase
         $this->assertSame(sprintf("$colId|%s", strtolower($order)), $this->grid->getDefaultOrder());
     }
 
-    public function testGetRows()
+    public function testGetRows(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -2763,7 +2726,7 @@ class GridTest extends TestCase
         $this->assertEquals($rows, $this->grid->getRows());
     }
 
-    public function testGetTotalCount()
+    public function testGetTotalCount(): void
     {
         $totalCount = 20;
         $this->arrangeGridSourceDataLoadedWithEmptyRows($totalCount);
@@ -2774,12 +2737,12 @@ class GridTest extends TestCase
         $this->assertEquals($totalCount, $this->grid->getTotalCount());
     }
 
-    public function testGetPageCountWithoutLimit()
+    public function testGetPageCountWithoutLimit(): void
     {
         $this->assertEquals(1, $this->grid->getPageCount());
     }
 
-    public function testGetPageCount()
+    public function testGetPageCount(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows(29);
         $this->arrangeGridWithColumnsIterator();
@@ -2800,26 +2763,26 @@ class GridTest extends TestCase
         $this->assertEquals(3, $this->grid->getPageCount());
     }
 
-    public function testIsPagerSectionNotVisibleWhenNoLimitsSetted()
+    public function testIsPagerSectionNotVisibleWhenNoLimitsSetted(): void
     {
         $this->assertFalse($this->grid->isPagerSectionVisible());
     }
 
-    public function testIsPagerSectionNotVisibleWhenSmallestLimitGreaterThanTotalCount()
-    {
-        $this->grid->setLimits([10, 20, 30]);
-
-        $this->assertFalse($this->grid->isPagerSectionVisible());
-    }
-
-    public function testIsPagerSectionVisibleWhenSmallestLimitLowestThanTotalCount()
+    public function testIsPagerSectionNotVisibleWhenSmallestLimitGreaterThanTotalCount(): void
     {
         $this->grid->setLimits([10, 20, 30]);
 
         $this->assertFalse($this->grid->isPagerSectionVisible());
     }
 
-    public function testDeleteAction()
+    public function testIsPagerSectionVisibleWhenSmallestLimitLowestThanTotalCount(): void
+    {
+        $this->grid->setLimits([10, 20, 30]);
+
+        $this->assertFalse($this->grid->isPagerSectionVisible());
+    }
+
+    public function testDeleteAction(): void
     {
         $source = $this->createMock(Source::class);
 
@@ -2834,7 +2797,7 @@ class GridTest extends TestCase
         $this->grid->deleteAction($deleteIds);
     }
 
-    public function testGetRawDataWithAllColumnsIfNoColumnsRequested()
+    public function testGetRawDataWithAllColumnsIfNoColumnsRequested(): void
     {
         $rows = new Rows();
 
@@ -2891,7 +2854,7 @@ class GridTest extends TestCase
         );
     }
 
-    public function testGetRawDataWithSubsetOfColumns()
+    public function testGetRawDataWithSubsetOfColumns(): void
     {
         $rows = new Rows();
 
@@ -2948,7 +2911,7 @@ class GridTest extends TestCase
         );
     }
 
-    public function testGetRawDataWithoutNamedIndexesResult()
+    public function testGetRawDataWithoutNamedIndexesResult(): void
     {
         $rows = new Rows();
 
@@ -2989,7 +2952,7 @@ class GridTest extends TestCase
         );
     }
 
-    public function testGetFiltersRaiseExceptionIfNoRequestProcessed()
+    public function testGetFiltersRaiseExceptionIfNoRequestProcessed(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(Grid::GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG);
@@ -2997,7 +2960,7 @@ class GridTest extends TestCase
         $this->grid->getFilters();
     }
 
-    public function testGetFilters()
+    public function testGetFilters(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -3031,10 +2994,12 @@ class GridTest extends TestCase
         $filter2From     = 'from2';
         $filter2         = new Filter($filter2Operator, $filter2From);
 
-        $this->grid->setDefaultFilters([
-                                           $col1Id => ['operator' => $filter1Operator, 'from' => $filter1From, 'to' => $filter1To],
-                                           $col2Id => ['from' => $filter2From],
-                                       ]);
+        $this->grid->setDefaultFilters(
+            [
+                $col1Id => ['operator' => $filter1Operator, 'from' => $filter1From, 'to' => $filter1To],
+                $col2Id => ['from' => $filter2From],
+            ]
+        );
 
         $this
             ->session
@@ -3060,7 +3025,7 @@ class GridTest extends TestCase
         );
     }
 
-    public function testGetFilterRaiseExceptionIfNoRequestProcessed()
+    public function testGetFilterRaiseExceptionIfNoRequestProcessed(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(Grid::GET_FILTERS_NO_REQUEST_HANDLED_EX_MSG);
@@ -3068,7 +3033,7 @@ class GridTest extends TestCase
         $this->grid->getFilter('foo');
     }
 
-    public function testGetFilterReturnNullIfRequestedColumnHasNoFilter()
+    public function testGetFilterReturnNullIfRequestedColumnHasNoFilter(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -3078,7 +3043,7 @@ class GridTest extends TestCase
         $this->assertNull($this->grid->getFilter('foo'));
     }
 
-    public function testGetFilter()
+    public function testGetFilter(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -3101,7 +3066,7 @@ class GridTest extends TestCase
         $this->assertEquals($filter, $this->grid->getFilter($colId));
     }
 
-    public function testHasFilterRaiseExceptionIfNoRequestProcessed()
+    public function testHasFilterRaiseExceptionIfNoRequestProcessed(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(Grid::HAS_FILTER_NO_REQUEST_HANDLED_EX_MSG);
@@ -3109,7 +3074,7 @@ class GridTest extends TestCase
         $this->grid->hasFilter('foo');
     }
 
-    public function testHasFilterReturnNullIfRequestedColumnHasNoFilter()
+    public function testHasFilterReturnNullIfRequestedColumnHasNoFilter(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -3119,7 +3084,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->hasFilter('foo'));
     }
 
-    public function testHasFilter()
+    public function testHasFilter(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -3141,7 +3106,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->hasFilter($colId));
     }
 
-    public function testRaiseExceptionIfNoSourceSettedDuringRedirect()
+    public function testRaiseExceptionIfNoSourceSettedDuringRedirect(): void
     {
         $this->expectException(\Exception::class);
         $this->expectExceptionMessage(Grid::SOURCE_NOT_SETTED_EX_MSG);
@@ -3149,7 +3114,7 @@ class GridTest extends TestCase
         $this->grid->isReadyForRedirect();
     }
 
-    public function testCreateHashWithIdDuringRedirect()
+    public function testCreateHashWithIdDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -3159,7 +3124,7 @@ class GridTest extends TestCase
         $this->assertEquals($this->gridHash, $this->grid->getHash());
     }
 
-    public function testCreateHashWithMd5DuringRedirect()
+    public function testCreateHashWithMd5DuringRedirect(): void
     {
         $this->arrange($this->createMock(GridConfigInterface::class), null);
 
@@ -3186,14 +3151,14 @@ class GridTest extends TestCase
         $this->assertSame('grid_' . md5($controller . $columns->getHash() . $sourceHash), $this->grid->getHash());
     }
 
-    public function testResetGridSessionWhenResetFiltersIsPressedDuringRedirect()
+    public function testResetGridSessionWhenResetFiltersIsPressedDuringRedirect(): void
     {
         $this->mockResetGridSessionWhenResetFilterIsPressed();
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testNotResetGridSessionWhenXmlHttpRequestDuringRedirect()
+    public function testNotResetGridSessionWhenXmlHttpRequestDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -3212,7 +3177,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testNotResetGridSessionWhenPersistenceSettedDuringRedirect()
+    public function testNotResetGridSessionWhenPersistenceSettedDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -3233,14 +3198,14 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testNotResetGridSessionWhenRefererIsSameGridDuringRedirect()
+    public function testNotResetGridSessionWhenRefererIsSameGridDuringRedirect(): void
     {
         $this->mockNotResetGridSessionWhenSameGridReferer();
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testStartNewSessionDuringRedirectOnFirstRequest()
+    public function testStartNewSessionDuringRedirectOnFirstRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -3250,7 +3215,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->getNewSession());
     }
 
-    public function testStartKeepSessionDuringRedirectNotOnFirstRequest()
+    public function testStartKeepSessionDuringRedirectNotOnFirstRequest(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -3266,28 +3231,28 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->getNewSession());
     }
 
-    public function testProcessHiddenColumnsDuringRedirect()
+    public function testProcessHiddenColumnsDuringRedirect(): void
     {
         $this->mockHiddenColumns();
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessVisibleColumnsDuringRedirect()
+    public function testProcessVisibleColumnsDuringRedirect(): void
     {
         $this->mockVisibleColumns();
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessColumnVisibilityDuringRedirect()
+    public function testProcessColumnVisibilityDuringRedirect(): void
     {
         $this->mockColumnVisibility();
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testRaiseExceptionIfMassActionIdNotValidDuringRedirect()
+    public function testRaiseExceptionIfMassActionIdNotValidDuringRedirect(): void
     {
         $massActionId = 10;
 
@@ -3302,7 +3267,7 @@ class GridTest extends TestCase
         $this->grid->isReadyForRedirect();
     }
 
-    public function testRaiseExceptionIfMassActionCallbackNotValidDuringRedirect()
+    public function testRaiseExceptionIfMassActionCallbackNotValidDuringRedirect(): void
     {
         $invalidCallback = 'invalidCallback';
 
@@ -3321,7 +3286,7 @@ class GridTest extends TestCase
         $this->grid->isReadyForRedirect();
     }
 
-    public function testResetPageAndLimitIfMassActionHandleAllDataDuringRedirect()
+    public function testResetPageAndLimitIfMassActionHandleAllDataDuringRedirect(): void
     {
         $this->mockResetPageAndLimitIfMassActionAndAllKeys();
 
@@ -3330,7 +3295,7 @@ class GridTest extends TestCase
         $this->assertEquals(0, $this->grid->getLimit());
     }
 
-    public function testMassActionResponseFromCallbackDuringRedirect()
+    public function testMassActionResponseFromCallbackDuringRedirect(): void
     {
         $callbackResponse = $this->mockMassActionCallbackResponse();
 
@@ -3339,7 +3304,7 @@ class GridTest extends TestCase
         $this->assertEquals($callbackResponse, $this->grid->getMassActionResponse());
     }
 
-    public function testMassActionResponseFromControllerActionDuringRedirect()
+    public function testMassActionResponseFromControllerActionDuringRedirect(): void
     {
         $callbackResponse = $this->mockMassActionControllerResponse();
 
@@ -3348,7 +3313,7 @@ class GridTest extends TestCase
         $this->assertEquals($callbackResponse, $this->grid->getMassActionResponse());
     }
 
-    public function testRaiseExceptionIfExportIdNotValidDuringRedirect()
+    public function testRaiseExceptionIfExportIdNotValidDuringRedirect(): void
     {
         $exportId = 10;
 
@@ -3363,7 +3328,7 @@ class GridTest extends TestCase
         $this->grid->isReadyForRedirect();
     }
 
-    public function testProcessExportsDuringRedirect()
+    public function testProcessExportsDuringRedirect(): void
     {
         $response = $this->mockExports();
 
@@ -3375,14 +3340,14 @@ class GridTest extends TestCase
         $this->assertSame($response, $this->grid->getExportResponse());
     }
 
-    public function testProcessExportsButNotFiltersPageOrderLimitDuringRedirect()
+    public function testProcessExportsButNotFiltersPageOrderLimitDuringRedirect(): void
     {
         $this->mockExportsButNotFiltersPageOrderLimit();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testRaiseExceptionIfTweakDoesNotExistsDuringRedirect()
+    public function testRaiseExceptionIfTweakDoesNotExistsDuringRedirect(): void
     {
         $tweakId = 'aValidTweakId';
 
@@ -3401,133 +3366,133 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessTweakResetDuringRedirect()
+    public function testProcessTweakResetDuringRedirect(): void
     {
         $this->mockTweakReset();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessTweakFiltersDuringRedirect()
+    public function testProcessTweakFiltersDuringRedirect(): void
     {
         $this->mockTweakFilters();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessTweakOrderDuringRedirect()
+    public function testProcessTweakOrderDuringRedirect(): void
     {
         $this->mockTweakOrder();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessTweakMassActionDuringRedirect()
+    public function testProcessTweakMassActionDuringRedirect(): void
     {
         $this->mockTweakMassAction();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessTweakPageDuringRedirect()
+    public function testProcessTweakPageDuringRedirect(): void
     {
         $this->mockTweakPage();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessTweakLimitDuringRedirect()
+    public function testProcessTweakLimitDuringRedirect(): void
     {
         $this->mockTweakLimit();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessTweakExportDuringRedirect()
+    public function testProcessTweakExportDuringRedirect(): void
     {
         $this->mockTweakExport();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessTweakExportButNotFiltersPageOrderLimitDuringRedirect()
+    public function testProcessTweakExportButNotFiltersPageOrderLimitDuringRedirect(): void
     {
         $this->mockTweakExportButNotFiltersPageOrderLimit();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessRemoveActiveTweakGroupsDuringRedirect()
+    public function testProcessRemoveActiveTweakGroupsDuringRedirect(): void
     {
         $this->mockRemoveActiveTweakGroups();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessRemoveActiveTweakDuringRedirect()
+    public function testProcessRemoveActiveTweakDuringRedirect(): void
     {
         $this->mockRemoveActiveTweak();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessAddActiveTweakDuringRedirect()
+    public function testProcessAddActiveTweakDuringRedirect(): void
     {
         $this->mockAddActiveTweak();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessPageDuringRedirect()
+    public function testProcessPageDuringRedirect(): void
     {
         $this->mockPageRequestData();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessPageWithQueryOrderingDuringRedirect()
+    public function testProcessPageWithQueryOrderingDuringRedirect(): void
     {
         $this->mockPageQueryOrderRequestData();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessPageWithQueryLimitDuringRedirect()
+    public function testProcessPageWithQueryLimitDuringRedirect(): void
     {
         $this->mockPageLimitRequestData();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessPageWithMassActionDuringRedirect()
+    public function testProcessPageWithMassActionDuringRedirect(): void
     {
         $this->mockPageMassActionRequestData();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessPageWithFiltersAndRequestDataDuringRedirect()
+    public function testProcessPageWithFiltersAndRequestDataDuringRedirect(): void
     {
         $this->mockPageFiltersRequestData();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessPageWithFiltersDifferentFromSelectDuringRedirect()
+    public function testProcessPageWithFiltersDifferentFromSelectDuringRedirect(): void
     {
         $this->mockPageNotSelectFilterRequestData();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessPageWithSelectFilterColumnNotSelectMultiDuringRedirect()
+    public function testProcessPageWithSelectFilterColumnNotSelectMultiDuringRedirect(): void
     {
         $this->mockPageColumnNotSelectMultiRequestData();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessOrderDescDuringRedirect()
+    public function testProcessOrderDescDuringRedirect(): void
     {
         $colId      = 'colId';
         $order      = 'desc';
@@ -3549,7 +3514,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessOrderAscDuringRedirect()
+    public function testProcessOrderAscDuringRedirect(): void
     {
         $colId      = 'colId';
         $order      = 'asc';
@@ -3571,14 +3536,14 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessOrderColumnNotSortableDuringRedirect()
+    public function testProcessOrderColumnNotSortableDuringRedirect(): void
     {
         $this->mockOrderColumnNotSortable();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testColumnsNotOrderedIfNoOrderRequestedDuringRedirect()
+    public function testColumnsNotOrderedIfNoOrderRequestedDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -3602,14 +3567,14 @@ class GridTest extends TestCase
         $this->assertSame(0, $this->grid->getPage());
     }
 
-    public function testProcessConfiguredLimitDuringRedirect()
+    public function testProcessConfiguredLimitDuringRedirect(): void
     {
         $this->mockConfiguredLimitRequestData();
 
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessNonConfiguredLimitDuringRedirect()
+    public function testProcessNonConfiguredLimitDuringRedirect(): void
     {
         $this->mockNonConfiguredLimitRequestData();
 
@@ -3618,14 +3583,14 @@ class GridTest extends TestCase
         $this->assertEmpty($this->grid->getLimit());
     }
 
-    public function testSetDefaultSessionFiltersIfNotRequestDataDuringRedirect()
+    public function testSetDefaultSessionFiltersIfNotRequestDataDuringRedirect(): void
     {
         $this->mockDefaultSessionFiltersWithoutRequestData();
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testSetDefaultSessionFiltersIfSessionDataXmlHttpRequestAndNotExportDuringRedirect()
+    public function testSetDefaultSessionFiltersIfSessionDataXmlHttpRequestAndNotExportDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -3712,7 +3677,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testNotSetDefaultSessionFiltersIfHasRequestDataNotXmlHttpButExportDuringRedirect()
+    public function testNotSetDefaultSessionFiltersIfHasRequestDataNotXmlHttpButExportDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -3782,7 +3747,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testNotSetDefaultSessionFiltersIfHasRequestDataNotXmlHttpAndNotExportDuringRedirect()
+    public function testNotSetDefaultSessionFiltersIfHasRequestDataNotXmlHttpAndNotExportDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -3852,7 +3817,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testSetDefaultPageRaiseExceptionIfPageHasNegativeValueDuringRedirect()
+    public function testSetDefaultPageRaiseExceptionIfPageHasNegativeValueDuringRedirect(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(Grid::PAGE_NOT_VALID_EX_MSG);
@@ -3865,14 +3830,14 @@ class GridTest extends TestCase
         $this->grid->isReadyForRedirect();
     }
 
-    public function testSetDefaultPageIfNotRequestDataDuringRedirect()
+    public function testSetDefaultPageIfNotRequestDataDuringRedirect(): void
     {
         $this->mockDefaultPage();
 
         $this->grid->isReadyForRedirect();
     }
 
-    public function testSetDefaultPageIfRequestDataXmlHttpRequestAndNotExportDuringRedirect()
+    public function testSetDefaultPageIfRequestDataXmlHttpRequestAndNotExportDuringRedirect(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -3902,7 +3867,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testNotSetDefaultPageIfHasRequestDataNotXmlHttpButExportDuringRedirect()
+    public function testNotSetDefaultPageIfHasRequestDataNotXmlHttpButExportDuringRedirect(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -3928,7 +3893,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testNotSetDefaultPageIfHasRequestDataNotXmlHttpAndNotExportDuringRedirect()
+    public function testNotSetDefaultPageIfHasRequestDataNotXmlHttpAndNotExportDuringRedirect(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -3954,7 +3919,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testSetDefaultOrderRaiseExceptionIfOrderNotAscNeitherDescDuringRedirect()
+    public function testSetDefaultOrderRaiseExceptionIfOrderNotAscNeitherDescDuringRedirect(): void
     {
         $columnOrder = 'foo';
 
@@ -3973,7 +3938,7 @@ class GridTest extends TestCase
         $this->grid->isReadyForRedirect();
     }
 
-    public function testSetDefaultOrderRaiseExceptionIfColumnDoesNotExistsDuringRedirect()
+    public function testSetDefaultOrderRaiseExceptionIfColumnDoesNotExistsDuringRedirect(): void
     {
         $colId = 'col';
 
@@ -3990,21 +3955,21 @@ class GridTest extends TestCase
         $this->grid->isReadyForRedirect();
     }
 
-    public function testSetDefaultOrderAscIfNotRequestDataDuringRedirect()
+    public function testSetDefaultOrderAscIfNotRequestDataDuringRedirect(): void
     {
         $this->mockDefaultOrder('asc');
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testSetDefaultOrderDescIfNotRequestDataDuringRedirect()
+    public function testSetDefaultOrderDescIfNotRequestDataDuringRedirect(): void
     {
         $this->mockDefaultOrder('desc');
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testSetDefaultOrderIfRequestDataXmlHttpRequestAndNotExportDuringRedirect()
+    public function testSetDefaultOrderIfRequestDataXmlHttpRequestAndNotExportDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -4045,7 +4010,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testNotSetDefaultOrderIfHasRequestDataNotXmlHttpButExportDuringRedirect()
+    public function testNotSetDefaultOrderIfHasRequestDataNotXmlHttpButExportDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -4079,7 +4044,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testNotSetDefaultOrderIfHasRequestDataNotXmlHttpAndNotExportDuringRedirect()
+    public function testNotSetDefaultOrderIfHasRequestDataNotXmlHttpAndNotExportDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -4113,7 +4078,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testSetDefaultLimitRaiseExceptionIfLimitIsNotAPositiveDuringRedirect()
+    public function testSetDefaultLimitRaiseExceptionIfLimitIsNotAPositiveDuringRedirect(): void
     {
         $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage(Grid::DEFAULT_LIMIT_NOT_VALID_EX_MSG);
@@ -4126,7 +4091,7 @@ class GridTest extends TestCase
         $this->grid->isReadyForRedirect();
     }
 
-    public function testSetDefaultLimitRaiseExceptionIfLimitIsNotDefinedInGridLimitsDuringRedirect()
+    public function testSetDefaultLimitRaiseExceptionIfLimitIsNotDefinedInGridLimitsDuringRedirect(): void
     {
         $limit = 2;
 
@@ -4141,14 +4106,14 @@ class GridTest extends TestCase
         $this->grid->isReadyForRedirect();
     }
 
-    public function testSetDefaultLimitIfNotSessionDataDuringHandleRedirect()
+    public function testSetDefaultLimitIfNotSessionDataDuringHandleRedirect(): void
     {
         $this->mockDefaultLimit();
 
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testSetDefaultLimitIfRequestDataXmlHttpRequestAndNotExportDuringHandleRedirect()
+    public function testSetDefaultLimitIfRequestDataXmlHttpRequestAndNotExportDuringHandleRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4179,7 +4144,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testNotSetDefaultLimitIfHasRequestDataNotXmlHttpButExportDuringHandleRedirect()
+    public function testNotSetDefaultLimitIfHasRequestDataNotXmlHttpButExportDuringHandleRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4203,7 +4168,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testNotSetDefaultLimitIfHasRequestDataNotXmlHttpAndNotExportDuringHandleRedirect()
+    public function testNotSetDefaultLimitIfHasRequestDataNotXmlHttpAndNotExportDuringHandleRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4227,7 +4192,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessDefaultTweaksIfNotRequestDataDuringRedirect()
+    public function testProcessDefaultTweaksIfNotRequestDataDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4243,7 +4208,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testProcessDefaultTweaksIfRequestDataXmlHttpRequestAndNotExportDuringRedirect()
+    public function testProcessDefaultTweaksIfRequestDataXmlHttpRequestAndNotExportDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4273,7 +4238,7 @@ class GridTest extends TestCase
         $this->assertFalse($this->grid->isReadyForRedirect());
     }
 
-    public function testNotProcessDefaultTweaksIfHasRequestDataNotXmlHttpButExportDuringRedirect()
+    public function testNotProcessDefaultTweaksIfHasRequestDataNotXmlHttpButExportDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4295,7 +4260,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testNotProcessDefaultTweaksIfHasRequestDataNotXmlHttpAndNotExportDuringRedirect()
+    public function testNotProcessDefaultTweaksIfHasRequestDataNotXmlHttpAndNotExportDuringRedirect(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4317,7 +4282,7 @@ class GridTest extends TestCase
         $this->assertTrue($this->grid->isReadyForRedirect());
     }
 
-    public function testGetGridRedirectResponse()
+    public function testGetGridRedirectResponse(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -4331,28 +4296,28 @@ class GridTest extends TestCase
         $this->assertInstanceOf(RedirectResponse::class, $this->grid->getGridResponse());
     }
 
-    public function testGetGridExportResponse()
+    public function testGetGridExportResponse(): void
     {
         $exportResponse = $this->mockExports();
 
         $this->assertEquals($exportResponse, $this->grid->getGridResponse());
     }
 
-    public function testGetGridMassActionCallbackRedirectResponse()
+    public function testGetGridMassActionCallbackRedirectResponse(): void
     {
         $response = $this->mockMassActionCallbackResponse();
 
         $this->assertEquals($response, $this->grid->getGridResponse());
     }
 
-    public function testGetGridMassActionControllerResponse()
+    public function testGetGridMassActionControllerResponse(): void
     {
         $response = $this->mockMassActionControllerResponse();
 
         $this->assertEquals($response, $this->grid->getGridResponse());
     }
 
-    public function testGetGridWithoutParams()
+    public function testGetGridWithoutParams(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4360,7 +4325,7 @@ class GridTest extends TestCase
         $this->assertEquals(['grid' => $this->grid], $this->grid->getGridResponse());
     }
 
-    public function testGetGridWithoutView()
+    public function testGetGridWithoutView(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4371,7 +4336,7 @@ class GridTest extends TestCase
         $this->assertEquals(['grid' => $this->grid, $param1, $param2], $this->grid->getGridResponse($params));
     }
 
-    public function testGetGridWithViewWithoutParams()
+    public function testGetGridWithViewWithoutParams(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4381,7 +4346,7 @@ class GridTest extends TestCase
         $this->assertInstanceOf(Response::class, $this->grid->getGridResponse($view));
     }
 
-    public function testGetGridWithViewWithViewAndParams()
+    public function testGetGridWithViewWithViewAndParams(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4663,10 +4628,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_PAGE => 0]);
     }
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function mockMassActionCallbackResponse()
+    private function mockMassActionCallbackResponse(): MockObject
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4694,10 +4656,7 @@ class GridTest extends TestCase
         return $callbackResponse;
     }
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function mockMassActionControllerResponse()
+    private function mockMassActionControllerResponse(): MockObject
     {
         $httpKernel = $this
             ->getMockBuilder(HttpKernel::class)
@@ -4778,10 +4737,7 @@ class GridTest extends TestCase
         return $callbackResponse;
     }
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function mockExports()
+    private function mockExports(): MockObject
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -4808,7 +4764,7 @@ class GridTest extends TestCase
         return $response;
     }
 
-    private function mockExportsButNotFiltersPageOrderLimit()
+    private function mockExportsButNotFiltersPageOrderLimit(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -4859,7 +4815,7 @@ class GridTest extends TestCase
             ->method('set');
     }
 
-    private function mockTweakReset()
+    private function mockTweakReset(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -4883,7 +4839,7 @@ class GridTest extends TestCase
             ->with($this->gridHash);
     }
 
-    private function mockTweakFilters()
+    private function mockTweakFilters(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -4918,7 +4874,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, ['tweaks' => [$tweakGroup => $tweakId], $colId => ['from' => ['foo'], 'to' => ['bar']]]);
     }
 
-    private function mockTweakOrder()
+    private function mockTweakOrder(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -4953,7 +4909,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, ['tweaks' => [$tweakGroup => $tweakId], Grid::REQUEST_QUERY_ORDER => "$colId|$order"]);
     }
 
-    private function mockTweakMassAction()
+    private function mockTweakMassAction(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -4977,7 +4933,7 @@ class GridTest extends TestCase
             ->method('set');
     }
 
-    private function mockTweakPage()
+    private function mockTweakPage(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5007,7 +4963,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, ['tweaks' => [$tweakGroup => $tweakId], Grid::REQUEST_QUERY_PAGE => $page]);
     }
 
-    private function mockTweakLimit()
+    private function mockTweakLimit(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5039,7 +4995,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, ['tweaks' => [$tweakGroup => $tweakId], Grid::REQUEST_QUERY_LIMIT => $limit]);
     }
 
-    private function mockTweakExport()
+    private function mockTweakExport(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5063,7 +5019,7 @@ class GridTest extends TestCase
             ->method('set');
     }
 
-    private function mockTweakExportButNotFiltersPageOrderLimit()
+    private function mockTweakExportButNotFiltersPageOrderLimit(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5105,7 +5061,7 @@ class GridTest extends TestCase
             ->method('set');
     }
 
-    private function mockRemoveActiveTweakGroups()
+    private function mockRemoveActiveTweakGroups(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5156,7 +5112,7 @@ class GridTest extends TestCase
             ]);
     }
 
-    private function mockRemoveActiveTweak()
+    private function mockRemoveActiveTweak(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5207,7 +5163,7 @@ class GridTest extends TestCase
             ]);
     }
 
-    private function mockAddActiveTweak()
+    private function mockAddActiveTweak(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5258,7 +5214,7 @@ class GridTest extends TestCase
             ]);
     }
 
-    private function mockPageRequestData()
+    private function mockPageRequestData(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5277,7 +5233,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_PAGE => $page]);
     }
 
-    private function mockPageQueryOrderRequestData()
+    private function mockPageQueryOrderRequestData(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -5306,7 +5262,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_PAGE => 0]);
     }
 
-    private function mockPageLimitRequestData()
+    private function mockPageLimitRequestData(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -5323,7 +5279,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_PAGE => 0]);
     }
 
-    private function mockPageMassActionRequestData()
+    private function mockPageMassActionRequestData(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -5344,7 +5300,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_PAGE => 0]);
     }
 
-    private function mockPageFiltersRequestData()
+    private function mockPageFiltersRequestData(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5363,10 +5319,12 @@ class GridTest extends TestCase
             ->method('isFilterable')
             ->willReturn(true);
 
-        $this->stubRequestWithData([
-                                       Grid::REQUEST_QUERY_PAGE => 2,
-                                       $colId                   => $colData,
-                                   ]);
+        $this->stubRequestWithData(
+            [
+                Grid::REQUEST_QUERY_PAGE => 2,
+                $colId                   => $colData,
+            ]
+        );
 
         $this
             ->session
@@ -5375,7 +5333,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [$colId => $colData, Grid::REQUEST_QUERY_PAGE => 0]);
     }
 
-    private function mockPageNotSelectFilterRequestData()
+    private function mockPageNotSelectFilterRequestData(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5406,7 +5364,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_PAGE => $page]);
     }
 
-    private function mockPageColumnNotSelectMultiRequestData()
+    private function mockPageColumnNotSelectMultiRequestData(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5440,13 +5398,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_PAGE => $page]);
     }
 
-    /**
-     * @param string $columnId
-     * @param string $order
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function mockOrderRequestData($columnId, $order)
+    private function mockOrderRequestData(string $columnId, string $order): MockObject
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -5468,7 +5420,7 @@ class GridTest extends TestCase
         return $column;
     }
 
-    private function mockOrderColumnNotSortable()
+    private function mockOrderColumnNotSortable(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -5499,7 +5451,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_PAGE => 0]);
     }
 
-    private function mockConfiguredLimitRequestData()
+    private function mockConfiguredLimitRequestData(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5520,7 +5472,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_LIMIT => $limit, Grid::REQUEST_QUERY_PAGE => 0]);
     }
 
-    private function mockNonConfiguredLimitRequestData()
+    private function mockNonConfiguredLimitRequestData(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -5534,7 +5486,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_PAGE => 0]);
     }
 
-    private function mockDefaultSessionFiltersWithoutRequestData()
+    private function mockDefaultSessionFiltersWithoutRequestData(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -5602,30 +5554,17 @@ class GridTest extends TestCase
             ]);
     }
 
-    /**
-     * @param string $col1Id
-     * @param string $col2Id
-     * @param string $col3Id
-     * @param string $col4Id
-     * @param string $col5Id
-     * @param string $col1FilterValue
-     * @param array  $col2FilterValue
-     * @param string $col5From
-     * @param string $col5To
-     *
-     * @return array
-     */
     private function arrangeColumnsFilters(
-        $col1Id,
-        $col2Id,
-        $col3Id,
-        $col4Id,
-        $col5Id,
-        $col1FilterValue,
-        $col2FilterValue,
-        $col5From,
-        $col5To
-    ) {
+        string $col1Id,
+        string $col2Id,
+        string $col3Id,
+        string $col4Id,
+        string $col5Id,
+        string|array $col1FilterValue,
+        string|array $col2FilterValue,
+        string $col5From,
+        string $col5To
+    ): array {
         $column1 = $this->stubColumn($col1Id);
         $this->grid->addColumn($column1);
 
@@ -5665,7 +5604,7 @@ class GridTest extends TestCase
         return [$column1, $column2, $column3, $column4, $column5];
     }
 
-    private function mockDefaultPage()
+    private function mockDefaultPage(): void
     {
         $row  = $this->createMock(Row::class);
         $rows = new Rows();
@@ -5686,7 +5625,7 @@ class GridTest extends TestCase
     /**
      * @param string $order
      */
-    private function mockDefaultOrder($order)
+    private function mockDefaultOrder(string $order): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
 
@@ -5711,7 +5650,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_ORDER => "$columnId|$order"]);
     }
 
-    private function mockDefaultLimit()
+    private function mockDefaultLimit(): void
     {
         $this->arrangeGridSourceDataLoadedWithEmptyRows();
         $this->arrangeGridPrimaryColumn();
@@ -5727,13 +5666,7 @@ class GridTest extends TestCase
             ->with($this->gridHash, [Grid::REQUEST_QUERY_LIMIT => $limit]);
     }
 
-    /**
-     * @param int    $totalCount
-     * @param string $sourceHash
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function arrangeGridSourceDataLoadedWithEmptyRows($totalCount = 0, $sourceHash = null)
+    private function arrangeGridSourceDataLoadedWithEmptyRows(?int $totalCount = 0, ?string $sourceHash = null): MockObject
     {
         $source = $this->createMock(Source::class);
         $source
@@ -5774,12 +5707,7 @@ class GridTest extends TestCase
         $this->grid->setSource($source);
     }
 
-    /**
-     * @param int $totalCount
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function arrangeGridSourceDataLoadedWithoutRowsReturned($totalCount = 0)
+    private function arrangeGridSourceDataLoadedWithoutRowsReturned(int $totalCount = 0): MockObject
     {
         $source = $this->createMock(Source::class);
         $source
@@ -5794,10 +5722,7 @@ class GridTest extends TestCase
         return $source;
     }
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function arrangeGridSourceDataNotLoadedWithoutRowsReturned()
+    private function arrangeGridSourceDataNotLoadedWithoutRowsReturned(): MockObject
     {
         $source = $this->createMock(Source::class);
         $source
@@ -5812,12 +5737,7 @@ class GridTest extends TestCase
         return $source;
     }
 
-    /**
-     * @param int $totalCount
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function arrangeGridSourceDataNotLoadedWithEmptyRows($totalCount = 0)
+    private function arrangeGridSourceDataNotLoadedWithEmptyRows(?int $totalCount = 0): MockObject
     {
         $source = $this->createMock(Source::class);
         $source
@@ -5862,12 +5782,7 @@ class GridTest extends TestCase
         return $column;
     }
 
-    /**
-     * @param string $columnId
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function stubFilteredColumn($columnId = null)
+    private function stubFilteredColumn(int|string|null $columnId = null): MockObject
     {
         $column = $this->stubColumn($columnId);
         $column
@@ -5877,12 +5792,7 @@ class GridTest extends TestCase
         return $column;
     }
 
-    /**
-     * @param mixed $columnId
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function stubTitledColumn($columnId = null)
+    private function stubTitledColumn(int|string|null $columnId = null): MockObject
     {
         $column = $this->stubColumn($columnId);
         $column
@@ -5892,13 +5802,7 @@ class GridTest extends TestCase
         return $column;
     }
 
-    /**
-     * @param string $type
-     * @param mixed  $columnId
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function stubFilterableColumn($type, $columnId = null)
+    private function stubFilterableColumn(string $type, int|string|null $columnId = null): MockObject
     {
         $column = $this->stubColumn($columnId);
         $column
@@ -5911,13 +5815,7 @@ class GridTest extends TestCase
         return $column;
     }
 
-    /**
-     * @param string $defaultOp
-     * @param mixed  $columnId
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function stubColumnWithDefaultOperator($defaultOp, $columnId = null)
+    private function stubColumnWithDefaultOperator(string $defaultOp, int|string|null $columnId = null): MockObject
     {
         $column = $this->stubColumn($columnId);
         $column
@@ -5927,12 +5825,7 @@ class GridTest extends TestCase
         return $column;
     }
 
-    /**
-     * @param mixed $columnId
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function stubColumn($columnId = null)
+    private function stubColumn(int|string|null $columnId = null): MockObject
     {
         $column = $this
             ->getMockBuilder(Column::class)
@@ -5945,10 +5838,7 @@ class GridTest extends TestCase
         return $column;
     }
 
-    /**
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function arrangeGridWithColumnsIterator()
+    private function arrangeGridWithColumnsIterator(): MockObject
     {
         $column = $this->stubColumn('primaryID');
 
@@ -5992,12 +5882,7 @@ class GridTest extends TestCase
         return $massAction;
     }
 
-    /**
-     * @param string $role
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function stubMassAction($role = null)
+    private function stubMassAction(?string $role = null): MockObject
     {
         // @todo: It seems that MassActionInterface does not have getRole in it. is that fine?
         $massAction = $this
@@ -6011,13 +5896,7 @@ class GridTest extends TestCase
         return $massAction;
     }
 
-    /**
-     * @param string $role
-     * @param mixed  $colId
-     *
-     * @return \PHPUnit\Framework\MockObject\MockObject
-     */
-    private function stubRowAction($role = null, $colId = null)
+    private function stubRowAction(?string $role = null, int|string|null $colId = null): MockObject
     {
         // @todo: It seems that RowActionInterface does not have getRole in it. is that fine?
         $rowAction = $this
@@ -6034,10 +5913,7 @@ class GridTest extends TestCase
         return $rowAction;
     }
 
-    /**
-     * @param array $requestData
-     */
-    private function stubRequestWithData(array $requestData)
+    private function stubRequestWithData(array $requestData): void
     {
         $this
             ->request
@@ -6046,12 +5922,7 @@ class GridTest extends TestCase
             ->willReturn($requestData);
     }
 
-    /**
-     * @param int $tweakPage
-     *
-     * @return array
-     */
-    private function arrangeDefaultTweaks($tweakPage)
+    private function arrangeDefaultTweaks(int $tweakPage): array
     {
         $group   = 'aGroup';
         $title   = 'aTweak';

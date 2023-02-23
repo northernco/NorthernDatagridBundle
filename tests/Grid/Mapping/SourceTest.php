@@ -12,34 +12,34 @@ class SourceTest extends TestCase
         $this->source = new Source([]);
     }
 
-    public function testColumnsHasDefaultValue()
+    public function testColumnsHasDefaultValue(): void
     {
         $this->assertSame([], $this->source->getColumns());
     }
 
-    public function testFilterableHasDefaultValue()
+    public function testFilterableHasDefaultValue(): void
     {
         $this->assertTrue($this->source->isFilterable());
     }
 
-    public function testSortableHasDefaultValue()
+    public function testSortableHasDefaultValue(): void
     {
         $this->assertTrue($this->source->isSortable());
     }
 
-    public function testGroupsHasDefaultValue()
+    public function testGroupsHasDefaultValue(): void
     {
         $expectedGroups = ['0' => 'default'];
 
         $this->assertSame($expectedGroups, $this->source->getGroups());
     }
 
-    public function testGroupByHasDefaultValue()
+    public function testGroupByHasDefaultValue(): void
     {
         $this->assertSame([], $this->source->getGroupBy());
     }
 
-    public function testGetterColumns()
+    public function testGetterColumns(): void
     {
         $columns         = 'columns';
         $expectedColumns = [$columns];
@@ -49,7 +49,7 @@ class SourceTest extends TestCase
         $this->assertEquals($expectedColumns, $this->source->getColumns());
     }
 
-    public function testGetterHasColumns()
+    public function testGetterHasColumns(): void
     {
         $columns = 'columns';
 
@@ -58,7 +58,7 @@ class SourceTest extends TestCase
         $this->assertTrue($this->source->hasColumns());
     }
 
-    public function testGetterFilterable()
+    public function testGetterFilterable(): void
     {
         $filterable = false;
 
@@ -67,7 +67,7 @@ class SourceTest extends TestCase
         $this->assertEquals($filterable, $this->source->isFilterable());
     }
 
-    public function testGetterSortable()
+    public function testGetterSortable(): void
     {
         $sortable = false;
 
@@ -76,7 +76,7 @@ class SourceTest extends TestCase
         $this->assertFalse($this->source->isSortable());
     }
 
-    public function testGetterGroups()
+    public function testGetterGroups(): void
     {
         $groups         = 'groups';
         $expectedGroups = [$groups];
@@ -86,7 +86,7 @@ class SourceTest extends TestCase
         $this->assertEquals($expectedGroups, $this->source->getGroups());
     }
 
-    public function testGetterGroupBy()
+    public function testGetterGroupBy(): void
     {
         $groupsBy         = 'groupBy';
         $expectedGroupsBy = [$groupsBy];

@@ -10,27 +10,26 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class BooleanColumnTest extends TestCase
 {
-    /** @var BooleanColumn */
-    private $column;
+    private BooleanColumn $column;
 
     public function setUp(): void
     {
         $this->column = new BooleanColumn();
     }
 
-    public function testGetType()
+    public function testGetType(): void
     {
         $this->assertEquals('boolean', $this->column->getType());
     }
 
-    public function testGetDisplayedValue()
+    public function testGetDisplayedValue(): void
     {
         $this->assertEquals(1, $this->column->getDisplayedValue(true));
         $this->assertEquals(0, $this->column->getDisplayedValue(false));
         $this->assertEquals('foo', $this->column->getDisplayedValue('foo'));
     }
 
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $params = [
             'filter' => 'foo',
@@ -55,7 +54,7 @@ class BooleanColumnTest extends TestCase
         );
     }
 
-    public function testInitializeAlignment()
+    public function testInitializeAlignment(): void
     {
         $this->assertEquals(Column::ALIGN_CENTER, $this->column->getAlign());
 
@@ -63,7 +62,7 @@ class BooleanColumnTest extends TestCase
         $this->assertEquals(Column::ALIGN_LEFT, $column->getAlign());
     }
 
-    public function testInitializeSize()
+    public function testInitializeSize(): void
     {
         $this->assertEquals(30, $this->column->getSize());
 
@@ -71,7 +70,7 @@ class BooleanColumnTest extends TestCase
         $this->assertEquals(40, $column->getSize());
     }
 
-    public function testInitializeValues()
+    public function testInitializeValues(): void
     {
         $this->assertEquals([1 => 'true', 0 => 'false'], $this->column->getValues());
 
@@ -81,7 +80,7 @@ class BooleanColumnTest extends TestCase
         $this->assertEquals($values, $column->getValues());
     }
 
-    public function testIsQueryValid()
+    public function testIsQueryValid(): void
     {
         // It seems that's no way for this to return false
 
@@ -91,7 +90,7 @@ class BooleanColumnTest extends TestCase
         $this->assertTrue($this->column->isQueryValid(0));
     }
 
-    public function testRenderCell()
+    public function testRenderCell(): void
     {
         $this->assertEquals(
             'true',
@@ -121,7 +120,7 @@ class BooleanColumnTest extends TestCase
         );
     }
 
-    public function testRenderCellWithCallback()
+    public function testRenderCellWithCallback(): void
     {
         $this->column->manipulateRenderCell(
             function ($value, $row, $router) {

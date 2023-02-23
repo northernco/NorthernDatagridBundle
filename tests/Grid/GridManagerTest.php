@@ -4,6 +4,7 @@ namespace APY\DataGridBundle\Tests\Grid;
 
 use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Grid\GridManager;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,15 +12,9 @@ use Twig\Environment;
 
 class GridManagerTest extends TestCase
 {
-    /**
-     * @var GridManager
-     */
-    private $gridManager;
+    private GridManager $gridManager;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $container;
+    private MockObject $container;
 
     public function setUp(): void
     {
@@ -27,12 +22,12 @@ class GridManagerTest extends TestCase
         $this->gridManager = new GridManager($this->container);
     }
 
-    public function testGetIterator()
+    public function testGetIterator(): void
     {
         $this->assertInstanceOf(\SplObjectStorage::class, $this->gridManager->getIterator());
     }
 
-    public function testCreateGridWithoutId()
+    public function testCreateGridWithoutId(): void
     {
         $grid = $this->createMock(Grid::class);
         $this
@@ -53,7 +48,7 @@ class GridManagerTest extends TestCase
         $this->assertEquals($grids, $this->gridManager->getIterator());
     }
 
-    public function testCreateGridWithId()
+    public function testCreateGridWithId(): void
     {
         $grid = $this->createMock(Grid::class);
         $this
@@ -76,7 +71,7 @@ class GridManagerTest extends TestCase
         $this->assertEquals($grids, $this->gridManager->getIterator());
     }
 
-    public function testReturnsManagedGridCount()
+    public function testReturnsManagedGridCount(): void
     {
         $grid = $this->createMock(Grid::class);
         $this
@@ -90,7 +85,7 @@ class GridManagerTest extends TestCase
         $this->assertEquals(1, $this->gridManager->count());
     }
 
-    public function testGetRouteUrl()
+    public function testGetRouteUrl(): void
     {
         $routeUrl = 'aRouteUrl';
         $this->gridManager->setRouteUrl($routeUrl);
@@ -106,19 +101,19 @@ class GridManagerTest extends TestCase
         $this->gridManager->isReadyForRedirect();
     }
 
-    public function testItThrowsExceptionWhenTwoDifferentGridsReturnsSameHashDuringCheckForRedirect()
+    public function testItThrowsExceptionWhenTwoDifferentGridsReturnsSameHashDuringCheckForRedirect(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(GridManager::SAME_GRID_HASH_EX_MSG);
 
         $sameHash = 'hashValue';
 
-        $this->stubTwoGridsForRedirect($sameHash, null, null, $sameHash, null, null);
+        $this->stubTwoGridsForRedirect($sameHash, null, false, $sameHash, null, false);
 
         $this->gridManager->isReadyForRedirect();
     }
 
-    public function testNoGridsReadyForRedirect()
+    public function testNoGridsReadyForRedirect(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -128,7 +123,7 @@ class GridManagerTest extends TestCase
         $this->assertFalse($this->gridManager->isReadyForRedirect());
     }
 
-    public function testAtLeastOneGridReadyForRedirect()
+    public function testAtLeastOneGridReadyForRedirect(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -138,7 +133,7 @@ class GridManagerTest extends TestCase
         $this->assertTrue($this->gridManager->isReadyForRedirect());
     }
 
-    public function testItRewindGridListWhenCheckingTwoTimesIfReadyForRedirect()
+    public function testItRewindGridListWhenCheckingTwoTimesIfReadyForRedirect(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -173,7 +168,7 @@ class GridManagerTest extends TestCase
         $this->gridManager->isReadyForRedirect();
     }
 
-    public function testItIgnoresEveryGridUrlIfRouteUrlAlreadySetted()
+    public function testItIgnoresEveryGridUrlIfRouteUrlAlreadySetted(): void
     {
         $grid1Hash = 'hashValue1';
         $route1Url = 'route1Url';
@@ -181,7 +176,7 @@ class GridManagerTest extends TestCase
         $grid2Hash = 'hashValue2';
         $route2Url = 'route2Url';
 
-        $this->stubTwoGridsForRedirect($grid1Hash, $route1Url, null, $grid2Hash, $route2Url, null);
+        $this->stubTwoGridsForRedirect($grid1Hash, $route1Url, false, $grid2Hash, $route2Url, false);
 
         $settedRouteUrl = 'settedRouteUrl';
         $this->gridManager->setRouteUrl($settedRouteUrl);
@@ -191,7 +186,7 @@ class GridManagerTest extends TestCase
         $this->assertSame($settedRouteUrl, $this->gridManager->getRouteUrl());
     }
 
-    public function testItThrowsExceptionWhenCheckForExportAndGridsNotSetted()
+    public function testItThrowsExceptionWhenCheckForExportAndGridsNotSetted(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(GridManager::NO_GRID_EX_MSG);
@@ -199,19 +194,19 @@ class GridManagerTest extends TestCase
         $this->gridManager->isReadyForExport();
     }
 
-    public function testItThrowsExceptionWhenTwoDifferentGridsReturnsSameHashDuringCheckForExport()
+    public function testItThrowsExceptionWhenTwoDifferentGridsReturnsSameHashDuringCheckForExport(): void
     {
         $this->expectException(\RuntimeException::class);
         $this->expectExceptionMessage(GridManager::SAME_GRID_HASH_EX_MSG);
 
         $sameHash = 'hashValue';
 
-        $this->stubTwoGridsForExport($sameHash, null, $sameHash, null);
+        $this->stubTwoGridsForExport($sameHash, false, $sameHash, false);
 
         $this->gridManager->isReadyForExport();
     }
 
-    public function testNoGridsReadyForExport()
+    public function testNoGridsReadyForExport(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -221,7 +216,7 @@ class GridManagerTest extends TestCase
         $this->assertFalse($this->gridManager->isReadyForExport());
     }
 
-    public function testAtLeastOneGridReadyForExport()
+    public function testAtLeastOneGridReadyForExport(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -231,7 +226,7 @@ class GridManagerTest extends TestCase
         $this->assertTrue($this->gridManager->isReadyForExport());
     }
 
-    public function testItRewindGridListWhenCheckingTwoTimesIfReadyForExport()
+    public function testItRewindGridListWhenCheckingTwoTimesIfReadyForExport(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -266,7 +261,7 @@ class GridManagerTest extends TestCase
         $this->gridManager->isReadyForExport();
     }
 
-    public function testNoGridsHasMassActionRedirect()
+    public function testNoGridsHasMassActionRedirect(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -276,7 +271,7 @@ class GridManagerTest extends TestCase
         $this->assertFalse($this->gridManager->isMassActionRedirect());
     }
 
-    public function testAtLeastOneGridHasMassActionRedirect()
+    public function testAtLeastOneGridHasMassActionRedirect(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -286,7 +281,7 @@ class GridManagerTest extends TestCase
         $this->assertTrue($this->gridManager->isMassActionRedirect());
     }
 
-    public function testItRewindGridListWhenCheckingTwoTimesIfHasMassActionRedirect()
+    public function testItRewindGridListWhenCheckingTwoTimesIfHasMassActionRedirect(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -321,7 +316,7 @@ class GridManagerTest extends TestCase
         $this->gridManager->isMassActionRedirect();
     }
 
-    public function testGridResponseRedirect()
+    public function testGridResponseRedirect(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -334,7 +329,7 @@ class GridManagerTest extends TestCase
         $this->assertEquals($routeUrl, $this->gridManager->getGridManagerResponse()->getTargetUrl());
     }
 
-    public function testGridResponseExport()
+    public function testGridResponseExport(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -349,7 +344,7 @@ class GridManagerTest extends TestCase
         $this->assertEquals($response, $this->gridManager->getGridManagerResponse());
     }
 
-    public function testGridResponseMassActionRedirect()
+    public function testGridResponseMassActionRedirect(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -364,7 +359,7 @@ class GridManagerTest extends TestCase
         $this->assertEquals($response, $this->gridManager->getGridManagerResponse());
     }
 
-    public function testGetGridResponseWithoutParams()
+    public function testGetGridResponseWithoutParams(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -374,7 +369,7 @@ class GridManagerTest extends TestCase
         $this->assertEquals(['grid1' => $grid, 'grid2' => $grid2], $this->gridManager->getGridManagerResponse());
     }
 
-    public function testGetGridResponseWithoutView()
+    public function testGetGridResponseWithoutView(): void
     {
         $grid1Hash = 'hashValue1';
         $grid2Hash = 'hashValue2';
@@ -387,7 +382,7 @@ class GridManagerTest extends TestCase
         $this->assertEquals(['grid1' => $grid, 'grid2' => $grid2, $param1, $param2], $this->gridManager->getGridManagerResponse($params));
     }
 
-    public function testGetGridWithViewWithoutParams()
+    public function testGetGridWithViewWithoutParams(): void
     {
         $grid1Hash = 'hashValue1';
 
@@ -415,7 +410,7 @@ class GridManagerTest extends TestCase
         $this->assertInstanceOf(Response::class, $this->gridManager->getGridManagerResponse($view));
     }
 
-    public function testGetGridWithViewWithViewAndParams()
+    public function testGetGridWithViewWithViewAndParams(): void
     {
         $grid1Hash = 'hashValue1';
 
@@ -447,22 +442,14 @@ class GridManagerTest extends TestCase
         $this->assertInstanceOf(Response::class, $this->gridManager->getGridManagerResponse($view, $params));
     }
 
-    /**
-     * @param string $grid1Hash
-     * @param string $route1Url
-     * @param bool   $grid1ReadyForRedirect
-     * @param string $grid2Hash
-     * @param string $route2Url
-     * @param bool   $grid2ReadyForRedirect
-     */
     private function stubTwoGridsForRedirect(
-        $grid1Hash,
-        $route1Url,
-        $grid1ReadyForRedirect,
-        $grid2Hash,
-        $route2Url,
-        $grid2ReadyForRedirect
-    ) {
+        string $grid1Hash,
+        ?string $route1Url,
+        bool $grid1ReadyForRedirect,
+        string $grid2Hash,
+        ?string $route2Url,
+        bool $grid2ReadyForRedirect
+    ): void {
         [$grid, $grid2] = $this->stubTwoGrids($grid1Hash, $grid2Hash);
 
         $grid
@@ -480,15 +467,7 @@ class GridManagerTest extends TestCase
             ->willReturn($route2Url);
     }
 
-    /**
-     * @param string $grid1Hash
-     * @param bool   $grid1ReadyForExport
-     * @param string $grid2Hash
-     * @param bool   $grid2ReadyForExport
-     *
-     * @return array
-     */
-    private function stubTwoGridsForExport($grid1Hash, $grid1ReadyForExport, $grid2Hash, $grid2ReadyForExport)
+    private function stubTwoGridsForExport(string $grid1Hash, bool $grid1ReadyForExport, string $grid2Hash, bool $grid2ReadyForExport): array
     {
         [$grid, $grid2] = $this->stubTwoGrids($grid1Hash, $grid2Hash);
 
@@ -503,15 +482,7 @@ class GridManagerTest extends TestCase
         return [$grid, $grid2];
     }
 
-    /**
-     * @param string $grid1Hash
-     * @param bool   $grid1IsMassActionRedirect
-     * @param string $grid2Hash
-     * @param bool   $grid2IsMassActionRedirect
-     *
-     * @return array
-     */
-    private function stubTwoGridForMassAction($grid1Hash, $grid1IsMassActionRedirect, $grid2Hash, $grid2IsMassActionRedirect)
+    private function stubTwoGridForMassAction(string $grid1Hash, bool $grid1IsMassActionRedirect, string $grid2Hash, bool $grid2IsMassActionRedirect): array
     {
         [$grid, $grid2] = $this->stubTwoGrids($grid1Hash, $grid2Hash);
 
@@ -526,13 +497,7 @@ class GridManagerTest extends TestCase
         return [$grid, $grid2];
     }
 
-    /**
-     * @param string $grid1Hash
-     * @param string $grid2Hash
-     *
-     * @return array
-     */
-    private function stubTwoGrids($grid1Hash, $grid2Hash)
+    private function stubTwoGrids(string $grid1Hash, string $grid2Hash): array
     {
         $grid = $this->createMock(Grid::class);
         $grid
