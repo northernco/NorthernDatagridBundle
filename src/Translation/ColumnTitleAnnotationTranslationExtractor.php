@@ -9,6 +9,7 @@ use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
+use Twig\Node\Node;
 
 class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 {
@@ -80,7 +81,7 @@ class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface,
         }
     }
 
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue): void
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, Node $ast): void
     {
     }
 }
