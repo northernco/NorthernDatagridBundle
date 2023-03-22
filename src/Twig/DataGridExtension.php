@@ -216,7 +216,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
      *
      * @return string|void
      */
-    public function getGridUrl($section, Grid $grid, Column|string|int|null $param = null)
+    public function getGridUrl($section, Grid $grid, Column|string|int|null $param = null): ?string
     {
         $prefix = $grid->getRouteUrl() . (strpos($grid->getRouteUrl(), '?') ? '&' : '?') . $grid->getHash() . '[';
 
@@ -236,6 +236,8 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
             case 'export':
                 return $prefix . Grid::REQUEST_QUERY_EXPORT . ']=' . $param;
         }
+
+        return null;
     }
 
     public function getGridSearch(Environment $environment, Grid $grid, ?string $theme = null, string|int $id = '', array $params = []): string

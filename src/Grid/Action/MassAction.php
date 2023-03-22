@@ -28,7 +28,7 @@ class MassAction implements MassActionInterface
 
     public function __construct(
         string $title,
-        ?string $callback = null,
+        \Closure|string|null $callback = null,
         bool $confirm = false,
         array $parameters = [],
         ?string $role = null
@@ -53,7 +53,7 @@ class MassAction implements MassActionInterface
         return $this->title;
     }
 
-    public function setCallback(\Closure|string $callback): self
+    public function setCallback(\Closure|string|null $callback): self
     {
         $this->callback = $callback;
 
@@ -101,7 +101,7 @@ class MassAction implements MassActionInterface
         return $this->parameters;
     }
 
-    public function setRole(string $role): self
+    public function setRole(?string $role): self
     {
         $this->role = $role;
 

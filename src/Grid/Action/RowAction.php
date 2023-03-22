@@ -187,7 +187,7 @@ class RowAction implements RowActionInterface
         return $this->attributes;
     }
 
-    public function setRole(string $role): self
+    public function setRole(?string $role): self
     {
         $this->role = $role;
 
@@ -197,14 +197,6 @@ class RowAction implements RowActionInterface
     public function getRole(): ?string
     {
         return $this->role;
-    }
-
-    /**
-     * @deprecated This is deprecated and will be removed in 3.0; use addManipulateRender instead.
-     */
-    public function manipulateRender(\Closure $callback)
-    {
-        return $this->addManipulateRender($callback);
     }
 
     public function addManipulateRender(\Closure $callback): self

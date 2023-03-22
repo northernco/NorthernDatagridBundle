@@ -177,8 +177,8 @@ class RowActionTest extends TestCase
             return 2;
         };
 
-        $this->rowAction->manipulateRender($callback1);
-        $this->rowAction->manipulateRender($callback2);
+        $this->rowAction->addManipulateRender($callback1);
+        $this->rowAction->addManipulateRender($callback2);
 
         $this->assertSame([$callback1, $callback2], $this->rowAction->getCallbacks());
     }

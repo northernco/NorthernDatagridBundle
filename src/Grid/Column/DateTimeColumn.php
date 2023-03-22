@@ -89,7 +89,7 @@ class DateTimeColumn extends Column
         return $value;
     }
 
-    public function getDisplayedValue(\Datetime|\DateTimeImmutable|string|int $value): string
+    public function getDisplayedValue(\DateTimeInterface|string|int $value): string
     {
         if (!empty($value)) {
             $dateTime = $this->getDatetime($value, new \DateTimeZone($this->getTimezone()));
@@ -115,7 +115,7 @@ class DateTimeColumn extends Column
         return '';
     }
 
-    protected function getDatetime(\Datetime|\DateTimeImmutable|string|int $data, \DateTimeZone $timezone): \DateTimeInterface
+    protected function getDatetime(\DateTimeInterface|string|int $data, \DateTimeZone $timezone): \DateTimeInterface
     {
         if ($data instanceof \DateTime || $data instanceof \DateTimeImmutable) {
             return $data->setTimezone($timezone);
