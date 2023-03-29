@@ -209,14 +209,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         return $this->renderBlock($environment, 'grid_column_operator', ['grid' => $grid, 'column' => $column, 'submitOnChange' => $submitOnChange, 'op' => $operator]);
     }
 
-    /**
-     * @param string                                 $section
-     * @param \APY\DataGridBundle\Grid\Grid          $grid
-     * @param \APY\DataGridBundle\Grid\Column\Column $param
-     *
-     * @return string|void
-     */
-    public function getGridUrl($section, Grid $grid, Column|string|int|null $param = null): ?string
+    public function getGridUrl(string $section, Grid $grid, Column|string|int|null $param = null): ?string
     {
         $prefix = $grid->getRouteUrl() . (strpos($grid->getRouteUrl(), '?') ? '&' : '?') . $grid->getHash() . '[';
 
