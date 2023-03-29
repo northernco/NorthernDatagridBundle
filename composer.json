@@ -34,6 +34,9 @@
         "PHPExcel": "Export the grid (Excel, HTML or PDF)",
         "doctrine/orm": "If you want to use Entity as source, please require doctrine/orm"
     },
+    "conflict": {
+        "doctrime/orm": "<2.6"
+    },
     "autoload": {
         "psr-4": {
             "APY\\DataGridBundle\\": "src"
