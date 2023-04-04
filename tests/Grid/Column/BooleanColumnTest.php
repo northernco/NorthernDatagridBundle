@@ -33,22 +33,22 @@ class BooleanColumnTest extends TestCase
     {
         $params = [
             'filter' => 'foo',
-            'bar'    => 'bar',
-            'size'   => 52,
+            'bar' => 'bar',
+            'size' => 52,
         ];
 
         $column = new BooleanColumn($params);
 
         $this->assertEquals(
             [
-                'filter'           => 'select',
-                'selectFrom'       => 'values',
-                'operators'        => [Column::OPERATOR_EQ],
-                'defaultOperator'  => Column::OPERATOR_EQ,
+                'filter' => 'select',
+                'selectFrom' => 'values',
+                'operators' => [Column::OPERATOR_EQ],
+                'defaultOperator' => Column::OPERATOR_EQ,
                 'operatorsVisible' => false,
-                'selectMulti'      => false,
-                'bar'              => 'bar',
-                'size'             => 52,
+                'selectMulti' => false,
+                'bar' => 'bar',
+                'size' => 52,
             ],
             $column->getParams()
         );
@@ -142,13 +142,11 @@ class BooleanColumnTest extends TestCase
             }
         );
 
-        $this->assertFalse(
-            $this->column->renderCell(
-                1,
-                $this->createMock(Row::class),
-                $this->createMock(Router::class)
-            )
-        );
+        $this->assertEquals('false', $this->column->renderCell(
+            1,
+            $this->createMock(Row::class),
+            $this->createMock(Router::class)
+        ));
 
         $this->column->manipulateRenderCell(
             function ($value, $row, $router) {
@@ -156,12 +154,10 @@ class BooleanColumnTest extends TestCase
             }
         );
 
-        $this->assertFalse(
-            $this->column->renderCell(
-                1,
-                $this->createMock(Row::class),
-                $this->createMock(Router::class)
-            )
-        );
+        $this->assertEquals('false', $this->column->renderCell(
+            1,
+            $this->createMock(Row::class),
+            $this->createMock(Router::class)
+        ));
     }
 }
