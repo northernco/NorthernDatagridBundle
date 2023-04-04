@@ -47,7 +47,7 @@ class BooleanColumn extends Column
     {
         $value = parent::renderCell($value, $row, $router);
 
-        return $value ? : false;
+        return $value ? : 'false';
     }
 
     public function getDisplayedValue(mixed $value): mixed
