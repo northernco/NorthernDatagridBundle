@@ -884,7 +884,8 @@ abstract class Column
         return $this;
     }
 
-    public function getDefaultOperators(): array {
+    public function getDefaultOperators(): array
+    {
         return $this->defaultOperators;
     }
 }
