@@ -7,35 +7,32 @@
     "license": "MIT",
     "require": {
         "php": ">=8.0",
-        "symfony/form": "^5.4|^6.2",
-        "symfony/dependency-injection": "^5.4|^6.2",
-        "symfony/config": "^5.4|^6.2",
-        "symfony/http-foundation": "^5.4|^6.2",
-        "symfony/http-kernel": "^5.4|^6.2",
-        "symfony/options-resolver": "^5.4|^6.2",
-        "symfony/security-core": "^5.4|^6.2",
-        "symfony/serializer": "^5.4|^6.2",
+        "symfony/form": "^5.2|^6.2",
+        "symfony/dependency-injection": "^5.2|^6.2",
+        "symfony/config": "^5.2|^6.2",
+        "symfony/http-foundation": "^5.2|^6.2",
+        "symfony/http-kernel": "^5.2|^6.2",
+        "symfony/options-resolver": "^5.2|^6.2",
+        "symfony/security-core": "^5.2|^6.2",
+        "symfony/serializer": "^5.2|^6.2",
         "twig/twig": "^2.4|^3.0",
-        "symfony/translation": "^5.4|^6.2",
+        "symfony/translation": "^5.2|^6.2",
         "jms/translation-bundle": "^1.8",
-        "doctrine/annotations": "^2.0"
+        "doctrine/annotations": "^2.0",
+        "doctrine/orm": "^2.13"
     },
     "require-dev": {
         "ext-intl": "*",
         "dg/bypass-finals": "^1.2",
-        "symfony/framework-bundle": "^5.4|^6.2",
-        "symfony/expression-language": "^5.4|^6.2",
-        "symfony/phpunit-bridge": "^5.4|^6.2",
+        "symfony/framework-bundle": "^5.2|^6.2",
+        "symfony/expression-language": "^5.2|^6.2",
+        "symfony/phpunit-bridge": "^5.2|^6.2",
         "phpunit/phpunit": "^9.5"
     },
     "suggest": {
         "ext-intl": "Translate the grid",
         "ext-mbstring": "Convert your data with the right charset",
-        "PHPExcel": "Export the grid (Excel, HTML or PDF)",
-        "doctrine/orm": "If you want to use Entity as source, please require doctrine/orm"
-    },
-    "conflict": {
-        "doctrime/orm": "<2.6"
+        "PHPExcel": "Export the grid (Excel, HTML or PDF)"
     },
     "autoload": {
         "psr-4": {
