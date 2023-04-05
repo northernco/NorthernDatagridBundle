@@ -2,6 +2,7 @@
 
 namespace APY\DataGridBundle\DependencyInjection;
 
+use APY\DataGridBundle\Grid\Column\Column;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -50,7 +51,35 @@ class Configuration implements ConfigurationInterface
                         ->end()
                     ->end()
                 ->end()
-             ->booleanNode('mass_actions_in_new_tab')->defaultFalse()->end()
+                ->booleanNode('mass_actions_in_new_tab')->defaultFalse()->end()
+                ->arrayNode('default_column_operators')
+                    ->performNoDeepMerging()
+                    ->beforeNormalization()
+                    ->ifTrue(function ($v) { return !is_array($v); })
+                        ->then(function ($v) { return [$v]; })
+                    ->end()
+                    ->defaultValue([
+                        Column::OPERATOR_EQ,
+                        Column::OPERATOR_NEQ,
+                        Column::OPERATOR_LT,
+                        Column::OPERATOR_LTE,
+                        Column::OPERATOR_GT,
+                        Column::OPERATOR_GTE,
+                        Column::OPERATOR_BTW,
+                        Column::OPERATOR_BTWE,
+                        Column::OPERATOR_LIKE,
+                        Column::OPERATOR_NLIKE,
+                        Column::OPERATOR_RLIKE,
+                        Column::OPERATOR_LLIKE,
+                        Column::OPERATOR_SLIKE,
+                        Column::OPERATOR_NSLIKE,
+                        Column::OPERATOR_RSLIKE,
+                        Column::OPERATOR_LSLIKE,
+                        Column::OPERATOR_ISNULL,
+                        Column::OPERATOR_ISNOTNULL,
+                    ])
+                    ->scalarPrototype()
+                ->end()
              ->end();
 
         return $treeBuilder;

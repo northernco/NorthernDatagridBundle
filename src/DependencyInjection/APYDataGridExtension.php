@@ -41,5 +41,6 @@ class APYDataGridExtension extends Extension
         $container->setParameter('apy_data_grid.actions_columns_title', $config['actions_columns_title']);
         $container->setParameter('apy_data_grid.pagerfanta', $config['pagerfanta']);
         $container->setParameter('apy_data_grid.mass_actions_in_new_tab', $config['mass_actions_in_new_tab']);
+        $container->setParameter('apy_data_grid.default_column_operators', $config['mass_actions_in_new_tab']);
     }
 }
