@@ -158,9 +158,7 @@ abstract class Column
         ?array $defaultOperators = null
     )
     {
-        if ($defaultOperators !== null) {
-            $this->setDefaultOperators($defaultOperators);
-        }
+        $this->setDefaultOperators($defaultOperators ?? self::$availableOperators);
 
         $this->__initialize((array)$params);
     }

@@ -70,11 +70,6 @@
             </call>
         </service>
 
-        <service id="grid.column.class" class="APY\DataGridBundle\Grid\Column\Column" shared="false" public="true">
-            <call method="setDefaultOperators">
-                <argument>%apy_data_grid.default_column_operators%</argument>
-            </call>
-        </service>
+        <service id="grid.column.class" class="APY\DataGridBundle\Grid\Column\Column" public="false"/>
     </services>
-
 </container>
