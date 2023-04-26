@@ -153,8 +153,15 @@ abstract class Column
 
     private array $defaultOperators = [];
 
-    public function __construct(?array $params = null)
+    public function __construct(
+        ?array $params = null,
+        ?array $defaultOperators = null
+    )
     {
+        if ($defaultOperators !== null) {
+            $this->setDefaultOperators($defaultOperators);
+        }
+
         $this->__initialize((array)$params);
     }
 
