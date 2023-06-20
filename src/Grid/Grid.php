@@ -138,9 +138,9 @@ class Grid implements GridInterface
 
     private bool $newSession = false;
 
-    private ?string $noDataMessage;
+    private string $noDataMessage = '';
 
-    private ?string $noResultMessage;
+    private string $noResultMessage = '';
 
     /**
      * @var \APY\DataGridBundle\Grid\Export\Export[]
@@ -183,9 +183,9 @@ class Grid implements GridInterface
 
     private array $lazyHideShowColumns = [];
 
-    private ?int $actionsColumnSize;
+    private ?int $actionsColumnSize = null;
 
-    private ?string $actionsColumnTitle;
+    private string $actionsColumnTitle = '';
 
     private ?bool $massActionsInNewTab;
 
@@ -566,9 +566,9 @@ class Grid implements GridInterface
 
                 if ($export instanceof Export) {
                     $export->setTwig($this->twig)
-                           ->setTranslator($this->translator)
-                           ->setRouter($this->router)
-                           ->setKernelCharset($this->kernelCharset);
+                        ->setTranslator($this->translator)
+                        ->setRouter($this->router)
+                        ->setKernelCharset($this->kernelCharset);
                 }
 
                 $export->computeData($this);

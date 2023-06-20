@@ -56,7 +56,7 @@ class Entity extends Source
 
     private string $entityName;
 
-    private string $managerName;
+    private ?string $managerName;
 
     private Metadata $metadata;
 
@@ -70,7 +70,7 @@ class Entity extends Source
 
     private array $hints;
 
-    private QueryBuilder $queryBuilder;
+    private ?QueryBuilder $queryBuilder = null;
 
     private string $tableAlias;
 
@@ -632,11 +632,11 @@ class Entity extends Source
                 $query = ($selectFrom === 'source') ? clone $this->querySelectfromSource : clone $this->query;
 
                 $query = $query->select($this->getFieldName($column, true))
-                               ->distinct()
-                               ->orderBy($this->getFieldName($column), 'asc')
-                               ->setFirstResult(null)
-                               ->setMaxResults(null)
-                               ->getQuery();
+                    ->distinct()
+                    ->orderBy($this->getFieldName($column), 'asc')
+                    ->setFirstResult(null)
+                    ->setMaxResults(null)
+                    ->getQuery();
                 if ($selectFrom === 'query') {
                     foreach ($this->hints as $hintKey => $hintValue) {
                         $query->setHint($hintKey, $hintValue);

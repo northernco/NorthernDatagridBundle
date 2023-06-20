@@ -110,9 +110,9 @@ interface GridConfigInterface
     /**
      * Returns the maximum number of items per page.
      *
-     * @return int The maximum number of items per page.
+     * @return int|array|null The maximum number of items per page.
      */
-    public function getMaxPerPage(): ?int;
+    public function getMaxPerPage(): int|array|null;
 
     /**
      * Returns the default order.

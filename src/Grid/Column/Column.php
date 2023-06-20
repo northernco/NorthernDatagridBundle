@@ -87,7 +87,7 @@ abstract class Column
 
     protected ?\Closure $callback = null;
 
-    protected ?int $order = null;
+    protected ?string $order = null;
 
     protected ?int $size;
 

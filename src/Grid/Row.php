@@ -18,7 +18,7 @@ class Row
 {
     private array $fields;
 
-    private string $class;
+    private ?string $class = null;
 
     private string $color;
 
@@ -124,7 +124,7 @@ class Row
         return $this;
     }
 
-    public function getClass(): string
+    public function getClass(): ?string
     {
         return $this->class;
     }
