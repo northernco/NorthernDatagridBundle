@@ -19,26 +19,26 @@ use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 
 abstract class Column
 {
-    public const DEFAULT_VALUE      = null;
-    public const DATA_CONJUNCTION   = 0;
-    public const DATA_DISJUNCTION   = 1;
-    public const OPERATOR_EQ        = 'eq';
-    public const OPERATOR_NEQ       = 'neq';
-    public const OPERATOR_LT        = 'lt';
-    public const OPERATOR_LTE       = 'lte';
-    public const OPERATOR_GT        = 'gt';
-    public const OPERATOR_GTE       = 'gte';
-    public const OPERATOR_BTW       = 'btw';
-    public const OPERATOR_BTWE      = 'btwe';
-    public const OPERATOR_LIKE      = 'like';
-    public const OPERATOR_NLIKE     = 'nlike';
-    public const OPERATOR_RLIKE     = 'rlike';
-    public const OPERATOR_LLIKE     = 'llike';
-    public const OPERATOR_SLIKE     = 'slike'; //simple/strict LIKE
-    public const OPERATOR_NSLIKE    = 'nslike';
-    public const OPERATOR_RSLIKE    = 'rslike';
-    public const OPERATOR_LSLIKE    = 'lslike';
-    public const OPERATOR_ISNULL    = 'isNull';
+    public const DEFAULT_VALUE = null;
+    public const DATA_CONJUNCTION = 0;
+    public const DATA_DISJUNCTION = 1;
+    public const OPERATOR_EQ = 'eq';
+    public const OPERATOR_NEQ = 'neq';
+    public const OPERATOR_LT = 'lt';
+    public const OPERATOR_LTE = 'lte';
+    public const OPERATOR_GT = 'gt';
+    public const OPERATOR_GTE = 'gte';
+    public const OPERATOR_BTW = 'btw';
+    public const OPERATOR_BTWE = 'btwe';
+    public const OPERATOR_LIKE = 'like';
+    public const OPERATOR_NLIKE = 'nlike';
+    public const OPERATOR_RLIKE = 'rlike';
+    public const OPERATOR_LLIKE = 'llike';
+    public const OPERATOR_SLIKE = 'slike'; //simple/strict LIKE
+    public const OPERATOR_NSLIKE = 'nslike';
+    public const OPERATOR_RSLIKE = 'rslike';
+    public const OPERATOR_LSLIKE = 'lslike';
+    public const OPERATOR_ISNULL = 'isNull';
     public const OPERATOR_ISNOTNULL = 'isNotNull';
 
     protected static array $availableOperators = [
@@ -65,8 +65,8 @@ abstract class Column
     /**
      * Align.
      */
-    public const ALIGN_LEFT   = 'left';
-    public const ALIGN_RIGHT  = 'right';
+    public const ALIGN_LEFT = 'left';
+    public const ALIGN_RIGHT = 'right';
     public const ALIGN_CENTER = 'center';
 
     protected static array $aligns = [
@@ -151,8 +151,15 @@ abstract class Column
 
     protected int $dataJunction = self::DATA_CONJUNCTION;
 
-    public function __construct(?array $params = null)
+    private array $defaultOperators = [];
+
+    public function __construct(
+        ?array $params = null,
+        ?array $defaultOperators = null
+    )
     {
+        $this->setDefaultOperators($defaultOperators ?? self::$availableOperators);
+
         $this->__initialize((array)$params);
     }
 
@@ -183,28 +190,7 @@ abstract class Column
         $this->setUsePrefixTitle($this->getParam('usePrefixTitle', true));
 
         // Order is important for the order display
-        $this->setOperators(
-            $this->getParam('operators', [
-                self::OPERATOR_EQ,
-                self::OPERATOR_NEQ,
-                self::OPERATOR_LT,
-                self::OPERATOR_LTE,
-                self::OPERATOR_GT,
-                self::OPERATOR_GTE,
-                self::OPERATOR_BTW,
-                self::OPERATOR_BTWE,
-                self::OPERATOR_LIKE,
-                self::OPERATOR_NLIKE,
-                self::OPERATOR_RLIKE,
-                self::OPERATOR_LLIKE,
-                self::OPERATOR_SLIKE,
-                self::OPERATOR_NSLIKE,
-                self::OPERATOR_RSLIKE,
-                self::OPERATOR_LSLIKE,
-                self::OPERATOR_ISNULL,
-                self::OPERATOR_ISNOTNULL,
-            ])
-        );
+        $this->setOperators($this->getParam('operators', $this->getDefaultOperators()));
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
         $this->setSelectMulti($this->getParam('selectMulti', false));
         $this->setSelectExpanded($this->getParam('selectExpanded', false));
@@ -392,7 +378,7 @@ abstract class Column
     public function setOrder(?string $order): self
     {
         if ($order !== null) {
-            $this->order    = $order;
+            $this->order = $order;
             $this->isSorted = true;
         }
 
@@ -427,12 +413,12 @@ abstract class Column
         $hasValue = false;
         if (isset($data['from']) && $this->isQueryValid($data['from'])) {
             $this->data['from'] = $data['from'];
-            $hasValue           = true;
+            $hasValue = true;
         }
 
         if (isset($data['to']) && $this->isQueryValid($data['to'])) {
             $this->data['to'] = $data['to'];
-            $hasValue         = true;
+            $hasValue = true;
         }
 
         $isNullOperator = (isset($data['operator']) && ($data['operator'] === self::OPERATOR_ISNULL || $data['operator'] === self::OPERATOR_ISNOTNULL));
@@ -450,12 +436,12 @@ abstract class Column
         $hasValue = false;
         if (isset($this->data['from']) && $this->data['from'] != $this::DEFAULT_VALUE) {
             $result['from'] = $this->data['from'];
-            $hasValue       = true;
+            $hasValue = true;
         }
 
         if (isset($this->data['to']) && $this->data['to'] != $this::DEFAULT_VALUE) {
             $result['to'] = $this->data['to'];
-            $hasValue     = true;
+            $hasValue = true;
         }
 
         $isNullOperator = (isset($this->data['operator']) && ($this->data['operator'] === self::OPERATOR_ISNULL || $this->data['operator'] === self::OPERATOR_ISNOTNULL));
@@ -894,5 +880,17 @@ abstract class Column
     public static function getAvailableOperators(): array
     {
         return self::$availableOperators;
+    }
+
+    public function setDefaultOperators(array $operators): self
+    {
+        $this->defaultOperators = $operators;
+
+        return $this;
+    }
+
+    public function getDefaultOperators(): array
+    {
+        return $this->defaultOperators;
     }
 }
