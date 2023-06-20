@@ -18,7 +18,7 @@
         "twig/twig": "^2.4|^3.0",
         "symfony/translation": "^5.2|^6.2",
         "jms/translation-bundle": "^1.8",
-        "doctrine/annotations": "^2.0",
+        "doctrine/annotations": "^1.14|^2.0",
         "doctrine/orm": "^2.13"
     },
     "require-dev": {
