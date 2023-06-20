@@ -26,7 +26,7 @@ class GridConfigBuilder implements GridConfigBuilderInterface
 
     protected int $page = 0;
 
-    protected ?int $limit = null;
+    protected int|array|null $limit = null;
 
     protected ?int $maxResults = null;
 
@@ -177,12 +177,12 @@ class GridConfigBuilder implements GridConfigBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getMaxPerPage(): ?int
+    public function getMaxPerPage(): int|array|null
     {
         return $this->limit;
     }
 
-    public function setMaxPerPage(?int $limit): self
+    public function setMaxPerPage(int|array|null $limit): self
     {
         $this->limit = $limit;
 

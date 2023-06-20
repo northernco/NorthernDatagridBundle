@@ -124,7 +124,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         ];
     }
 
-    public function initGrid(Grid $grid, ?string $theme = null, string|int $id = '', array $params = []): void
+    public function initGrid(Grid $grid, ?string $theme = null, string|int|null $id = '', array $params = []): void
     {
         $this->theme     = $theme;
         $this->templates = [];
@@ -133,7 +133,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         $this->params                  = $params;
     }
 
-    public function getGrid(Environment $environment, Grid $grid, ?string $theme = null, string|int $id = '', array $params = [], bool $withjs = true): string
+    public function getGrid(Environment $environment, Grid $grid, ?string $theme = null, string|int|null $id = '', array $params = [], bool $withjs = true): string
     {
         $this->initGrid($grid, $theme, $id, $params);
 
@@ -165,11 +165,11 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         $id = $this->names[$grid->getHash()];
 
         if (($id != '' && ($this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getRenderBlockId() . '_cell')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getType() . '_cell')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getParentType() . '_cell')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_id_' . $column->getRenderBlockId() . '_cell')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getType() . '_cell')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getParentType() . '_cell')))
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getType() . '_cell')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getParentType() . '_cell')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_id_' . $column->getRenderBlockId() . '_cell')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getType() . '_cell')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getParentType() . '_cell')))
             || $this->hasBlock($environment, $block = 'grid_column_' . $column->getRenderBlockId() . '_cell')
             || $this->hasBlock($environment, $block = 'grid_column_' . $column->getType() . '_cell')
             || $this->hasBlock($environment, $block = 'grid_column_' . $column->getParentType() . '_cell')
@@ -188,10 +188,10 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         $id = $this->names[$grid->getHash()];
 
         if (($id != '' && ($this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getRenderBlockId() . '_filter')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_id_' . $column->getRenderBlockId() . '_filter')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getType() . '_filter')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getParentType() . '_filter'))
-             || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_filter_type_' . $column->getFilterType()))
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_id_' . $column->getRenderBlockId() . '_filter')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getType() . '_filter')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getParentType() . '_filter'))
+                || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_filter_type_' . $column->getFilterType()))
             || $this->hasBlock($environment, $block = 'grid_column_' . $column->getRenderBlockId() . '_filter')
             || $this->hasBlock($environment, $block = 'grid_column_id_' . $column->getRenderBlockId() . '_filter')
             || $this->hasBlock($environment, $block = 'grid_column_type_' . $column->getType() . '_filter')

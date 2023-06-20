@@ -14,7 +14,7 @@ namespace APY\DataGridBundle\Grid\Mapping\Driver;
 
 use APY\DataGridBundle\Grid\Mapping\Column as Column;
 use APY\DataGridBundle\Grid\Mapping\Source as Source;
-use Doctrine\Common\Annotations\AnnotationReader;
+use Doctrine\Common\Annotations\Reader;
 
 class Annotation implements DriverInterface
 {
@@ -30,10 +30,10 @@ class Annotation implements DriverInterface
 
     private array $groupBy;
 
-    private AnnotationReader $reader;
+    private Reader $reader;
 
     public function __construct(
-        AnnotationReader $reader
+        Reader $reader
     ) {
         $this->reader  = $reader;
         $this->columns = $this->fields = $this->loaded = $this->groupBy = $this->filterable = $this->sortable = [];
@@ -106,7 +106,7 @@ class Annotation implements DriverInterface
         $this->loaded[$className][$group] = true;
     }
 
-    protected function getMetadataFromClassProperty(string $className, Column|Source $class, ?string $name = null, string $group = 'default'): void
+    protected function getMetadataFromClassProperty(string $className, object $class, ?string $name = null, string $group = 'default'): void
     {
         if ($class instanceof Column) {
             $metadata = $class->getMetadata();
@@ -162,7 +162,7 @@ class Annotation implements DriverInterface
         }
     }
 
-    protected function getMetadataFromClass(string $className, Column|Source $class, string $group): void
+    protected function getMetadataFromClass(string $className, object $class, string $group): void
     {
         if ($class instanceof Source) {
             foreach ($class->getGroups() as $sourceGroup) {
