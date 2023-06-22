@@ -1341,7 +1341,7 @@ class Grid implements GridInterface
         return $this->tweaks;
     }
 
-    public function getAllTweaks(): ?array {
+    public function getAllTweaks(): array {
         return $this->tweaks;
     }
 
@@ -1788,7 +1788,7 @@ class Grid implements GridInterface
         return $this;
     }
 
-    public function getDefaultTweak(): ?string
+    public function getDefaultTweak(): string
     {
         return $this->defaultTweak;
     }
@@ -1879,7 +1879,7 @@ class Grid implements GridInterface
         return $this;
     }
 
-    public function getMaxResults()
+    public function getMaxResults(): int
     {
         return $this->maxResults;
     }

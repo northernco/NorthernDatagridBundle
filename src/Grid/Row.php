@@ -40,7 +40,7 @@ class Row
     public function __construct()
     {
         $this->fields = [];
-        $this->color  = '';
+        $this->color = '';
     }
 
     /**
@@ -51,7 +51,8 @@ class Row
         $this->repository = $repository;
     }
 
-    public function getRepository(): ?EntityRepository {
+    public function getRepository(): ?EntityRepository
+    {
         return $this->repository;
     }
 

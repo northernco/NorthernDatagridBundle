@@ -55,9 +55,8 @@ class Columns implements \IteratorAggregate, \Countable
      *
      * @return Columns
      */
-    public function addColumn(Column $column, $position = 0)
+    public function addColumn(Column $column, int $position = 0)
     {
-        $position = (int)$position;
         $column->setAuthorizationChecker($this->authorizationChecker);
 
         if ($position == 0) {
