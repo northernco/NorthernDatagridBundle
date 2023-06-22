@@ -1084,15 +1084,6 @@ class GridTest extends TestCase
         $this->grid->setMaxResults(-1);
     }
 
-    // @todo: has this case sense? Should not raise exception?
-    public function testSetMaxResultWithStringValue()
-    {
-        $maxResult = 'foo';
-        $this->grid->setMaxResults($maxResult);
-
-        $this->assertSame($maxResult, $this->grid->getMaxResults());
-    }
-
     public function testSetMaxResult()
     {
         $maxResult = 1;
