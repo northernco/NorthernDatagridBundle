@@ -1879,7 +1879,7 @@ class Grid implements GridInterface
         return $this;
     }
 
-    public function getMaxResults(): int
+    public function getMaxResults(): ?int
     {
         return $this->maxResults;
     }

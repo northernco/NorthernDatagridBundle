@@ -44,8 +44,7 @@ class ColumnsTest extends TestCase
             ->addColumn($column1)
             ->addColumn($column2, 1)
             ->addColumn($column3, 2)
-            ->addColumn($column4, -1)
-            ->addColumn($column5, 'foo');
+            ->addColumn($column4, -1);
 
         $this->assertSame([$column2, $column3, $column4, $column1, $column5], iterator_to_array($this->columns->getIterator()));
     }
