@@ -26,7 +26,7 @@ abstract class Export implements ExportInterface
 {
     public const DEFAULT_TEMPLATE = '@APYDataGrid/blocks.html.twig';
 
-    private string $title;
+    private string $title = '';
 
     private string $fileName;
 
@@ -57,18 +57,17 @@ abstract class Export implements ExportInterface
     private ?string $role;
 
     public function __construct(
-        string  $title,
-        string  $fileName = 'export',
-        array   $params = [],
-        string  $charset = 'UTF-8',
+        string $title,
+        string $fileName = 'export',
+        array $params = [],
+        string $charset = 'UTF-8',
         ?string $role = null
-    )
-    {
-        $this->title = $title;
+    ) {
+        $this->title    = $title;
         $this->fileName = $fileName;
-        $this->params = $params;
-        $this->charset = $charset;
-        $this->role = $role;
+        $this->params   = $params;
+        $this->charset  = $charset;
+        $this->role     = $role;
     }
 
     public function setTwig(Environment $twig): self
@@ -105,20 +104,20 @@ abstract class Export implements ExportInterface
         $kernelCharset = $this->kernelCharset;
         if ($this->charset != $kernelCharset && function_exists('mb_strlen')) {
             $this->content = mb_convert_encoding($this->content, $this->charset, $kernelCharset);
-            $filesize = mb_strlen($this->content, '8bit');
+            $filesize      = mb_strlen($this->content, '8bit');
         } else {
-            $filesize = strlen($this->content);
+            $filesize      = strlen($this->content);
             $this->charset = $kernelCharset;
         }
 
         $headers = [
-            'Content-Description' => 'File Transfer',
-            'Content-Type' => $this->getMimeType(),
-            'Content-Disposition' => sprintf('attachment; filename="%s"', $this->getBaseName()),
+            'Content-Description'       => 'File Transfer',
+            'Content-Type'              => $this->getMimeType(),
+            'Content-Disposition'       => sprintf('attachment; filename="%s"', $this->getBaseName()),
             'Content-Transfer-Encoding' => 'binary',
-            'Cache-Control' => 'must-revalidate',
-            'Pragma' => 'public',
-            'Content-Length' => $filesize,
+            'Cache-Control'             => 'must-revalidate',
+            'Pragma'                    => 'public',
+            'Content-Length'            => $filesize,
         ];
 
         $response = new Response($this->content, 200, $headers);
@@ -157,7 +156,7 @@ abstract class Export implements ExportInterface
 
     protected function getRawGridData(Grid $grid): array
     {
-        $result = [];
+        $result     = [];
         $this->grid = $grid;
 
         if ($this->grid->isTitleSectionVisible()) {
@@ -209,7 +208,7 @@ abstract class Export implements ExportInterface
 
         $titlesClean = array_map([$this, 'cleanHTML'], $matches[0]);
 
-        $i = 0;
+        $i      = 0;
         $titles = [];
 
         foreach ($this->grid->getColumns() as $column) {
@@ -244,7 +243,7 @@ abstract class Export implements ExportInterface
         foreach ($this->grid->getRows() as $i => $row) {
             foreach ($this->grid->getColumns() as $column) {
                 if ($column->isVisible(true)) {
-                    $cellHTML = $this->getGridCell($column, $row);
+                    $cellHTML                   = $this->getGridCell($column, $row);
                     $rows[$i][$column->getId()] = $this->cleanHTML($cellHTML);
                 }
             }
@@ -278,21 +277,17 @@ abstract class Export implements ExportInterface
 
         $separator = $column->getSeparator();
 
-        $block = null;
+        $block  = null;
         $return = [];
         foreach ($values as $sourceValue) {
             $value = $column->renderCell($sourceValue, $row, $this->router);
 
             $id = $this->grid->getId();
 
-            if (
-                ($id != ''
-                    && ($block !== null
+            if (($id != '' && ($block !== null
                         || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getRenderBlockId() . '_cell')
                         || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getType() . '_cell')
-                        || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getParentType() . '_cell')
-                    )
-                )
+                        || $this->hasBlock($block = 'grid_' . $id . '_column_' . $column->getParentType() . '_cell')))
                 || $this->hasBlock($block = 'grid_' . $id . '_column_id_' . $column->getRenderBlockId() . '_cell')
                 || $this->hasBlock($block = 'grid_' . $id . '_column_type_' . $column->getType() . '_cell')
                 || $this->hasBlock($block = 'grid_' . $id . '_column_type_' . $column->getParentType() . '_cell')
@@ -304,7 +299,7 @@ abstract class Export implements ExportInterface
                 || $this->hasBlock($block = 'grid_column_type_' . $column->getParentType() . '_cell')) {
                 $html = $this->renderBlock($block, ['grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue]);
             } else {
-                $html = $this->renderBlock('grid_column_cell', ['grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue]);
+                $html  = $this->renderBlock('grid_column_cell', ['grid' => $this->grid, 'column' => $column, 'row' => $row, 'value' => $value, 'sourceValue' => $sourceValue]);
                 $block = null;
             }
 
@@ -356,7 +351,7 @@ abstract class Export implements ExportInterface
     {
         if (is_string($template)) {
             if (substr($template, 0, 8) === '__SELF__') {
-                $this->templates = $this->getTemplatesFromString(substr($template, 8));
+                $this->templates   = $this->getTemplatesFromString(substr($template, 8));
                 $this->templates[] = $this->twig->load(static::DEFAULT_TEMPLATE);
             } else {
                 $this->templates = $this->getTemplatesFromString($template);
@@ -377,7 +372,7 @@ abstract class Export implements ExportInterface
         $template = $this->twig->load($theme);
         while ($template instanceof \Twig\TemplateWrapper) {
             $templates[] = $template;
-            $template = $template->getParent([]);
+            $template    = $template->getParent([]);
         }
 
         return $templates;
@@ -505,6 +500,11 @@ abstract class Export implements ExportInterface
         }
 
         return $this->parameters[$name];
+    }
+
+    public function getParams(): array
+    {
+        return $this->params;
     }
 
     public function setRole(?string $role): self
