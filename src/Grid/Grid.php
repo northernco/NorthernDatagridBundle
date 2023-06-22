@@ -1217,6 +1217,11 @@ class Grid implements GridInterface
         return $this->columns;
     }
 
+    public function getLazyAddColumn(): array
+    {
+        return $this->lazyAddColumn;
+    }
+
     /**
      * Returns true if column exists in columns and lazyAddColumn properties.
      *
@@ -1333,6 +1338,10 @@ class Grid implements GridInterface
             $this->tweaks[$id] = array_merge($tweak, ['url' => $url . $id]);
         }
 
+        return $this->tweaks;
+    }
+
+    public function getAllTweaks(): array {
         return $this->tweaks;
     }
 
@@ -1577,6 +1586,16 @@ class Grid implements GridInterface
         return $this;
     }
 
+    public function getPermanentFilters(): array
+    {
+        return $this->permanentFilters;
+    }
+
+    public function getDefaultFilters(): array
+    {
+        return $this->defaultFilters;
+    }
+
     /**
      * Set permanent value for filters.
      *
@@ -1614,6 +1633,11 @@ class Grid implements GridInterface
         $this->defaultOrder = "$columnId|$order";
 
         return $this;
+    }
+
+    public function getDefaultOrder(): ?string
+    {
+        return $this->defaultOrder;
     }
 
     /**
@@ -1764,6 +1788,11 @@ class Grid implements GridInterface
         return $this;
     }
 
+    public function getDefaultTweak(): string
+    {
+        return $this->defaultTweak;
+    }
+
     /**
      * Sets current Page (internal).
      *
@@ -1850,6 +1879,11 @@ class Grid implements GridInterface
         return $this;
     }
 
+    public function getMaxResults(): ?int
+    {
+        return $this->maxResults;
+    }
+
     /**
      * Return true if the grid is filtered.
      *
@@ -1931,6 +1965,11 @@ class Grid implements GridInterface
         return $this;
     }
 
+    public function getShowFilters(): bool
+    {
+        return $this->showFilters;
+    }
+
     /**
      * Hides Titles panel.
      *
@@ -1941,6 +1980,11 @@ class Grid implements GridInterface
         $this->showTitles = false;
 
         return $this;
+    }
+
+    public function getShowTitles(): bool
+    {
+        return $this->showTitles;
     }
 
     /**
@@ -2043,6 +2087,11 @@ class Grid implements GridInterface
         return $this;
     }
 
+    public function getHiddenColumns(): array
+    {
+        return $this->lazyHiddenColumns;
+    }
+
     /**
      * Sets a list of columns to show when the grid is output
      * It acts as a mask; Other columns will be set as hidden.
@@ -2056,6 +2105,11 @@ class Grid implements GridInterface
         $this->lazyVisibleColumns = (array)$columnIds;
 
         return $this;
+    }
+
+    public function getVisibleColumns(): array
+    {
+        return $this->lazyVisibleColumns;
     }
 
     /**
@@ -2090,6 +2144,11 @@ class Grid implements GridInterface
         return $this;
     }
 
+    public function getLazyHideShowColumns(): array
+    {
+        return $this->lazyHideShowColumns;
+    }
+
     /**
      * Sets the size of the default action column.
      *
@@ -2104,6 +2163,16 @@ class Grid implements GridInterface
         return $this;
     }
 
+    public function getActionsColumnSize(): ?int
+    {
+        return $this->actionsColumnSize;
+    }
+
+    public function getNewSession(): bool
+    {
+        return $this->newSession;
+    }
+
     /**
      * Sets the title of the default action column.
      *
@@ -2116,6 +2185,11 @@ class Grid implements GridInterface
         $this->actionsColumnTitle = (string)$title;
 
         return $this;
+    }
+
+    public function getActionsColumnTitle(): ?string
+    {
+        return $this->actionsColumnTitle;
     }
 
     /**

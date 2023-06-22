@@ -40,15 +40,7 @@ class RowActionTest extends TestCase
         $this->rowAction = new RowAction(
             $this->title, $this->route, $this->confirm, $this->target, $this->attributes, $this->role
         );
-        $this->row = $this->createMock(Row::class);
-    }
-
-    public function testSetTitle()
-    {
-        $title = 'foo_title';
-        $this->rowAction->setTitle($title);
-
-        $this->assertAttributeEquals($title, 'title', $this->rowAction);
+        $this->row       = $this->createMock(Row::class);
     }
 
     public function testGetTitle()
@@ -59,28 +51,12 @@ class RowActionTest extends TestCase
         $this->assertEquals($title, $this->rowAction->getTitle());
     }
 
-    public function testSetRoute()
-    {
-        $route = 'another_vendor.another_bundle.controller.route_name';
-        $this->rowAction->setRoute($route);
-
-        $this->assertAttributeEquals($route, 'route', $this->rowAction);
-    }
-
     public function testGetRoute()
     {
         $route = 'another_vendor.another_bundle.controller.route_name';
         $this->rowAction->setRoute($route);
 
         $this->assertEquals($route, $this->rowAction->getRoute());
-    }
-
-    public function testSetConfirm()
-    {
-        $confirm = true;
-        $this->rowAction->setConfirm($confirm);
-
-        $this->assertAttributeEquals(true, 'confirm', $this->rowAction);
     }
 
     public function testGetConfirmation()
@@ -93,15 +69,7 @@ class RowActionTest extends TestCase
 
     public function testDefaultConfirmMessage()
     {
-        $this->assertInternalType('string', $this->rowAction->getConfirmMessage());
-    }
-
-    public function testSetConfirmMessage()
-    {
-        $message = 'A foo test message';
-        $this->rowAction->setConfirmMessage($message);
-
-        $this->assertAttributeEquals($message, 'confirmMessage', $this->rowAction);
+        $this->assertIsString($this->rowAction->getConfirmMessage());
     }
 
     public function testGetConfirmMessage()
@@ -112,28 +80,12 @@ class RowActionTest extends TestCase
         $this->assertEquals($message, $this->rowAction->getConfirmMessage());
     }
 
-    public function testSetTarget()
-    {
-        $target = '_self';
-        $this->rowAction->setTarget($target);
-
-        $this->assertAttributeEquals($target, 'target', $this->rowAction);
-    }
-
     public function testGetTarget()
     {
         $target = '_blank';
         $this->rowAction->setTarget($target);
 
         $this->assertEquals($target, $this->rowAction->getTarget());
-    }
-
-    public function testSetColumn()
-    {
-        $col = 'foo';
-        $this->rowAction->setColumn($col);
-
-        $this->assertAttributeEquals($col, 'column', $this->rowAction);
     }
 
     public function testGetColumn()
@@ -158,10 +110,9 @@ class RowActionTest extends TestCase
         $associativeParam = ['foo' => 'fooParam', 'bar' => 'barParam'];
         $this->rowAction->addRouteParameters($associativeParam);
 
-        $this->assertAttributeEquals(
+        $this->assertSame(
             array_merge([0 => $stringParam, 1 => $string2Param, 2 => $intKeyParam[1], 3 => $intKeyParam[2]], $associativeParam),
-            'routeParameters',
-            $this->rowAction
+            $this->rowAction->getRouteParameters()
         );
     }
 
@@ -170,15 +121,8 @@ class RowActionTest extends TestCase
         $param = 'param';
         $this->rowAction->setRouteParameters($param);
 
-        $this->assertAttributeEquals([0 => $param], 'routeParameters', $this->rowAction);
-    }
 
-    public function testSetArrayRouteParameters()
-    {
-        $params = ['foo' => 'foo_param', 'bar' => 'bar_param'];
-        $this->rowAction->setRouteParameters($params);
-
-        $this->assertAttributeEquals($params, 'routeParameters', $this->rowAction);
+        $this->assertSame([0 => $param], $this->rowAction->getRouteParameters());
     }
 
     public function testGetRouteParameters()
@@ -189,18 +133,10 @@ class RowActionTest extends TestCase
         $this->assertEquals($params, $this->rowAction->getRouteParameters());
     }
 
-    public function testSetRouteParametersMapping()
-    {
-        $routeParamsMapping = ['foo.bar.city' => 'cityId', 'foo.bar.country' => 'countryId'];
-        $this->rowAction->setRouteParametersMapping($routeParamsMapping);
-
-        $this->assertAttributeEquals($routeParamsMapping, 'routeParametersMapping', $this->rowAction);
-    }
-
     public function testGetRouteParametersMapping()
     {
-        $routeParamKey = 'foo.bar.city';
-        $routeParamValue = 'cityId';
+        $routeParamKey      = 'foo.bar.city';
+        $routeParamValue    = 'cityId';
         $routeParamsMapping = [$routeParamKey => $routeParamValue];
         $this->rowAction->setRouteParametersMapping($routeParamsMapping);
 
@@ -213,33 +149,24 @@ class RowActionTest extends TestCase
         $attr = ['foo' => 'foo_val', 'bar' => 'bar_val'];
         $this->rowAction->setAttributes($attr);
 
-        $this->assertAttributeEquals($attr, 'attributes', $this->rowAction);
+        $this->assertSame($attr, $this->rowAction->getAttributes());
     }
 
     public function testAddAttribute()
     {
         $attrName = 'foo1';
-        $attrVal = 'foo_val1';
+        $attrVal  = 'foo_val1';
         $this->rowAction->addAttribute($attrName, $attrVal);
 
-        $this->assertAttributeEquals(
+        $this->assertSame(
             array_merge($this->attributes, [$attrName => $attrVal]),
-            'attributes',
-            $this->rowAction
+            $this->rowAction->getAttributes()
         );
     }
 
     public function testGetAttributes()
     {
         $this->assertEquals($this->attributes, $this->rowAction->getAttributes());
-    }
-
-    public function testSetRole()
-    {
-        $role = 'ROLE_ADMIN';
-        $this->rowAction->setRole($role);
-
-        $this->assertAttributeEquals($role, 'role', $this->rowAction);
     }
 
     public function testGetRole()
@@ -252,19 +179,23 @@ class RowActionTest extends TestCase
 
     public function testManipulateRender()
     {
-        $callback1 = function () { return 1; };
-        $callback2 = function () { return 2; };
+        $callback1 = function () {
+            return 1;
+        };
+        $callback2 = function () {
+            return 2;
+        };
 
         $this->rowAction->manipulateRender($callback1);
         $this->rowAction->manipulateRender($callback2);
 
-        $this->assertAttributeEquals([$callback1, $callback2], 'callbacks', $this->rowAction);
+        $this->assertSame([$callback1, $callback2], $this->rowAction->getCallbacks());
     }
 
     public function testAddManipulateRender()
     {
         $this->addCalbacks();
-        $this->assertAttributeEquals($this->callbacks, 'callbacks', $this->rowAction);
+        $this->assertSame($this->callbacks, $this->rowAction->getCallbacks());
     }
 
     private function addCalbacks()
@@ -325,7 +256,7 @@ class RowActionTest extends TestCase
         $enabled = true;
         $this->rowAction->setEnabled($enabled);
 
-        $this->assertAttributeEquals($enabled, 'enabled', $this->rowAction);
+        $this->assertSame($enabled, $this->rowAction->getEnabled());
     }
 
     public function testGetEnabled()

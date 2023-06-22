@@ -132,7 +132,7 @@ abstract class Column
      */
     public function __construct($params = null)
     {
-        $this->__initialize((array) $params);
+        $this->__initialize((array)$params);
     }
 
     public function __initialize(array $params)
@@ -206,8 +206,8 @@ abstract class Column
     /**
      * Draw cell.
      *
-     * @param mixed  $value
-     * @param Row    $row
+     * @param mixed $value
+     * @param Row $row
      * @param $router
      *
      * @return string
@@ -218,8 +218,8 @@ abstract class Column
             return call_user_func($this->callback, $value, $row, $router);
         }
 
-        $value = is_bool($value) ? (int) $value : $value;
-        if (array_key_exists((string) $value, $this->values)) {
+        $value = is_bool($value) ? (int)$value : $value;
+        if (array_key_exists((string)$value, $this->values)) {
             $value = $this->values[$value];
         }
 
@@ -238,6 +238,11 @@ abstract class Column
         $this->callback = $callback;
 
         return $this;
+    }
+
+    public function getCallback(): ?\Closure
+    {
+        return $this->callback;
     }
 
     /**
@@ -563,6 +568,11 @@ abstract class Column
         return $result;
     }
 
+    public function getDataAttribute(): array
+    {
+        return $this->data;
+    }
+
     /**
      * Return true if filter value is correct (has to be overridden in each Column class that can be filtered, in order to catch wrong values).
      *
@@ -692,7 +702,7 @@ abstract class Column
     {
         $this->filterType = strtolower($filterType);
 
-        return  $this;
+        return $this;
     }
 
     public function getFilterType()
@@ -742,7 +752,7 @@ abstract class Column
                     case self::OPERATOR_NEQ:
                     case self::OPERATOR_NLIKE:
                     case self::OPERATOR_NSLIKE:
-                        foreach ((array) $this->data['from'] as $value) {
+                        foreach ((array)$this->data['from'] as $value) {
                             $filters[] = new Filter($this->data['operator'], $value);
                         }
                         break;
@@ -798,7 +808,7 @@ abstract class Column
                 self::OPERATOR_GT,
                 self::OPERATOR_GTE,
                 self::OPERATOR_BTW,
-                self::OPERATOR_BTWE, ]);
+                self::OPERATOR_BTWE,]);
         }
 
         return $this->operators;
@@ -908,6 +918,11 @@ abstract class Column
         $this->authorizationChecker = $authorizationChecker;
 
         return $this;
+    }
+
+    public function getAuthorizationChecker(): ?AuthorizationCheckerInterface
+    {
+        return $this->authorizationChecker;
     }
 
     public function getParentType()

@@ -51,6 +51,11 @@ class Row
         $this->repository = $repository;
     }
 
+    public function getRepository(): ?EntityRepository
+    {
+        return $this->repository;
+    }
+
     /**
      * @return null|object
      */
@@ -77,9 +82,9 @@ class Row
     }
 
     /**
+     * @return array|mixed
      * @throws \InvalidArgumentException
      *
-     * @return array|mixed
      */
     public function getPrimaryFieldValue()
     {
@@ -139,6 +144,11 @@ class Row
     public function getField($columnId)
     {
         return isset($this->fields[$columnId]) ? $this->fields[$columnId] : '';
+    }
+
+    public function getFields(): array
+    {
+        return $this->fields;
     }
 
     /**

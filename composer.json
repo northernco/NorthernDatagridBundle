@@ -6,7 +6,7 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
-        "php": ">=7.4",
+        "php": ">=8.0",
         "symfony/form": "^4.4|^5.2",
         "symfony/dependency-injection": "^4.4|^5.2",
         "symfony/config": "^4.4|^5.2",
@@ -23,7 +23,7 @@
         "symfony/framework-bundle": "^4.4|^5.2",
         "symfony/expression-language": "^4.4|^5.2",
         "symfony/phpunit-bridge": "^4.4|^5.2",
-        "phpunit/phpunit": "^8.5",
+        "phpunit/phpunit": "^9.5",
         "doctrine/orm": "~2.4,>=2.4.5"
     },
     "suggest": {

@@ -10,12 +10,12 @@ class DeleteMassActionTest extends TestCase
     public function testConstructWithConfirmation()
     {
         $ma = new DeleteMassAction(true);
-        $this->assertAttributeEquals(true, 'confirm', $ma);
+        $this->assertSame(true, $ma->getConfirm());
     }
 
     public function testConstructWithoutConfirmation()
     {
         $ma = new DeleteMassAction();
-        $this->assertAttributeEquals(false, 'confirm', $ma);
+        $this->assertSame(false, $ma->getConfirm());
     }
 }

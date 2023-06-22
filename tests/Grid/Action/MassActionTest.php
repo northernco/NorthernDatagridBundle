@@ -32,19 +32,11 @@ class MassActionTest extends TestCase
 
     public function testMassActionConstruct()
     {
-        $this->assertAttributeEquals($this->title, 'title', $this->massAction);
-        $this->assertAttributeEquals($this->callback, 'callback', $this->massAction);
-        $this->assertAttributeEquals($this->confirm, 'confirm', $this->massAction);
-        $this->assertAttributeEquals($this->parameters, 'parameters', $this->massAction);
-        $this->assertAttributeEquals($this->role, 'role', $this->massAction);
-    }
-
-    public function testSetTile()
-    {
-        $title = 'bar';
-        $this->massAction->setTitle($title);
-
-        $this->assertAttributeEquals($title, 'title', $this->massAction);
+        $this->assertSame($this->title, $this->massAction->getTitle());
+        $this->assertSame($this->callback, $this->massAction->getCallback());
+        $this->assertSame($this->confirm, $this->massAction->getConfirm());
+        $this->assertSame($this->parameters, $this->massAction->getParameters());
+        $this->assertSame($this->role, $this->massAction->getRole());
     }
 
     public function testGetTitle()
@@ -55,28 +47,12 @@ class MassActionTest extends TestCase
         $this->assertEquals($title, $this->massAction->getTitle());
     }
 
-    public function testSetCallback()
-    {
-        $callback = 'self::fooMassAction';
-        $this->massAction->setCallback($callback);
-
-        $this->assertAttributeEquals($callback, 'callback', $this->massAction);
-    }
-
     public function testGetCallback()
     {
         $callback = 'self::barMassAction';
         $this->massAction->setCallback($callback);
 
         $this->assertEquals($callback, $this->massAction->getCallback());
-    }
-
-    public function testSetConfirm()
-    {
-        $confirm = false;
-        $this->massAction->setConfirm($confirm);
-
-        $this->assertAttributeEquals($confirm, 'confirm', $this->massAction);
     }
 
     public function testGetConfirm()
@@ -89,15 +65,7 @@ class MassActionTest extends TestCase
 
     public function testDefaultConfirmMessage()
     {
-        $this->assertInternalType('string', $this->massAction->getConfirmMessage());
-    }
-
-    public function testSetConfirmMessage()
-    {
-        $message = 'A foo test message';
-        $this->massAction->setConfirmMessage($message);
-
-        $this->assertAttributeEquals($message, 'confirmMessage', $this->massAction);
+        $this->assertIsString($this->massAction->getConfirmMessage());
     }
 
     public function testGetConfirmMessage()
@@ -108,28 +76,12 @@ class MassActionTest extends TestCase
         $this->assertEquals($message, $this->massAction->getConfirmMessage());
     }
 
-    public function testSetParameters()
-    {
-        $params = [1 => 1, 2 => 2];
-        $this->massAction->setParameters($params);
-
-        $this->assertAttributeEquals($params, 'parameters', $this->massAction);
-    }
-
     public function testGetParameters()
     {
         $params = [1, 2, 3];
         $this->massAction->setParameters($params);
 
         $this->assertEquals($params, $this->massAction->getParameters());
-    }
-
-    public function testSetRole()
-    {
-        $role = 'ROLE_ADMIN';
-        $this->massAction->setRole($role);
-
-        $this->assertAttributeEquals($role, 'role', $this->massAction);
     }
 
     public function testGetRole()
