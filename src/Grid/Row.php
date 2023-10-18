@@ -31,7 +31,7 @@ class Row
     public function __construct()
     {
         $this->fields = [];
-        $this->color  = '';
+        $this->color = '';
     }
 
     public function setRepository(EntityRepository $repository): self

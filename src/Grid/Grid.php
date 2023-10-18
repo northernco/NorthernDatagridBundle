@@ -1102,7 +1102,7 @@ class Grid implements GridInterface
         return $this->tweaks;
     }
 
-    public function getAllTweaks(): ?array
+    public function getAllTweaks(): array
     {
         return $this->tweaks;
     }
@@ -1382,7 +1382,7 @@ class Grid implements GridInterface
         return $this;
     }
 
-    public function getDefaultTweak(): ?string
+    public function getDefaultTweak(): string
     {
         return $this->defaultTweak;
     }

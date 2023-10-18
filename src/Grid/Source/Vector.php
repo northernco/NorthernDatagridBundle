@@ -58,18 +58,18 @@ class Vector extends Source
     protected function guessColumns(): void
     {
         $guessedColumns = [];
-        $dataColumnIds  = array_keys(reset($this->data));
+        $dataColumnIds = array_keys(reset($this->data));
 
         foreach ($dataColumnIds as $id) {
             if (!$this->hasColumn($id)) {
-                $params           = [
-                    'id'         => $id,
-                    'title'      => $id,
-                    'source'     => true,
+                $params = [
+                    'id' => $id,
+                    'title' => $id,
+                    'source' => true,
                     'filterable' => true,
-                    'sortable'   => true,
-                    'visible'    => true,
-                    'field'      => $id,
+                    'sortable' => true,
+                    'visible' => true,
+                    'field' => $id,
                 ];
                 $guessedColumns[] = new UntypedColumn($params);
             }
@@ -85,7 +85,7 @@ class Vector extends Source
                 continue;
             }
 
-            $i          = 0;
+            $i = 0;
             $fieldTypes = [];
 
             foreach ($this->data as $row) {
@@ -195,14 +195,7 @@ class Vector extends Source
 
     public function getHash(): ?string
     {
-        return __CLASS__ . md5(
-                implode(
-                    '',
-                    array_map(function ($c) {
-                        return $c->getId();
-                    }, $this->columns)
-                )
-            );
+        return __CLASS__ . md5(implode('', array_map(fn($c) => $c->getId(), $this->columns)));
     }
 
     public function setId(string|array $id)
