@@ -31,10 +31,7 @@ use Doctrine\ORM\Query\TreeWalkerAdapter;
  */
 class ORMCountWalker extends TreeWalkerAdapter
 {
-    /**
-     * Distinct mode hint name.
-     */
-    const HINT_DISTINCT = 'doctrine_paginator.distinct';
+    public const HINT_DISTINCT = 'doctrine_paginator.distinct';
 
     /**
      * Walks down a SelectStatement AST node, modifying it to retrieve a COUNT.
@@ -43,10 +40,10 @@ class ORMCountWalker extends TreeWalkerAdapter
      *
      * @throws \RuntimeException
      */
-    public function walkSelectStatement(SelectStatement $AST)
+    public function walkSelectStatement(SelectStatement $AST): void
     {
         $rootComponents = [];
-        foreach ($this->_getQueryComponents() as $dqlAlias => $qComp) {
+        foreach ($this->getQueryComponents() as $dqlAlias => $qComp) {
             if (array_key_exists('parent', $qComp) && $qComp['parent'] === null && $qComp['nestingLevel'] == 0) {
                 $rootComponents[] = [$dqlAlias => $qComp];
             }

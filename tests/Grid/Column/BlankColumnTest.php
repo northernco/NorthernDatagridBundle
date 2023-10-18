@@ -7,14 +7,14 @@ use PHPUnit\Framework\TestCase;
 
 class BlankColumnTest extends TestCase
 {
-    public function testGetType()
+    public function testGetType(): void
     {
         $column = new BlankColumn();
 
         $this->assertEquals('blank', $column->getType());
     }
 
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $params = [
             'filterable' => true,

@@ -16,10 +16,7 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class DataGridExtensionTest extends TestCase
 {
-    /**
-     * @var DataGridExtension
-     */
-    private $extension;
+    private DataGridExtension $extension;
 
     public function setUp(): void
     {
@@ -27,7 +24,7 @@ class DataGridExtensionTest extends TestCase
         $this->extension = new DataGridExtension($router, '');
     }
 
-    public function testGetGridUrl()
+    public function testGetGridUrl(): void
     {
         $baseUrl = 'https://localhost';
         $gridHash = 'my_grid';

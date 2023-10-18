@@ -7,7 +7,6 @@ use APY\DataGridBundle\Grid\Exception\InvalidArgumentException;
 use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use Doctrine\Persistence\ManagerRegistry;
-use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
@@ -41,28 +40,10 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
 
     private TranslatorInterface $translator;
 
-    /**
-     * The factory.
-     *
-     * @var GridFactoryInterface
-     */
-    private $factory;
+    private GridFactoryInterface $factory;
 
-    /**
-     * Columns of the grid builder.
-     *
-     * @var Column[]
-     */
-    private $columns = [];
+    private array $columns = [];
 
-    /**
-     * Constructor.
-     *
-     * @param Container $container          The service container
-     * @param GridFactoryInterface $factory The grid factory
-     * @param string $name                  The name of the grid
-     * @param array $options                The options of the grid
-     */
     public function __construct(
         AuthorizationCheckerInterface $authorizationChecker,
         RouterInterface $router,
@@ -74,7 +55,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
         KernelInterface $kernel,
         TranslatorInterface $translator,
         GridFactoryInterface $factory,
-        $name,
+        string $name,
         array $options = []
     ) {
         parent::__construct($name, $options);
@@ -94,7 +75,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function add($name, $type, array $options = [])
+    public function add(string $name, string|array|Column $type, array $options = []): self
     {
         if (!$type instanceof Column) {
             if (!is_string($type)) {
@@ -112,7 +93,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function get($name)
+    public function get(string $name): Column
     {
         if (!$this->has($name)) {
             throw new InvalidArgumentException(sprintf('The column with the name "%s" does not exist.', $name));
@@ -126,7 +107,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         return isset($this->columns[$name]);
     }
@@ -134,7 +115,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function remove($name)
+    public function remove(string $name): self
     {
         unset($this->columns[$name]);
 
@@ -144,7 +125,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getGrid()
+    public function getGrid(): Grid
     {
         $config = $this->getGridConfig();
 

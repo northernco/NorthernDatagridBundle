@@ -14,11 +14,11 @@ namespace APY\DataGridBundle\Grid\Column;
 
 class JoinColumn extends TextColumn
 {
-    protected $joinColumns = [];
+    private array $joinColumns = [];
 
-    protected $dataJunction = self::DATA_DISJUNCTION;
+    protected int $dataJunction = self::DATA_DISJUNCTION;
 
-    public function __initialize(array $params)
+    public function __initialize(array $params): void
     {
         parent::__initialize($params);
 
@@ -29,17 +29,17 @@ class JoinColumn extends TextColumn
         $this->setIsManualField(true);
     }
 
-    public function setJoinColumns(array $columns)
+    public function setJoinColumns(array $columns): void
     {
         $this->joinColumns = $columns;
     }
 
-    public function getJoinColumns()
+    public function getJoinColumns(): array
     {
         return $this->joinColumns;
     }
 
-    public function getFilters($source)
+    public function getFilters(string $source): array
     {
         $filters = [];
 
@@ -57,7 +57,7 @@ class JoinColumn extends TextColumn
         return $filters;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'join';
     }

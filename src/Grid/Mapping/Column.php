@@ -17,21 +17,22 @@ namespace APY\DataGridBundle\Grid\Mapping;
  */
 class Column
 {
-    protected $metadata;
-    protected $groups;
+    private array|string $metadata;
 
-    public function __construct($metadata)
+    private array $groups;
+
+    public function __construct(array|string $metadata)
     {
         $this->metadata = $metadata;
-        $this->groups = isset($metadata['groups']) ? (array) $metadata['groups'] : ['default'];
+        $this->groups   = isset($metadata['groups']) ? (array)$metadata['groups'] : ['default'];
     }
 
-    public function getMetadata()
+    public function getMetadata(): array|string
     {
         return $this->metadata;
     }
 
-    public function getGroups()
+    public function getGroups(): array
     {
         return $this->groups;
     }

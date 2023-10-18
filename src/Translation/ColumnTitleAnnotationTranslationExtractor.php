@@ -9,22 +9,23 @@ use JMS\TranslationBundle\Model\FileSource;
 use JMS\TranslationBundle\Model\Message;
 use JMS\TranslationBundle\Model\MessageCatalogue;
 use JMS\TranslationBundle\Translation\Extractor\FileVisitorInterface;
-use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Twig\Node\Node;
 
 class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface, \PHPParser_NodeVisitor
 {
-    private $annotated;
-    private $catalogue;
-    private $parsedClassName;
+    private bool $annotated;
+
+    private ?MessageCatalogue $catalogue;
+
+    private ?string $parsedClassName;
 
     public function beforeTraverse(array $nodes)
     {
-        $this->annotated = false;
+        $this->annotated       = false;
         $this->parsedClassName = null;
     }
 
-    public function enterNode(\PHPParser_Node $node)
+    public function enterNode(\PHPParser_Node $node): void
     {
         if ($node instanceof \PHPParser_Node_Stmt_Namespace) {
             // Base namespace
@@ -40,18 +41,19 @@ class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface,
         }
     }
 
-    public function leaveNode(\PHPParser_Node $node)
-    {
-    }
-    public function afterTraverse(array $nodes)
+    public function leaveNode(\PHPParser_Node $node): void
     {
     }
 
-    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue)
+    public function afterTraverse(array $nodes): void
     {
     }
 
-    public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast)
+    public function visitFile(\SplFileInfo $file, MessageCatalogue $catalogue): void
+    {
+    }
+
+    public function visitPhpFile(\SplFileInfo $file, MessageCatalogue $catalogue, array $ast): void
     {
         $this->catalogue = $catalogue;
 
@@ -63,7 +65,7 @@ class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface,
         if ($this->annotated) {
             // Get annotations for the class
             $annotationDriver = new Annotation(new DoctrineAnnotationReader());
-            $manager = new Manager();
+            $manager          = new Manager();
             $manager->addDriver($annotationDriver, -1);
             $metadata = $manager->getMetadata($this->parsedClassName);
 
@@ -72,14 +74,14 @@ class ColumnTitleAnnotationTranslationExtractor implements FileVisitorInterface,
                 $mappedField = $metadata->getFieldMapping($field);
                 if ((!isset($mappedField['visible']) || $mappedField['visible']) && isset($mappedField['title'])) {
                     $message = new Message($mappedField['title']);
-                    $message->addSource(new FileSource((string) $file));
+                    $message->addSource(new FileSource((string)$file));
                     $catalogue->add($message);
                 }
             }
         }
     }
 
-    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, \Twig_Node $node)
+    public function visitTwigFile(\SplFileInfo $file, MessageCatalogue $catalogue, Node $ast): void
     {
     }
 }

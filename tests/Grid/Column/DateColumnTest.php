@@ -9,20 +9,19 @@ use PHPUnit\Framework\TestCase;
 
 class DateColumnTest extends TestCase
 {
-    /** @var DateColumn */
-    private $column;
+    private DateColumn $column;
 
     public function setUp(): void
     {
         $this->column = new DateColumn();
     }
 
-    public function testGetType()
+    public function testGetType(): void
     {
         $this->assertEquals('date', $this->column->getType());
     }
 
-    public function testGetFiltersWithoutValue()
+    public function testGetFiltersWithoutValue(): void
     {
         $operators = array_flip(Column::getAvailableOperators());
         unset($operators[Column::OPERATOR_ISNOTNULL]);
@@ -34,14 +33,14 @@ class DateColumnTest extends TestCase
         }
     }
 
-    public function testGetFiltersWithNotNullOperator()
+    public function testGetFiltersWithNotNullOperator(): void
     {
         $this->column->setData(['operator' => Column::OPERATOR_ISNOTNULL]);
 
         $this->assertEquals([new Filter(Column::OPERATOR_ISNOTNULL)], $this->column->getFilters('asource'));
     }
 
-    public function testGetFiltersWithIsNullOperator()
+    public function testGetFiltersWithIsNullOperator(): void
     {
         $this->column->setData(['operator' => Column::OPERATOR_ISNULL]);
         $filters = $this->column->getFilters('asource');
@@ -49,7 +48,7 @@ class DateColumnTest extends TestCase
         $this->assertEquals([new Filter(Column::OPERATOR_ISNULL)], $filters);
     }
 
-    public function testGetFiltersOperatorEq()
+    public function testGetFiltersOperatorEq(): void
     {
         $from = '2017-03-18';
         $to   = '2017-03-20';
@@ -65,7 +64,7 @@ class DateColumnTest extends TestCase
         );
     }
 
-    public function testGetFiltersOperatorNeq()
+    public function testGetFiltersOperatorNeq(): void
     {
         $from = '2017-03-18';
         $to   = '2017-03-20';
@@ -83,7 +82,7 @@ class DateColumnTest extends TestCase
         $this->assertSame(Column::DATA_DISJUNCTION, $this->column->getDataJunction());
     }
 
-    public function testGetFiltersOperatorLt()
+    public function testGetFiltersOperatorLt(): void
     {
         $value = '2017-03-18';
 
@@ -95,7 +94,7 @@ class DateColumnTest extends TestCase
         );
     }
 
-    public function testGetFiltersOperatorGte()
+    public function testGetFiltersOperatorGte(): void
     {
         $value = '2017-03-18';
 
@@ -107,7 +106,7 @@ class DateColumnTest extends TestCase
         );
     }
 
-    public function testGetFiltersOperatorGt()
+    public function testGetFiltersOperatorGt(): void
     {
         $value = '2017-03-18';
 
@@ -119,7 +118,7 @@ class DateColumnTest extends TestCase
         );
     }
 
-    public function testGetFiltersOperatorLte()
+    public function testGetFiltersOperatorLte(): void
     {
         $value = '2017-03-18';
 

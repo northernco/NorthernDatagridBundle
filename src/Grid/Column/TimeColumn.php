@@ -14,11 +14,11 @@ namespace APY\DataGridBundle\Grid\Column;
 
 class TimeColumn extends DateTimeColumn
 {
-    protected $dateFormat = \IntlDateFormatter::NONE;
+    protected int $dateFormat = \IntlDateFormatter::NONE;
 
-    protected $fallbackFormat = 'H:i:s';
+    protected string $fallbackFormat = 'H:i:s';
 
-    public function getType()
+    public function getType(): string
     {
         return 'time';
     }

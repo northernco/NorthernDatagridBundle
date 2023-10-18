@@ -17,9 +17,9 @@ namespace APY\DataGridBundle\Grid\Export;
  */
 class TSVExport extends DSVExport
 {
-    protected $fileExtension = 'tsv';
+    protected ?string $fileExtension = 'tsv';
 
-    protected $mimeType = 'text/tab-separated-values';
+    protected string $mimeType = 'text/tab-separated-values';
 
-    protected $delimiter = "\t";
+    protected string $delimiter = "\t";
 }

@@ -13,24 +13,31 @@
 namespace APY\DataGridBundle\Grid\Column;
 
 use APY\DataGridBundle\Grid\Filter;
+use APY\DataGridBundle\Grid\Row;
+use Symfony\Component\Routing\RouterInterface;
 
 class ArrayColumn extends Column
 {
-    public function __initialize(array $params)
+    public function __initialize(array $params): void
     {
         parent::__initialize($params);
 
-        $this->setOperators($this->getParam('operators', [
-            self::OPERATOR_LIKE,
-            self::OPERATOR_NLIKE,
-            self::OPERATOR_EQ,
-            self::OPERATOR_NEQ,
-            self::OPERATOR_ISNULL,
-            self::OPERATOR_ISNOTNULL,
-        ]));
+        $this->setOperators(
+            $this->getParam(
+                'operators',
+                [
+                    self::OPERATOR_LIKE,
+                    self::OPERATOR_NLIKE,
+                    self::OPERATOR_EQ,
+                    self::OPERATOR_NEQ,
+                    self::OPERATOR_ISNULL,
+                    self::OPERATOR_ISNOTNULL,
+                ]
+            )
+        );
     }
 
-    public function getFilters($source)
+    public function getFilters(string $source): array
     {
         $parentFilters = parent::getFilters($source);
 
@@ -42,11 +49,11 @@ class ArrayColumn extends Column
                 switch ($filter->getOperator()) {
                     case self::OPERATOR_EQ:
                     case self::OPERATOR_NEQ:
-                        $filterValues = (array) $filter->getValue();
-                        $value = '';
-                        $counter = 1;
+                        $filterValues = (array)$filter->getValue();
+                        $value        = '';
+                        $counter      = 1;
                         foreach ($filterValues as $filterValue) {
-                            $len = strlen($filterValue);
+                            $len   = strlen($filterValue);
                             $value .= 'i:' . $counter++ . ';s:' . $len . ':"' . $filterValue . '";';
                         }
 
@@ -54,8 +61,8 @@ class ArrayColumn extends Column
                         break;
                     case self::OPERATOR_LIKE:
                     case self::OPERATOR_NLIKE:
-                        $len = strlen($filter->getValue());
-                        $value = 's:' . $len . ':"' . $filter->getValue() . '";';
+                        $len       = strlen($filter->getValue());
+                        $value     = 's:' . $len . ':"' . $filter->getValue() . '";';
                         $filters[] = new Filter($filter->getOperator(), $value);
                         break;
                     case self::OPERATOR_ISNULL:
@@ -76,7 +83,7 @@ class ArrayColumn extends Column
         return $filters;
     }
 
-    public function renderCell($values, $row, $router)
+    public function renderCell(mixed $values, Row $row, RouterInterface $router): array
     {
         if (is_callable($this->callback)) {
             return call_user_func($this->callback, $values, $row, $router);
@@ -86,7 +93,7 @@ class ArrayColumn extends Column
         if (is_array($values) || $values instanceof \Traversable) {
             foreach ($values as $key => $value) {
                 // @todo: this seems like dead code
-                if (!is_array($value) && isset($this->values[(string) $value])) {
+                if (!is_array($value) && isset($this->values[(string)$value])) {
                     $value = $this->values[$value];
                 }
 
@@ -97,7 +104,7 @@ class ArrayColumn extends Column
         return $return;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'array';
     }

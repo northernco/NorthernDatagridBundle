@@ -8,33 +8,30 @@ use PHPUnit\Framework\TestCase;
 
 class MassActionColumnTest extends TestCase
 {
-    /**
-     * @var MassActionColumn
-     */
-    private $column;
+    private MassActionColumn $column;
 
     public function setUp(): void
     {
         $this->column = new MassActionColumn();
     }
 
-    public function testGetType()
+    public function testGetType(): void
     {
         $this->assertEquals('massaction', $this->column->getType());
     }
 
-    public function testGetFilterType()
+    public function testGetFilterType(): void
     {
         $this->assertEquals('massaction', $this->column->getFilterType());
     }
 
-    public function testIsVisible()
+    public function testIsVisible(): void
     {
         $this->assertFalse($this->column->isVisible(true));
         $this->assertTrue($this->column->isVisible(false));
     }
 
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $this->assertEquals(
             [

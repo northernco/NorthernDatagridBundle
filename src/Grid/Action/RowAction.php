@@ -16,56 +16,38 @@ use APY\DataGridBundle\Grid\Row;
 
 class RowAction implements RowActionInterface
 {
-    /** @var string */
-    protected $title;
+    private string $title;
 
-    /** @var string */
-    protected $route;
+    private string $route;
 
-    /** @var bool */
-    protected $confirm;
+    private bool $confirm;
 
-    /** @var string */
-    protected $confirmMessage;
+    private string $confirmMessage;
 
-    /** @var string */
-    protected $target;
+    private string $target;
 
-    /** @var string */
-    protected $column = '__actions';
+    private string $column = '__actions';
 
-    /** @var array */
-    protected $routeParameters = [];
+    private array $routeParameters = [];
 
-    /** @var array */
-    protected $routeParametersMapping = [];
+    private array $routeParametersMapping = [];
 
-    /** @var array */
-    protected $attributes = [];
+    private array $attributes = [];
 
-    /** @var string|null */
-    protected $role;
+    private ?string $role;
 
-    /** @var array */
-    protected $callbacks = [];
+    private array $callbacks = [];
 
-    /** @var bool */
-    protected $enabled = true;
+    private bool $enabled = true;
 
-    /**
-     * Default RowAction constructor.
-     *
-     * @param string $title      Title of the row action
-     * @param string $route      Route to the row action
-     * @param bool   $confirm    Show confirm message if true
-     * @param string $target     Set the target of this action (_self,_blank,_parent,_top)
-     * @param array  $attributes Attributes of the anchor tag
-     * @param string $role       Security role
-     *
-     * @return \APY\DataGridBundle\Grid\Action\RowAction
-     */
-    public function __construct($title, $route, $confirm = false, $target = '_self', $attributes = [], $role = null)
-    {
+    public function __construct(
+        string $title,
+        string $route,
+        bool $confirm = false,
+        string $target = '_self',
+        array $attributes = [],
+        ?string $role = null
+    ) {
         $this->title          = $title;
         $this->route          = $route;
         $this->confirm        = $confirm;
@@ -75,152 +57,79 @@ class RowAction implements RowActionInterface
         $this->role           = $role;
     }
 
-    // @todo: has this setter real sense? we passed this value from constructor
-
-    /**
-     * Set action title.
-     *
-     * @param string $title
-     *
-     * @return self
-     */
-    public function setTitle($title)
+    public function setTitle(string $title): self
     {
         $this->title = $title;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTitle()
+    public function getTitle(): string
     {
         return $this->title;
     }
 
-    // @todo: has this setter real sense? we passed this value from constructor
-
-    /**
-     * Set action route.
-     *
-     * @param string $route
-     *
-     * @return self
-     */
-    public function setRoute($route)
+    public function setRoute(string $route): self
     {
         $this->route = $route;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getRoute()
+    public function getRoute(): string
     {
         return $this->route;
     }
 
-    // @todo: we should change this to something like "enableConfirm" as "false" is the default value and has pretty much
-    // nosense to use setConfirm with false parameter.
-    /**
-     * Set action confirm.
-     *
-     * @param bool $confirm
-     *
-     * @return self
-     */
-    public function setConfirm($confirm)
+    public function setConfirm(bool $confirm): self
     {
         $this->confirm = $confirm;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfirm()
+    public function getConfirm(): bool
     {
         return $this->confirm;
     }
 
-    /**
-     * Set action confirmMessage.
-     *
-     * @param string $confirmMessage
-     *
-     * @return self
-     */
-    public function setConfirmMessage($confirmMessage)
+    public function setConfirmMessage(string $confirmMessage): self
     {
         $this->confirmMessage = $confirmMessage;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getConfirmMessage()
+    public function getConfirmMessage(): string
     {
         return $this->confirmMessage;
     }
 
-    /**
-     * Set action target.
-     *
-     * @param string $target
-     *
-     * @return self
-     */
-    public function setTarget($target)
+    public function setTarget(string $target): self
     {
         $this->target = $target;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getTarget()
+    public function getTarget(): string
     {
         return $this->target;
     }
 
-    /**
-     * Set action column.
-     *
-     * @param string $column Identifier of the action column
-     *
-     * @return self
-     */
-    public function setColumn($column)
+    public function setColumn(string $column): self
     {
         $this->column = $column;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getColumn()
+    public function getColumn(): ?string
     {
         return $this->column;
     }
 
-    /**
-     * Add route parameter.
-     *
-     * @param array|string $routeParameters
-     *
-     * @return self
-     */
-    public function addRouteParameters($routeParameters)
+    public function addRouteParameters(array|string $routeParameters): self
     {
         $routeParameters = (array)$routeParameters;
 
@@ -235,139 +144,62 @@ class RowAction implements RowActionInterface
         return $this;
     }
 
-    /**
-     * Set route parameters.
-     *
-     * @param array|string $routeParameters
-     *
-     * @return self
-     */
-    public function setRouteParameters($routeParameters)
+    public function setRouteParameters(array|string $routeParameters): self
     {
         $this->routeParameters = (array)$routeParameters;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getRouteParameters()
+    public function getRouteParameters(): array
     {
         return $this->routeParameters;
     }
 
-    // @todo: why is this accepting string? it seems pretty useless, isn't it?
-
-    /**
-     * Set route parameters mapping.
-     *
-     * @param array|string $routeParametersMapping
-     *
-     * @return self
-     */
-    public function setRouteParametersMapping($routeParametersMapping)
+    public function setRouteParametersMapping(array|string $routeParametersMapping): self
     {
         $this->routeParametersMapping = (array)$routeParametersMapping;
 
         return $this;
     }
 
-    /**
-     * Map the parameter.
-     *
-     * @param string $name parameter
-     *
-     * @return null|string
-     */
-    public function getRouteParametersMapping($name)
+    public function getRouteParametersMapping(string $name): ?string
     {
         return isset($this->routeParametersMapping[$name]) ? $this->routeParametersMapping[$name] : null;
     }
 
-    /**
-     * Set attributes.
-     *
-     * @param array $attributes
-     *
-     * @return self
-     */
-    public function setAttributes(array $attributes)
+    public function setAttributes(array $attributes): self
     {
         $this->attributes = $attributes;
 
         return $this;
     }
 
-    /**
-     * Add attribute.
-     *
-     * @param string $name
-     * @param string $value
-     *
-     * @return self
-     */
-    public function addAttribute($name, $value)
+    public function addAttribute(string $name, string $value): self
     {
         $this->attributes[$name] = $value;
 
         return $this;
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getAttributes()
+    public function getAttributes(): array
     {
         return $this->attributes;
     }
 
-    /**
-     * set role.
-     *
-     * @param string $role
-     *
-     * @return self
-     */
-    public function setRole($role)
+    public function setRole(?string $role): self
     {
         $this->role = $role;
 
         return $this;
     }
 
-    /**
-     * Get role.
-     *
-     * @return string
-     */
-    public function getRole()
+    public function getRole(): ?string
     {
         return $this->role;
     }
 
-    /**
-     * Set render callback.
-     *
-     * @param \Closure $callback
-     *
-     * @return self
-     * @deprecated This is deprecated and will be removed in 3.0; use addManipulateRender instead.
-     *
-     */
-    public function manipulateRender(\Closure $callback)
-    {
-        return $this->addManipulateRender($callback);
-    }
-
-    /**
-     * Add a callback to render callback stack.
-     *
-     * @param \Closure $callback
-     *
-     * @return self
-     */
-    public function addManipulateRender($callback)
+    public function addManipulateRender(\Closure $callback): self
     {
         $this->callbacks[] = $callback;
 
@@ -379,19 +211,12 @@ class RowAction implements RowActionInterface
         return $this->callbacks;
     }
 
-    /**
-     * Render action for row.
-     *
-     * @param Row $row
-     *
-     * @return RowAction|null
-     */
-    public function render($row)
+    public function render(Row $row): ?self
     {
         foreach ($this->callbacks as $callback) {
             if (is_callable($callback)) {
                 if (null === call_user_func($callback, $this, $row)) {
-                    return;
+                    return null;
                 }
             }
         }
@@ -399,29 +224,15 @@ class RowAction implements RowActionInterface
         return $this;
     }
 
-    // @todo: should not this be "isEnabled"?
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getEnabled()
-    {
-        return $this->enabled;
-    }
-
-    // @todo: should not this be "enable" as default value is false?
-
-    /**
-     * Set the enabled state of this action.
-     *
-     * @param bool $enabled
-     *
-     * @return self
-     */
-    public function setEnabled($enabled)
+    public function setEnabled(bool $enabled): self
     {
         $this->enabled = $enabled;
 
         return $this;
+    }
+
+    public function getEnabled(): bool
+    {
+        return $this->enabled;
     }
 }

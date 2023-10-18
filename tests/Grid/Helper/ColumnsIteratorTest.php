@@ -4,14 +4,14 @@ namespace APY\DataGridBundle\Tests\Grid\Helper;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 class ColumnsIteratorTest extends TestCase
 {
-    /** @var \PHPUnit\Framework\MockObject\MockObject */
-    private $iterator;
+    private MockObject $iterator;
 
-    public function testAcceptAnyColumn()
+    public function testAcceptAnyColumn(): void
     {
         $this->setUpMocks();
         $columnsIterator = new ColumnsIterator($this->iterator, false);
@@ -19,7 +19,7 @@ class ColumnsIteratorTest extends TestCase
         $this->assertTrue($columnsIterator->accept());
     }
 
-    public function testAcceptSourceColumnThatsVisibile()
+    public function testAcceptSourceColumnThatsVisibile(): void
     {
         $this->setUpMocks(true);
         $columnsIterator = new ColumnsIterator($this->iterator, true);
@@ -27,7 +27,7 @@ class ColumnsIteratorTest extends TestCase
         $this->assertTrue($columnsIterator->accept());
     }
 
-    public function testNotAcceptSourceColumnThatsNotVisibile()
+    public function testNotAcceptSourceColumnThatsNotVisibile(): void
     {
         $this->setUpMocks(false);
         $columnsIterator = new ColumnsIterator($this->iterator, true);
@@ -35,14 +35,11 @@ class ColumnsIteratorTest extends TestCase
         $this->assertFalse($columnsIterator->accept());
     }
 
-    /**
-     * @param null|bool $isVisibleForSource
-     */
-    protected function setUpMocks($isVisibleForSource = null)
+    protected function setUpMocks(?bool $isVisibleForSource = null): void
     {
         $column = $this->getMockBuilder(Column::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+                       ->disableOriginalConstructor()
+                       ->getMock();
 
         if (null === $isVisibleForSource) {
             $column->expects($this->never())->method('isVisibleForSource');
@@ -51,8 +48,8 @@ class ColumnsIteratorTest extends TestCase
         }
 
         $this->iterator = $this->getMockBuilder(\Iterator::class)
-            ->disableOriginalConstructor()
-            ->getMock();
+                               ->disableOriginalConstructor()
+                               ->getMock();
         $this->iterator->expects($this->any())->method('current')->willReturn($column);
     }
 }

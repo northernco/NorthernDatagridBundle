@@ -20,6 +20,8 @@ use APY\DataGridBundle\Grid\Column\DateTimeColumn;
 use APY\DataGridBundle\Grid\Column\NumberColumn;
 use APY\DataGridBundle\Grid\Column\TextColumn;
 use APY\DataGridBundle\Grid\Column\UntypedColumn;
+use APY\DataGridBundle\Grid\Columns;
+use APY\DataGridBundle\Grid\Helper\ColumnsIterator;
 use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Rows;
 use Doctrine\Persistence\ManagerRegistry;
@@ -31,32 +33,12 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class Vector extends Source
 {
-    /**
-     * @var array
-     */
-    protected $data = [];
+    protected array $data = [];
 
-    /**
-     * either a column name as a string
-     *  or an array of names of columns.
-     *
-     * @var mixed
-     */
-    protected $id = null;
+    protected string|array|null $id = null;
 
-    /**
-     * Array of columns.
-     *
-     * @var Column[]
-     */
-    protected $columns;
+    protected array|Columns|ColumnsIterator $columns;
 
-    /**
-     * Creates the Vector and sets its data.
-     *
-     * @param array $data
-     * @param array $columns
-     */
     public function __construct(array $data, array $columns = [])
     {
         if (!empty($data)) {
@@ -66,14 +48,14 @@ class Vector extends Source
         $this->setColumns($columns);
     }
 
-    public function initialise(ManagerRegistry $doctrine, Manager $mapping)
+    public function initialise(ManagerRegistry $doctrine, Manager $mapping): void
     {
         if (!empty($this->data)) {
             $this->guessColumns();
         }
     }
 
-    protected function guessColumns()
+    protected function guessColumns(): void
     {
         $guessedColumns = [];
         $dataColumnIds  = array_keys(reset($this->data));
@@ -155,10 +137,7 @@ class Vector extends Source
         }
     }
 
-    /**
-     * @param \APY\DataGridBundle\Grid\Columns $columns
-     */
-    public function getColumns($columns)
+    public function getColumns(Columns $columns): void
     {
         $token = empty($this->id); //makes the first column primary by default
 
@@ -199,31 +178,22 @@ class Vector extends Source
         }
     }
 
-    /**
-     * @param \APY\DataGridBundle\Grid\Column\Column[] $columns
-     * @param int                                      $page             Page Number
-     * @param int                                      $limit            Rows Per Page
-     * @param int                                      $maxResults       Max rows
-     * @param int                                      $gridDataJunction Grid data junction
-     *
-     * @return Rows
-     */
-    public function execute($columns, $page = 0, $limit = 0, $maxResults = null, $gridDataJunction = Column::DATA_CONJUNCTION)
+    public function execute(ColumnsIterator|Columns|array $columns, ?int $page = 0, ?int $limit = 0, ?int $maxResults = null, int $gridDataJunction = Column::DATA_CONJUNCTION): Rows|array
     {
         return $this->executeFromData($columns, $page, $limit, $maxResults);
     }
 
-    public function populateSelectFilters($columns, $loop = false)
+    public function populateSelectFilters(Columns|array $columns, bool $loop = false): void
     {
         $this->populateSelectFiltersFromData($columns, $loop);
     }
 
-    public function getTotalCount($maxResults = null)
+    public function getTotalCount(?int $maxResults = null): ?int
     {
         return $this->getTotalCountFromData($maxResults);
     }
 
-    public function getHash()
+    public function getHash(): ?string
     {
         return __CLASS__ . md5(
                 implode(
@@ -235,32 +205,17 @@ class Vector extends Source
             );
     }
 
-    /**
-     * sets the primary key.
-     *
-     * @param mixed $id either a string or an array of strings
-     */
-    public function setId($id)
+    public function setId(string|array $id)
     {
         $this->id = $id;
     }
 
-    /**
-     * @return mixed
-     */
-    public function getId()
+    public function getId(): string|array|null
     {
         return $this->id;
     }
 
-    /**
-     * Set a two-dimentional array.
-     *
-     * @param array $data
-     *
-     * @throws \InvalidArgumentException
-     */
-    public function setData($data)
+    public function setData(array|object $data): self
     {
         $this->data = $data;
 
@@ -280,18 +235,22 @@ class Vector extends Source
         if (!is_array($firstRaw) || empty($firstRaw)) {
             throw new \InvalidArgumentException('Data should be a two-dimentional array');
         }
+
+        return $this;
     }
 
-    public function delete(array $ids)
+    public function delete(array $ids): void
     {
     }
 
-    protected function setColumns($columns)
+    protected function setColumns(Columns|array|ColumnsIterator $columns): self
     {
         $this->columns = $columns;
+
+        return $this;
     }
 
-    protected function hasColumn($id)
+    protected function hasColumn(string $id): bool
     {
         foreach ($this->columns as $c) {
             if ($id === $c->getId()) {
