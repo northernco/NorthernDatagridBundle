@@ -13,20 +13,20 @@ class ColumnTest extends TestCase
         $this->arrayMetadata  = ['foo' => 'bar', 'groups' => 'baz'];
     }
 
-    public function testColumnMetadataCanBeEmpty()
+    public function testColumnMetadataCanBeEmpty(): void
     {
         $column = new Column([]);
         $this->assertEmpty($column->getMetadata());
         $this->assertSame(['default'], $column->getGroups());
     }
 
-    public function testColumnStringMetadataInjectedInConstructor()
+    public function testColumnStringMetadataInjectedInConstructor(): void
     {
         $column = new Column($this->stringMetadata);
         $this->assertSame($this->stringMetadata, $column->getMetadata());
     }
 
-    public function testColumnArrayMetadataInjectedInConstructor()
+    public function testColumnArrayMetadataInjectedInConstructor(): void
     {
         $column = new Column($this->arrayMetadata);
         $this->assertSame($this->arrayMetadata, $column->getMetadata());

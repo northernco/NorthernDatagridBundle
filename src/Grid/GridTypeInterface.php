@@ -17,19 +17,19 @@ interface GridTypeInterface
      * @param GridBuilder $builder The grid builder
      * @param array       $options The options
      */
-    public function buildGrid(GridBuilder $builder, array $options = []);
+    public function buildGrid(GridBuilder $builder, array $options = []): void;
 
     /**
      * Configures the options for this type.
      *
      * @param OptionsResolver $resolver The resolver for the options
      */
-    public function configureOptions(OptionsResolver $resolver);
+    public function configureOptions(OptionsResolver $resolver): void;
 
     /**
      * Returns the name of this type.
      *
      * @return string The name of this type.
      */
-    public function getName();
+    public function getName(): string;
 }

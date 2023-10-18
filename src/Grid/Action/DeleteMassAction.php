@@ -14,12 +14,7 @@ namespace APY\DataGridBundle\Grid\Action;
 
 class DeleteMassAction extends MassAction
 {
-    /**
-     * Default DeleteMassAction constructor.
-     *
-     * @param bool $confirm Show confirm message if true
-     */
-    public function __construct($confirm = false)
+    public function __construct(bool $confirm = false)
     {
         parent::__construct('Delete', 'static::deleteAction', $confirm);
     }

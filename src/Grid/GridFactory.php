@@ -4,9 +4,17 @@ namespace APY\DataGridBundle\Grid;
 
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Source\Source;
-use Symfony\Component\DependencyInjection\Container;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 
 /**
  * Class GridFactory.
@@ -15,34 +23,54 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
  */
 class GridFactory implements GridFactoryInterface
 {
-    /**
-     * The service container.
-     *
-     * @var Container
-     */
-    private $container;
+    private GridRegistryInterface $registry;
 
-    /**
-     * @var GridRegistryInterface
-     */
-    private $registry;
+    private AuthorizationCheckerInterface $authorizationChecker;
 
-    /**
-     * Constructor.
-     *
-     * @param Container             $container The service container
-     * @param GridRegistryInterface $registry  The grid registry
-     */
-    public function __construct(Container $container, GridRegistryInterface $registry)
-    {
-        $this->container = $container;
-        $this->registry = $registry;
+    private RouterInterface $router;
+
+    private RequestStack $requestStack;
+
+    private Environment $twig;
+
+    private HttpKernelInterface $httpKernel;
+
+    private ManagerRegistry $doctrine;
+
+    private Manager $mapping;
+
+    private KernelInterface $kernel;
+
+    private TranslatorInterface $translator;
+
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        RouterInterface $router,
+        RequestStack $requestStack,
+        Environment $twig,
+        HttpKernelInterface $httpKernel,
+        ManagerRegistry $doctrine,
+        Manager $mapping,
+        KernelInterface $kernel,
+        TranslatorInterface $translator,
+        GridRegistryInterface $registry
+    ) {
+        $this->authorizationChecker = $authorizationChecker;
+        $this->router               = $router;
+        $this->requestStack         = $requestStack;
+        $this->twig                 = $twig;
+        $this->httpKernel           = $httpKernel;
+        $this->registry             = $registry;
+        $this->doctrine             = $doctrine;
+        $this->mapping              = $mapping;
+        $this->kernel               = $kernel;
+        $this->translator           = $translator;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function create($type = null, Source $source = null, array $options = [])
+    public function create(string|array|GridTypeInterface|null $type = null, ?Source $source = null, array $options = []): Grid
     {
         return $this->createBuilder($type, $source, $options)->getGrid();
     }
@@ -50,12 +78,26 @@ class GridFactory implements GridFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createBuilder($type = 'grid', Source $source = null, array $options = [])
+    public function createBuilder(string|GridTypeInterface|array|null $type = 'grid', ?Source $source = null, array $options = []): GridBuilder
     {
-        $type = $this->resolveType($type);
+        $type    = $this->resolveType($type);
         $options = $this->resolveOptions($type, $source, $options);
 
-        $builder = new GridBuilder($this->container, $this, $type->getName(), $options);
+        $builder = new GridBuilder(
+            $this->authorizationChecker,
+            $this->router,
+            $this->requestStack,
+            $this->twig,
+            $this->httpKernel,
+            $this->doctrine,
+            $this->mapping,
+            $this->kernel,
+            $this->translator,
+            $this,
+            $type->getName(),
+            $options
+        );
+
         $builder->setType($type);
 
         $type->buildGrid($builder, $options);
@@ -66,7 +108,7 @@ class GridFactory implements GridFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createColumn($name, $type, array $options = [])
+    public function createColumn(string $name, string|int|Column $type, array $options = []): Column
     {
         if (!$type instanceof Column) {
             if (!is_string($type)) {
@@ -75,12 +117,17 @@ class GridFactory implements GridFactoryInterface
 
             $column = clone $this->registry->getColumn($type);
 
-            $column->__initialize(array_merge([
-                'id'     => $name,
-                'title'  => $name,
-                'field'  => $name,
-                'source' => true,
-            ], $options));
+            $column->__initialize(
+                array_merge(
+                    [
+                        'id'     => $name,
+                        'title'  => $name,
+                        'field'  => $name,
+                        'source' => true,
+                    ],
+                    $options
+                )
+            );
         } else {
             $column = $type;
             $column->setId($name);
@@ -89,14 +136,7 @@ class GridFactory implements GridFactoryInterface
         return $column;
     }
 
-    /**
-     * Returns an instance of type.
-     *
-     * @param string|GridTypeInterface $type The type of the grid
-     *
-     * @return GridTypeInterface
-     */
-    private function resolveType($type)
+    private function resolveType(string|array|GridTypeInterface $type): GridTypeInterface
     {
         if (!$type instanceof GridTypeInterface) {
             if (!is_string($type)) {
@@ -109,16 +149,7 @@ class GridFactory implements GridFactoryInterface
         return $type;
     }
 
-    /**
-     * Returns the options resolved.
-     *
-     * @param GridTypeInterface $type
-     * @param Source            $source
-     * @param array             $options
-     *
-     * @return array
-     */
-    private function resolveOptions(GridTypeInterface $type, Source $source = null, array $options = [])
+    private function resolveOptions(GridTypeInterface $type, ?Source $source = null, array $options = []): array
     {
         $resolver = new OptionsResolver();
 

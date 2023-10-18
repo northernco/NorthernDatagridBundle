@@ -8,66 +8,44 @@ use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
 use APY\DataGridBundle\Grid\Grid;
 use APY\DataGridBundle\Grid\GridBuilder;
 use APY\DataGridBundle\Grid\GridFactoryInterface;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
+use Doctrine\Persistence\ManagerRegistry;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 
 /**
  * Class GridBuilderTest.
  */
 class GridBuilderTest extends TestCase
 {
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $container;
+    private ?MockObject $factory;
 
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject
-     */
-    private $factory;
-
-    /**
-     * @var GridBuilder
-     */
-    private $builder;
+    private ?GridBuilder $builder;
 
     /**
      * {@inheritdoc}
      */
     protected function setUp(): void
     {
-        $self = $this;
-
-        $this->container = $this->createMock(Container::class);
-        $this->container->expects($this->any())
-                        ->method('get')
-                        ->will($this->returnCallback(function ($param) use ($self) {
-                            switch ($param) {
-                                case 'router':
-                                    return $self->createMock(RouterInterface::class);
-                                    break;
-                                case 'request_stack':
-                                    $request = new Request([], [], ['key' => 'value']);
-                                    $session = new Session();
-                                    $request->setSession($session);
-                                    $requestStack = new RequestStack();
-                                    $requestStack->push($request);
-
-                                    return $requestStack;
-                                    break;
-                                case 'security.authorization_checker':
-                                    return $self->createMock(AuthorizationCheckerInterface::class);
-                                    break;
-                            }
-                        }));
+        $auth         = $this->createMock(AuthorizationCheckerInterface::class);
+        $router       = $this->createMock(RouterInterface::class);
+        $requestStack = $this->createMock(RequestStack::class);
+        $twig         = $this->createMock(Environment::class);
+        $httpKernel   = $this->createMock(HttpKernelInterface::class);
+        $registry     = $this->createMock(ManagerRegistry::class);
+        $manager      = $this->createMock(Manager::class);
+        $kernel       = $this->createMock(KernelInterface::class);
+        $translator   = $this->createMock(TranslatorInterface::class);
 
         $this->factory = $this->createMock(GridFactoryInterface::class);
-        $this->builder = new GridBuilder($this->container, $this->factory, 'name');
+        $this->builder = new GridBuilder($auth, $router, $requestStack, $twig, $httpKernel, $registry, $manager, $kernel, $translator, $this->factory, 'name');
     }
 
     protected function tearDown(): void
@@ -76,7 +54,7 @@ class GridBuilderTest extends TestCase
         $this->builder = null;
     }
 
-    public function testAddUnexpectedType()
+    public function testAddUnexpectedType(): void
     {
         $this->expectException(UnexpectedTypeException::class);
 
@@ -84,7 +62,7 @@ class GridBuilderTest extends TestCase
         $this->builder->add('foo', ['test']);
     }
 
-    public function testAddColumnTypeString()
+    public function testAddColumnTypeString(): void
     {
         $this->assertFalse($this->builder->has('foo'));
 
@@ -98,7 +76,7 @@ class GridBuilderTest extends TestCase
         $this->assertTrue($this->builder->has('foo'));
     }
 
-    public function testAddColumnType()
+    public function testAddColumnType(): void
     {
         $this->factory->expects($this->never())->method('createColumn');
 
@@ -107,13 +85,13 @@ class GridBuilderTest extends TestCase
         $this->assertTrue($this->builder->has('foo'));
     }
 
-    public function testAddIsFluent()
+    public function testAddIsFluent(): void
     {
         $builder = $this->builder->add('name', 'text', ['key' => 'value']);
         $this->assertSame($builder, $this->builder);
     }
 
-    public function testGetUnknown()
+    public function testGetUnknown(): void
     {
         $this->expectException(
             InvalidArgumentException::class,
@@ -123,7 +101,7 @@ class GridBuilderTest extends TestCase
         $this->builder->get('foo');
     }
 
-    public function testGetExplicitColumnType()
+    public function testGetExplicitColumnType(): void
     {
         $expectedColumn = $this->createMock(Column::class);
 
@@ -139,7 +117,7 @@ class GridBuilderTest extends TestCase
         $this->assertSame($expectedColumn, $column);
     }
 
-    public function testHasColumnType()
+    public function testHasColumnType(): void
     {
         $this->factory->expects($this->once())
                       ->method('createColumn')
@@ -151,12 +129,12 @@ class GridBuilderTest extends TestCase
         $this->assertTrue($this->builder->has('foo'));
     }
 
-    public function assertHasNotColumnType()
+    public function assertHasNotColumnType(): void
     {
         $this->assertFalse($this->builder->has('foo'));
     }
 
-    public function testRemove()
+    public function testRemove(): void
     {
         $this->factory->expects($this->once())
                       ->method('createColumn')
@@ -170,13 +148,13 @@ class GridBuilderTest extends TestCase
         $this->assertFalse($this->builder->has('foo'));
     }
 
-    public function testRemoveIsFluent()
+    public function testRemoveIsFluent(): void
     {
         $builder = $this->builder->remove('foo');
         $this->assertSame($builder, $this->builder);
     }
 
-    public function testGetGrid()
+    public function testGetGrid(): void
     {
         $this->assertInstanceOf(Grid::class, $this->builder->getGrid());
     }

@@ -10,22 +10,19 @@ use Symfony\Component\Routing\RouterInterface;
 
 class RankColumnTest extends TestCase
 {
-    /**
-     * @var RankColumn
-     */
-    private $column;
+    private RankColumn $column;
 
     public function setUp(): void
     {
         $this->column = new RankColumn();
     }
 
-    public function testGetType()
+    public function testGetType(): void
     {
         $this->assertEquals('rank', $this->column->getType());
     }
 
-    public function testInitialize()
+    public function testInitialize(): void
     {
         $params = [
             'foo'        => 'foo',
@@ -50,7 +47,7 @@ class RankColumnTest extends TestCase
         );
     }
 
-    public function testSetId()
+    public function testSetId(): void
     {
         $this->assertEquals('rank', $this->column->getId());
 
@@ -58,7 +55,7 @@ class RankColumnTest extends TestCase
         $this->assertEquals('foo', $column->getId());
     }
 
-    public function testSetTitle()
+    public function testSetTitle(): void
     {
         $this->assertEquals('rank', $this->column->getTitle());
 
@@ -66,7 +63,7 @@ class RankColumnTest extends TestCase
         $this->assertEquals('foo', $column->getTitle());
     }
 
-    public function testSetSize()
+    public function testSetSize(): void
     {
         $this->assertEquals('30', $this->column->getSize());
 
@@ -74,7 +71,7 @@ class RankColumnTest extends TestCase
         $this->assertEquals('20', $column->getSize());
     }
 
-    public function testSetAlign()
+    public function testSetAlign(): void
     {
         $this->assertEquals(Column::ALIGN_CENTER, $this->column->getAlign());
 
@@ -82,7 +79,7 @@ class RankColumnTest extends TestCase
         $this->assertEquals(Column::ALIGN_RIGHT, $column->getAlign());
     }
 
-    public function testRenderCell()
+    public function testRenderCell(): void
     {
         $this->assertEquals(1, $this->column->renderCell(true, $this->createMock(Row::class), $this->createMock(RouterInterface::class)));
         $this->assertEquals(2, $this->column->renderCell(true, $this->createMock(Row::class), $this->createMock(RouterInterface::class)));

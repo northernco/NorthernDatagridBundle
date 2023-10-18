@@ -14,86 +14,64 @@ namespace APY\DataGridBundle\Grid;
 
 class Filter
 {
-    protected $value;
-    protected $operator;
-    protected $columnName;
+    private mixed $value;
+
+    private string $operator;
+
+    private ?string $columnName;
 
     /**
      * @param string      $operator
      * @param mixed|null  $value
      * @param string|null $columnName
      */
-    public function __construct($operator, $value = null, $columnName = null)
-    {
-        $this->value = $value;
-        $this->operator = $operator;
+    public function __construct(
+        string $operator,
+        mixed $value = null,
+        ?string $columnName = null
+    ) {
+        $this->value      = $value;
+        $this->operator   = $operator;
         $this->columnName = $columnName;
     }
 
-    /**
-     * @param string $operator
-     *
-     * @return Filter
-     */
-    public function setOperator($operator)
+    public function setOperator(string $operator): self
     {
         $this->operator = $operator;
 
         return $this;
     }
 
-    /**
-     * @return string
-     */
-    public function getOperator()
+    public function getOperator(): string
     {
         return $this->operator;
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return Filter
-     */
-    public function setValue($value)
+    public function setValue(mixed $value): self
     {
         $this->value = $value;
 
         return $this;
     }
 
-    /**
-     * @return mixed|null
-     */
-    public function getValue()
+    public function getValue(): mixed
     {
         return $this->value;
     }
 
-    /**
-     * @return bool
-     */
-    public function hasColumnName()
+    public function hasColumnName(): bool
     {
         return $this->columnName !== null;
     }
 
-    /**
-     * @param string $columnName
-     *
-     * @return Filter
-     */
-    public function setColumnName($columnName)
+    public function setColumnName(string $columnName): self
     {
         $this->columnName = $columnName;
 
         return $this;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getColumnName()
+    public function getColumnName(): ?string
     {
         return $this->columnName;
     }

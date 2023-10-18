@@ -9,12 +9,7 @@ namespace APY\DataGridBundle\Grid\Exception;
  */
 class TypeAlreadyExistsException extends \InvalidArgumentException
 {
-    /**
-     * Constructor.
-     *
-     * @param string $name The name of type
-     */
-    public function __construct($name)
+    public function __construct(string $name)
     {
         parent::__construct(sprintf('The type of grid "%s" already exists.', $name));
     }

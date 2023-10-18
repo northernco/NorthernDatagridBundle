@@ -14,21 +14,16 @@ namespace APY\DataGridBundle\Grid\Helper;
 
 class ColumnsIterator extends \FilterIterator
 {
-    /** @var bool */
-    protected $showOnlySourceColumns;
+    private bool $showOnlySourceColumns;
 
-    /**
-     * @param \Iterator $iterator
-     * @param $showOnlySourceColumns
-     */
-    public function __construct(\Iterator $iterator, $showOnlySourceColumns)
+    public function __construct(\Iterator $iterator, bool $showOnlySourceColumns)
     {
         parent::__construct($iterator);
 
         $this->showOnlySourceColumns = $showOnlySourceColumns;
     }
 
-    public function accept()
+    public function accept(): bool
     {
         $current = $this->getInnerIterator()->current();
 

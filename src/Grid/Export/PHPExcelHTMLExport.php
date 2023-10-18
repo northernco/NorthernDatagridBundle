@@ -17,11 +17,11 @@ namespace APY\DataGridBundle\Grid\Export;
  */
 class PHPExcelHTMLExport extends PHPExcel5Export
 {
-    protected $fileExtension = 'html';
+    protected ?string $fileExtension = 'html';
 
-    protected $mimeType = 'text/html';
+    protected string $mimeType = 'text/html';
 
-    protected function getWriter()
+    protected function getWriter(): \PHPExcel_Writer_HTML
     {
         $writer = new \PHPExcel_Writer_HTML($this->objPHPExcel);
         $writer->setPreCalculateFormulas(false);

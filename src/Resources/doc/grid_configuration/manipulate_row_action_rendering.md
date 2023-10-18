@@ -9,13 +9,13 @@ If the callback returns `null` or don't return the action, the action won't be d
 ```php
 <?php
 ...
-$rowAction->manipulateRender($callback);
+$rowAction->addManipulateRender($callback);
 
 $grid->addRowAction($rowAction);
 ...
 ```
 
-## Method RowAction::manipulateRender parameters
+## Method RowAction::addManipulateRender parameters
 
 |parameter|Type|Default value|Description|
 |:--:|:--|:--|:--|:--|
@@ -38,7 +38,7 @@ If the action is disabled, only its title is displayed, with all additional attr
 ```php
 <?php
 ...
-$rowAction->manipulateRender(
+$rowAction->addManipulateRender(
     function ($action, $row)
     {
         if ($row->getField('quantity') == 0) {

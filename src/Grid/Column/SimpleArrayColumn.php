@@ -13,10 +13,12 @@
 namespace APY\DataGridBundle\Grid\Column;
 
 use APY\DataGridBundle\Grid\Filter;
+use APY\DataGridBundle\Grid\Row;
+use Symfony\Component\Routing\RouterInterface;
 
 class SimpleArrayColumn extends Column
 {
-    public function __initialize(array $params)
+    public function __initialize(array $params): void
     {
         parent::__initialize($params);
 
@@ -31,7 +33,7 @@ class SimpleArrayColumn extends Column
         $this->setDefaultOperator($this->getParam('defaultOperator', self::OPERATOR_LIKE));
     }
 
-    public function getFilters($source)
+    public function getFilters(string $source): array
     {
         $parentFilters = parent::getFilters($source);
 
@@ -65,7 +67,7 @@ class SimpleArrayColumn extends Column
         return $filters;
     }
 
-    public function renderCell($value, $row, $router)
+    public function renderCell(mixed $value, Row $row, RouterInterface $router): mixed
     {
         if (is_callable($this->callback)) {
             return call_user_func($this->callback, $value, $row, $router);
@@ -86,7 +88,7 @@ class SimpleArrayColumn extends Column
         return $return;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'simple_array';
     }

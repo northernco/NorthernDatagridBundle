@@ -12,7 +12,9 @@
 
 namespace APY\DataGridBundle\Twig;
 
+use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Grid;
+use APY\DataGridBundle\Grid\Row;
 use Pagerfanta\Adapter\NullAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\Routing\RouterInterface;
@@ -32,64 +34,38 @@ use Twig\TwigFunction;
  */
 class DataGridExtension extends AbstractExtension implements GlobalsInterface
 {
-    const DEFAULT_TEMPLATE = '@APYDataGrid/blocks.html.twig';
+    public const DEFAULT_TEMPLATE = '@APYDataGrid/blocks.html.twig';
 
     /**
      * @var TemplateWrapper[]
      */
-    protected $templates = [];
+    private array $templates = [];
 
-    /**
-     * @var string
-     */
-    protected $theme;
+    private ?string $theme;
 
-    /**
-     * @var RouterInterface
-     */
-    protected $router;
+    private RouterInterface $router;
 
-    /**
-     * @var array
-     */
-    protected $names;
+    private array $names;
 
-    /**
-     * @var array
-     */
-    protected $params = [];
+    private array $params = [];
 
-    /**
-     * @var array
-     */
-    protected $pagerFantaDefs;
+    private array $pagerFantaDefs;
 
-    /**
-     * @var string
-     */
-    protected $defaultTemplate;
+    private string $defaultTemplate;
 
-    /**
-     * @param RouterInterface $router
-     * @param string          $defaultTemplate
-     */
-    public function __construct($router, $defaultTemplate)
+    public function __construct(RouterInterface $router, string $defaultTemplate)
     {
-        $this->router = $router;
+        $this->router          = $router;
         $this->defaultTemplate = $defaultTemplate;
     }
 
-    /**
-     * @param array $def
-     */
-    public function setPagerFanta(array $def)
+    public function setPagerFanta(array $def): self
     {
         $this->pagerFantaDefs = $def;
+
+        return $this;
     }
 
-    /**
-     * @return array
-     */
     public function getGlobals(): array
     {
         return [
@@ -104,12 +80,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         ];
     }
 
-    /**
-     * Returns a list of functions to add to the existing list.
-     *
-     * @return array An array of functions
-     */
-    public function getFunctions()
+    public function getFunctions(): array
     {
         return [
             new TwigFunction('grid', [$this, 'getGrid'], [
@@ -153,32 +124,16 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         ];
     }
 
-    /**
-     * @param unknown $grid
-     * @param unknown $theme
-     * @param string  $id
-     * @param array   $params
-     */
-    public function initGrid($grid, $theme = null, $id = '', array $params = [])
+    public function initGrid(Grid $grid, ?string $theme = null, string|int|null $id = '', array $params = []): void
     {
-        $this->theme = $theme;
+        $this->theme     = $theme;
         $this->templates = [];
 
         $this->names[$grid->getHash()] = ($id == '') ? $grid->getId() : $id;
-        $this->params = $params;
+        $this->params                  = $params;
     }
 
-    /**
-     * Render grid block.
-     *
-     * @param \Twig\Environment             $environment
-     * @param \APY\DataGridBundle\Grid\Grid $grid
-     * @param string                        $theme
-     * @param string                        $id
-     *
-     * @return string
-     */
-    public function getGrid(Environment $environment, $grid, $theme = null, $id = '', array $params = [], $withjs = true)
+    public function getGrid(Environment $environment, Grid $grid, ?string $theme = null, string|int|null $id = '', array $params = [], bool $withjs = true): string
     {
         $this->initGrid($grid, $theme, $id, $params);
 
@@ -188,66 +143,33 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         return $this->renderBlock($environment, 'grid', ['grid' => $grid, 'withjs' => $withjs]);
     }
 
-    /**
-     * Render grid block (html only).
-     *
-     * @param \Twig\Environment             $environment
-     * @param \APY\DataGridBundle\Grid\Grid $grid
-     * @param string                        $theme
-     * @param string                        $id
-     *
-     * @return string
-     */
-    public function getGridHtml(Environment $environment, $grid, $theme = null, $id = '', array $params = [])
+    public function getGridHtml(Environment $environment, Grid $grid, ?string $theme = null, string|int $id = '', array $params = [])
     {
         return $this->getGrid($environment, $grid, $theme, $id, $params, false);
     }
 
-    /**
-     * @param \Twig\Environment $environment
-     * @param string            $name
-     * @param unknown           $grid
-     *
-     * @return string
-     */
-    public function getGrid_(Environment $environment, $name, $grid)
+    public function getGrid_(Environment $environment, string $name, Grid $grid): string
     {
         return $this->renderBlock($environment, 'grid_' . $name, ['grid' => $grid]);
     }
 
-    /**
-     * @param \Twig\Environment $environment
-     * @param unknown           $grid
-     *
-     * @return string
-     */
-    public function getGridPager(Environment $environment, $grid)
+    public function getGridPager(Environment $environment, Grid $grid): string
     {
         return $this->renderBlock($environment, 'grid_pager', ['grid' => $grid, 'pagerfanta' => $this->pagerFantaDefs['enable']]);
     }
 
-    /**
-     * Cell Drawing override.
-     *
-     * @param \Twig\Environment                      $environment
-     * @param \APY\DataGridBundle\Grid\Column\Column $column
-     * @param \APY\DataGridBundle\Grid\Row           $row
-     * @param \APY\DataGridBundle\Grid\Grid          $grid
-     *
-     * @return string
-     */
-    public function getGridCell(Environment $environment, $column, $row, $grid)
+    public function getGridCell(Environment $environment, Column $column, Row $row, Grid $grid): string
     {
         $value = $column->renderCell($row->getField($column->getId()), $row, $this->router);
 
         $id = $this->names[$grid->getHash()];
 
         if (($id != '' && ($this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getRenderBlockId() . '_cell')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getType() . '_cell')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getParentType() . '_cell')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_id_' . $column->getRenderBlockId() . '_cell')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getType() . '_cell')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getParentType() . '_cell')))
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getType() . '_cell')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getParentType() . '_cell')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_id_' . $column->getRenderBlockId() . '_cell')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getType() . '_cell')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getParentType() . '_cell')))
             || $this->hasBlock($environment, $block = 'grid_column_' . $column->getRenderBlockId() . '_cell')
             || $this->hasBlock($environment, $block = 'grid_column_' . $column->getType() . '_cell')
             || $this->hasBlock($environment, $block = 'grid_column_' . $column->getParentType() . '_cell')
@@ -261,24 +183,15 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         return $this->renderBlock($environment, 'grid_column_cell', ['grid' => $grid, 'column' => $column, 'row' => $row, 'value' => $value]);
     }
 
-    /**
-     * Filter Drawing override.
-     *
-     * @param \Twig\Environment                      $environment
-     * @param \APY\DataGridBundle\Grid\Column\Column $column
-     * @param \APY\DataGridBundle\Grid\Grid          $grid
-     *
-     * @return string
-     */
-    public function getGridFilter(Environment $environment, $column, $grid, $submitOnChange = true)
+    public function getGridFilter(Environment $environment, Column $column, Grid $grid, bool $submitOnChange = true): string
     {
         $id = $this->names[$grid->getHash()];
 
         if (($id != '' && ($this->hasBlock($environment, $block = 'grid_' . $id . '_column_' . $column->getRenderBlockId() . '_filter')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_id_' . $column->getRenderBlockId() . '_filter')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getType() . '_filter')
-                           || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getParentType() . '_filter'))
-             || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_filter_type_' . $column->getFilterType()))
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_id_' . $column->getRenderBlockId() . '_filter')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getType() . '_filter')
+                    || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_type_' . $column->getParentType() . '_filter'))
+                || $this->hasBlock($environment, $block = 'grid_' . $id . '_column_filter_type_' . $column->getFilterType()))
             || $this->hasBlock($environment, $block = 'grid_column_' . $column->getRenderBlockId() . '_filter')
             || $this->hasBlock($environment, $block = 'grid_column_id_' . $column->getRenderBlockId() . '_filter')
             || $this->hasBlock($environment, $block = 'grid_column_type_' . $column->getType() . '_filter')
@@ -291,28 +204,12 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         return '';
     }
 
-    /**
-     * Column Operator Drawing override.
-     *
-     * @param \Twig\Environment                      $environment
-     * @param \APY\DataGridBundle\Grid\Column\Column $column
-     * @param \APY\DataGridBundle\Grid\Grid          $grid
-     *
-     * @return string
-     */
-    public function getGridColumnOperator(Environment $environment, $column, $grid, $operator, $submitOnChange = true)
+    public function getGridColumnOperator(Environment $environment, Column $column, Grid $grid, string $operator, bool $submitOnChange = true): string
     {
         return $this->renderBlock($environment, 'grid_column_operator', ['grid' => $grid, 'column' => $column, 'submitOnChange' => $submitOnChange, 'op' => $operator]);
     }
 
-    /**
-     * @param string                                 $section
-     * @param \APY\DataGridBundle\Grid\Grid          $grid
-     * @param \APY\DataGridBundle\Grid\Column\Column $param
-     *
-     * @return string
-     */
-    public function getGridUrl($section, $grid, $param = null)
+    public function getGridUrl(string $section, Grid $grid, Column|string|int|null $param = null): ?string
     {
         $prefix = $grid->getRouteUrl() . (strpos($grid->getRouteUrl(), '?') ? '&' : '?') . $grid->getHash() . '[';
 
@@ -332,28 +229,18 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
             case 'export':
                 return $prefix . Grid::REQUEST_QUERY_EXPORT . ']=' . $param;
         }
+
+        return null;
     }
 
-    /**
-     * @param \Twig\Environment $environment
-     * @param unknown           $grid
-     * @param unknown           $theme
-     * @param string            $id
-     * @param array             $params
-     *
-     * @return string
-     */
-    public function getGridSearch(Environment $environment, $grid, $theme = null, $id = '', array $params = [])
+    public function getGridSearch(Environment $environment, Grid $grid, ?string $theme = null, string|int $id = '', array $params = []): string
     {
         $this->initGrid($grid, $theme, $id, $params);
 
         return $this->renderBlock($environment, 'grid_search', ['grid' => $grid]);
     }
 
-    /**
-     * @param unknown $grid
-     */
-    public function getPagerfanta($grid)
+    public function getPagerfanta(Grid $grid): string
     {
         $adapter = new NullAdapter($grid->getTotalCount());
 
@@ -361,7 +248,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         $pagerfanta->setMaxPerPage($grid->getLimit());
         $pagerfanta->setCurrentPage($grid->getPage() + 1);
 
-        $url = $this->getGridUrl('page', $grid, '');
+        $url            = $this->getGridUrl('page', $grid, '');
         $routeGenerator = function ($page) use ($url) {
             return sprintf('%s%d', $url, $page - 1);
         };
@@ -372,17 +259,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         return $html;
     }
 
-    /**
-     * Render block.
-     *
-     * @param \Twig\Environment $environment
-     * @param string            $name
-     * @param array             $parameters
-     *
-     * @return string
-     * @throws \InvalidArgumentException If the block could not be found
-     */
-    protected function renderBlock(Environment $environment, $name, $parameters)
+    protected function renderBlock(Environment $environment, string $name, array $parameters): string
     {
         foreach ($this->getTemplates($environment) as $template) {
             if ($template->hasBlock($name, [])) {
@@ -393,15 +270,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         throw new \InvalidArgumentException(sprintf('Block "%s" doesn\'t exist in grid template "%s".', $name, $this->theme));
     }
 
-    /**
-     * Has block.
-     *
-     * @param \Twig\Environment $environment
-     * @param                   $name string
-     *
-     * @return bool
-     */
-    protected function hasBlock(Environment $environment, $name)
+    protected function hasBlock(Environment $environment, string $name): bool
     {
         foreach ($this->getTemplates($environment) as $template) {
             /** @var $template TemplateWrapper */
@@ -413,15 +282,7 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         return false;
     }
 
-    /**
-     * Template Loader.
-     *
-     * @param \Twig\Environment $environment
-     *
-     * @return TemplateWrapper[]
-     * @throws \Exception
-     */
-    protected function getTemplates(Environment $environment)
+    protected function getTemplates(Environment $environment): array
     {
         if (empty($this->templates)) {
             if ($this->theme instanceof TemplateWrapper) {
@@ -439,17 +300,11 @@ class DataGridExtension extends AbstractExtension implements GlobalsInterface
         return $this->templates;
     }
 
-    /**
-     * @param \Twig\Environment $environment
-     * @param string            $theme
-     *
-     * @return array
-     */
-    protected function getTemplatesFromString(Environment $environment, $theme)
+    protected function getTemplatesFromString(Environment $environment, string $theme): array
     {
         $this->templates = [];
 
-        $template = $environment->load($theme);
+        $template          = $environment->load($theme);
         $this->templates[] = $template;
 
         return $this->templates;

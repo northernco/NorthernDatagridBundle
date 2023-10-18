@@ -5,7 +5,15 @@ namespace APY\DataGridBundle\Grid;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Exception\InvalidArgumentException;
 use APY\DataGridBundle\Grid\Exception\UnexpectedTypeException;
-use Symfony\Component\DependencyInjection\Container;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
+use Doctrine\Persistence\ManagerRegistry;
+use Symfony\Component\HttpFoundation\RequestStack;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\KernelInterface;
+use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
+use Symfony\Contracts\Translation\TranslatorInterface;
+use Twig\Environment;
 
 /**
  * A builder for creating Grid instances.
@@ -14,47 +22,60 @@ use Symfony\Component\DependencyInjection\Container;
  */
 class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
 {
-    /**
-     * The container.
-     *
-     * @var Container
-     */
-    private $container;
+    private AuthorizationCheckerInterface $authorizationChecker;
 
-    /**
-     * The factory.
-     *
-     * @var GridFactoryInterface
-     */
-    private $factory;
+    private RouterInterface $router;
 
-    /**
-     * Columns of the grid builder.
-     *
-     * @var Column[]
-     */
-    private $columns = [];
+    private RequestStack $requestStack;
 
-    /**
-     * Constructor.
-     *
-     * @param Container            $container The service container
-     * @param GridFactoryInterface $factory   The grid factory
-     * @param string               $name      The name of the grid
-     * @param array                $options   The options of the grid
-     */
-    public function __construct(Container $container, GridFactoryInterface $factory, $name, array $options = [])
-    {
+    private Environment $twig;
+
+    private HttpKernelInterface $httpKernel;
+
+    private ManagerRegistry $doctrine;
+
+    private Manager $mapping;
+
+    private KernelInterface $kernel;
+
+    private TranslatorInterface $translator;
+
+    private GridFactoryInterface $factory;
+
+    private array $columns = [];
+
+    public function __construct(
+        AuthorizationCheckerInterface $authorizationChecker,
+        RouterInterface $router,
+        RequestStack $requestStack,
+        Environment $twig,
+        HttpKernelInterface $httpKernel,
+        ManagerRegistry $doctrine,
+        Manager $mapping,
+        KernelInterface $kernel,
+        TranslatorInterface $translator,
+        GridFactoryInterface $factory,
+        string $name,
+        array $options = []
+    ) {
         parent::__construct($name, $options);
 
-        $this->container = $container;
-        $this->factory = $factory;
+        $this->authorizationChecker = $authorizationChecker;
+        $this->router               = $router;
+        $this->requestStack         = $requestStack;
+        $this->twig                 = $twig;
+        $this->httpKernel           = $httpKernel;
+        $this->doctrine             = $doctrine;
+        $this->mapping              = $mapping;
+        $this->factory              = $factory;
+        $this->kernel               = $kernel;
+        $this->translator           = $translator;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function add($name, $type, array $options = [])
+    public function add(string $name, string|array|Column $type, array $options = []): self
     {
         if (!$type instanceof Column) {
             if (!is_string($type)) {
@@ -72,7 +93,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function get($name)
+    public function get(string $name): Column
     {
         if (!$this->has($name)) {
             throw new InvalidArgumentException(sprintf('The column with the name "%s" does not exist.', $name));
@@ -86,7 +107,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function has($name)
+    public function has(string $name): bool
     {
         return isset($this->columns[$name]);
     }
@@ -94,7 +115,7 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function remove($name)
+    public function remove(string $name): self
     {
         unset($this->columns[$name]);
 
@@ -104,11 +125,23 @@ class GridBuilder extends GridConfigBuilder implements GridBuilderInterface
     /**
      * {@inheritdoc}
      */
-    public function getGrid()
+    public function getGrid(): Grid
     {
         $config = $this->getGridConfig();
 
-        $grid = new Grid($this->container, $config->getName(), $config);
+        $grid = new Grid(
+            $this->authorizationChecker,
+            $this->router,
+            $this->requestStack,
+            $this->twig,
+            $this->httpKernel,
+            $this->doctrine,
+            $this->mapping,
+            $this->kernel,
+            $this->translator,
+            $config->getName(),
+            $config
+        );
 
         foreach ($this->columns as $column) {
             $grid->addColumn($column);

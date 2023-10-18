@@ -17,15 +17,15 @@ namespace APY\DataGridBundle\Grid\Export;
  */
 class DSVExport extends Export
 {
-    protected $fileExtension = null;
+    protected ?string $fileExtension = null;
 
-    protected $mimeType = 'application/octet-stream';
+    protected string $mimeType = 'application/octet-stream';
 
-    protected $delimiter = '';
+    protected string $delimiter = '';
 
-    protected $withBOM = true;
+    protected bool $withBOM = true;
 
-    public function __construct($title, $fileName = 'export', $params = [], $charset = 'UTF-8')
+    public function __construct(string $title, $fileName = 'export', $params = [], $charset = 'UTF-8')
     {
         $this->delimiter = isset($params['delimiter']) ? $params['delimiter'] : $this->delimiter;
         $this->withBOM = isset($params['withBOM']) ? $params['withBOM'] : $this->withBOM;

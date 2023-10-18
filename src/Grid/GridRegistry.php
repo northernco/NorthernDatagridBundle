@@ -16,27 +16,16 @@ use APY\DataGridBundle\Grid\Exception\TypeNotFoundException;
 class GridRegistry implements GridRegistryInterface
 {
     /**
-     * List of types.
-     *
      * @var GridTypeInterface[]
      */
-    private $types = [];
+    private array $types = [];
 
     /**
-     * List of columns.
-     *
      * @var Column[]
      */
-    private $columns = [];
+    private array $columns = [];
 
-    /**
-     * Add a grid type.
-     *
-     * @param GridTypeInterface $type
-     *
-     * @return $this
-     */
-    public function addType(GridTypeInterface $type)
+    public function addType(GridTypeInterface $type): self
     {
         $name = $type->getName();
 
@@ -52,7 +41,7 @@ class GridRegistry implements GridRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getType($name)
+    public function getType(string $name): GridTypeInterface
     {
         if (!$this->hasType($name)) {
             throw new TypeNotFoundException($name);
@@ -66,7 +55,7 @@ class GridRegistry implements GridRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function hasType($name)
+    public function hasType(string $name): bool
     {
         if (isset($this->types[$name])) {
             return true;
@@ -75,14 +64,7 @@ class GridRegistry implements GridRegistryInterface
         return false;
     }
 
-    /**
-     * Add a column type.
-     *
-     * @param Column $column
-     *
-     * @return $this
-     */
-    public function addColumn(Column $column)
+    public function addColumn(Column $column): self
     {
         $type = $column->getType();
 
@@ -98,7 +80,7 @@ class GridRegistry implements GridRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function getColumn($type)
+    public function getColumn(string $type): Column
     {
         if (!$this->hasColumn($type)) {
             throw new ColumnNotFoundException($type);
@@ -112,7 +94,7 @@ class GridRegistry implements GridRegistryInterface
     /**
      * {@inheritdoc}
      */
-    public function hasColumn($type)
+    public function hasColumn(string $type): bool
     {
         if (isset($this->columns[$type])) {
             return true;

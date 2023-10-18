@@ -16,12 +16,12 @@ interface GridInterface
      *
      * @return $this
      */
-    public function initialize();
+    public function initialize(): self;
 
     /**
      * Handles filters, sorts, exports, ... .
      *
      * @param Request $request The request
      */
-    public function handleRequest(Request $request);
+    public function handleRequest(Request $request): self;
 }

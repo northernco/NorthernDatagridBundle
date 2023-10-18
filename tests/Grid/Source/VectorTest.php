@@ -5,43 +5,41 @@ namespace APY\DataGridBundle\Tests\Grid\Source;
 use APY\DataGridBundle\Grid\Column\Column;
 use APY\DataGridBundle\Grid\Column\UntypedColumn;
 use APY\DataGridBundle\Grid\Columns;
+use APY\DataGridBundle\Grid\Mapping\Metadata\Manager;
 use APY\DataGridBundle\Grid\Row;
 use APY\DataGridBundle\Grid\Source\Vector;
+use Doctrine\Persistence\ManagerRegistry;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\DependencyInjection\Container;
 
 class VectorTest extends TestCase
 {
-    /**
-     * @var Vector
-     */
-    private $vector;
+    private Vector $vector;
 
     public function setUp(): void
     {
         $this->vector = new Vector([], []);
     }
 
-    public function testCreateVectorWithEmptyData()
+    public function testCreateVectorWithEmptyData(): void
     {
         $this->assertEmpty($this->vector->getData());
     }
 
-    public function testRaiseExceptionDuringVectorCreationWhenDataIsNotAVector()
+    public function testRaiseExceptionDuringVectorCreationWhenDataIsNotAVector(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         new Vector(['notAnArray'], []);
     }
 
-    public function testRaiseExceptionDuringVectorCreationWhenEmptyVector()
+    public function testRaiseExceptionDuringVectorCreationWhenEmptyVector(): void
     {
         $this->expectException(\InvalidArgumentException::class);
 
         new Vector([[]], []);
     }
 
-    public function testCreateVectorWithColumns()
+    public function testCreateVectorWithColumns(): void
     {
         $column  = $this->createMock(Column::class);
         $column2 = $this->createMock(Column::class);
@@ -52,14 +50,14 @@ class VectorTest extends TestCase
         $this->assertEquals($columns, $vector->getColumnsArray());
     }
 
-    public function testInitialiseWithoutData()
+    public function testInitialiseWithoutData(): void
     {
-        $this->vector->initialise($this->createMock(Container::class));
+        $this->vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertEmpty($this->vector->getColumnsArray());
     }
 
-    public function testInizialiseWithGuessedColumnsMergedToAlreadySettedColumns()
+    public function testInizialiseWithGuessedColumnsMergedToAlreadySettedColumns(): void
     {
         $columnId = 'cId';
         $column   = $this->createMock(Column::class);
@@ -102,12 +100,12 @@ class VectorTest extends TestCase
         );
         $uc2->setType('text');
 
-        $vector->initialise($this->createMock(Container::class));
+        $vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertEquals([$column, $column2, $uc1, $uc2], $vector->getColumnsArray());
     }
 
-    public function testInizialiseWithoutGuessedColumns()
+    public function testInizialiseWithoutGuessedColumns(): void
     {
         $columnId = 'cId';
         $column   = $this->createMock(Column::class);
@@ -123,7 +121,7 @@ class VectorTest extends TestCase
 
         $vector = new Vector([[$columnId => 'c1', $column2Id => 'c2']], [$column, $column2]);
 
-        $vector->initialise($this->createMock(Container::class));
+        $vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertEquals([$column, $column2], $vector->getColumnsArray());
     }
@@ -131,17 +129,17 @@ class VectorTest extends TestCase
     /**
      * @dataProvider guessedColumnProvider
      */
-    public function testInizializeWithGuessedColumn($vectorValue, UntypedColumn $untypedColumn, $columnType)
+    public function testInizializeWithGuessedColumn(array $vectorValue, UntypedColumn $untypedColumn, string $columnType): void
     {
         $untypedColumn->setType($columnType);
 
         $vector = new Vector($vectorValue);
-        $vector->initialise($this->createMock(Container::class));
+        $vector->initialise($this->createMock(ManagerRegistry::class), $this->createMock(Manager::class));
 
         $this->assertEquals([$untypedColumn], $vector->getColumnsArray());
     }
 
-    public function testExecute()
+    public function testExecute(): void
     {
         $rows    = [new Row(), new Row()];
         $columns = $this->createMock(Columns::class);
@@ -155,7 +153,7 @@ class VectorTest extends TestCase
         $this->assertEquals($rows, $vector->execute($columns, 0, null, null));
     }
 
-    public function testPopulateSelectFilters()
+    public function testPopulateSelectFilters(): void
     {
         $columns = $this->createMock(Columns::class);
 
@@ -168,7 +166,7 @@ class VectorTest extends TestCase
         $vector->populateSelectFilters($columns);
     }
 
-    public function testGetTotalCount()
+    public function testGetTotalCount(): void
     {
         $maxResults = 10;
 
@@ -181,7 +179,7 @@ class VectorTest extends TestCase
         $this->assertEquals(8, $vector->getTotalCount($maxResults));
     }
 
-    public function testGetHash()
+    public function testGetHash(): void
     {
         $idCol1  = 'idCol1';
         $column1 = $this->createMock(Column::class);
@@ -200,7 +198,7 @@ class VectorTest extends TestCase
         $this->assertEquals('APY\DataGridBundle\Grid\Source\Vector' . md5($idCol1 . $idCol2), $vector->getHash());
     }
 
-    public function testId()
+    public function testId(): void
     {
         $id = 'id';
         $this->vector->setId($id);
@@ -208,7 +206,7 @@ class VectorTest extends TestCase
         $this->assertEquals($id, $this->vector->getId());
     }
 
-    public function guessedColumnProvider()
+    public function guessedColumnProvider(): array
     {
         $uc = new UntypedColumn(
             [

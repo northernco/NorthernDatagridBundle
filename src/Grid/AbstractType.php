@@ -14,19 +14,19 @@ abstract class AbstractType implements GridTypeInterface
     /**
      * {@inheritdoc}
      */
-    public function buildGrid(GridBuilder $builder, array $options = [])
+    public function buildGrid(GridBuilder $builder, array $options = []): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    public function configureOptions(OptionsResolver $resolver)
+    public function configureOptions(OptionsResolver $resolver): void
     {
     }
 
     /**
      * {@inheritdoc}
      */
-    abstract public function getName();
+    abstract public function getName(): string;
 }

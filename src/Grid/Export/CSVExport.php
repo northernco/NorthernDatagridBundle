@@ -17,9 +17,9 @@ namespace APY\DataGridBundle\Grid\Export;
  */
 class CSVExport extends DSVExport
 {
-    protected $fileExtension = 'csv';
+    protected ?string $fileExtension = 'csv';
 
-    protected $mimeType = 'text/comma-separated-values';
+    protected string $mimeType = 'text/comma-separated-values';
 
-    protected $delimiter = ',';
+    protected string $delimiter = ',';
 }

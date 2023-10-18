@@ -17,5 +17,5 @@ namespace APY\DataGridBundle\Grid\Export;
  */
 class SCSVExport extends CSVExport
 {
-    protected $delimiter = ';';
+    protected string $delimiter = ';';
 }

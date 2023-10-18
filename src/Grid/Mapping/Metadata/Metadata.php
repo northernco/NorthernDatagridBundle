@@ -12,39 +12,43 @@
 
 namespace APY\DataGridBundle\Grid\Mapping\Metadata;
 
+use APY\DataGridBundle\Grid\Columns;
+
 class Metadata
 {
-    protected $name;
+    private string $name;
 
-    protected $fields;
+    private array $fields;
 
-    protected $fieldsMappings;
+    private array $fieldsMappings;
 
-    protected $groupBy;
+    private array|string $groupBy;
 
-    public function setFields($fields)
+    public function setFields(array $fields): self
     {
         $this->fields = $fields;
+
+        return $this;
     }
 
-    public function getFields()
+    public function getFields(): array
     {
         return $this->fields;
     }
 
-    public function setFieldsMappings($fieldsMappings)
+    public function setFieldsMappings(array $fieldsMappings): self
     {
         $this->fieldsMappings = $fieldsMappings;
 
         return $this;
     }
 
-    public function hasFieldMapping($field)
+    public function hasFieldMapping(string $field): bool
     {
         return isset($this->fieldsMappings[$field]);
     }
 
-    public function getFieldMapping($field)
+    public function getFieldMapping(string $field): mixed
     {
         return $this->fieldsMappings[$field];
     }
@@ -54,45 +58,36 @@ class Metadata
         return $this->fieldsMappings;
     }
 
-    public function getFieldMappingType($field)
+    public function getFieldMappingType(string $field): string
     {
         return (isset($this->fieldsMappings[$field]['type'])) ? $this->fieldsMappings[$field]['type'] : 'text';
     }
 
-    public function setGroupBy($groupBy)
+    public function setGroupBy(array|string $groupBy): self
     {
         $this->groupBy = $groupBy;
 
         return $this;
     }
 
-    public function getGroupBy()
+    public function getGroupBy(): array|string
     {
         return $this->groupBy;
     }
 
-    public function setName($name)
+    public function setName(string $name): self
     {
         $this->name = $name;
 
         return $this;
     }
 
-    public function getName()
+    public function getName(): string
     {
         return $this->name;
     }
 
-    /**
-     * @param $columnExtensions
-     *
-     * @return \SplObjectStorage
-     * @throws \Exception
-     *
-     * @todo move to another place
-     *
-     */
-    public function getColumnsFromMapping($columnExtensions)
+    public function getColumnsFromMapping(Columns $columnExtensions): \SplObjectStorage
     {
         $columns = new \SplObjectStorage();
 

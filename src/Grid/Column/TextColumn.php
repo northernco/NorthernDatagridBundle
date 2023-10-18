@@ -16,14 +16,14 @@ use APY\DataGridBundle\Grid\Filter;
 
 class TextColumn extends Column
 {
-    public function isQueryValid($query)
+    public function isQueryValid(mixed $query): bool
     {
         $result = array_filter((array) $query, 'is_string');
 
         return !empty($result);
     }
 
-    public function getFilters($source)
+    public function getFilters(string $source): array
     {
         $parentFilters = parent::getFilters($source);
 
@@ -47,7 +47,7 @@ class TextColumn extends Column
         return $filters;
     }
 
-    public function getType()
+    public function getType(): string
     {
         return 'text';
     }

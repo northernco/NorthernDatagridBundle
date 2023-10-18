@@ -17,47 +17,52 @@ namespace APY\DataGridBundle\Grid\Mapping;
  */
 class Source
 {
-    protected $columns;
-    protected $filterable;
-    protected $sortable;
-    protected $groups;
-    protected $groupBy;
+    private array $columns;
 
-    public function __construct($metadata = [])
-    {
-        $this->columns = (isset($metadata['columns']) && $metadata['columns'] != '') ? array_map('trim', explode(',', $metadata['columns'])) : [];
+    private bool $filterable;
+
+    private bool $sortable;
+
+    private array $groups;
+
+    private array $groupBy;
+
+    public function __construct(
+        array $metadata = []
+    ) {
+        $this->columns    = (isset($metadata['columns']) && $metadata['columns'] != '') ? array_map('trim', explode(',', $metadata['columns'])) : [];
         $this->filterable = isset($metadata['filterable']) ? $metadata['filterable'] : true;
-        $this->sortable = isset($metadata['sortable']) ? $metadata['sortable'] : true;
-        $this->groups = (isset($metadata['groups']) && $metadata['groups'] != '') ? (array) $metadata['groups'] : ['default'];
-        $this->groupBy = (isset($metadata['groupBy']) && $metadata['groupBy'] != '') ? (array) $metadata['groupBy'] : [];
+        $this->sortable   = isset($metadata['sortable']) ? $metadata['sortable'] : true;
+        $this->groups     = (isset($metadata['groups']) && $metadata['groups'] != '') ? (array)$metadata['groups'] : ['default'];
+        $this->groupBy    = (isset($metadata['groupBy']) && $metadata['groupBy'] != '') ? (array)$metadata['groupBy'] : [];
     }
 
-    public function getColumns()
+    public function getColumns(): array
     {
         return $this->columns;
     }
 
-    public function hasColumns()
+    public function hasColumns(): bool
     {
         return !empty($this->columns);
     }
 
-    public function isFilterable()
+    public function isFilterable(): bool
     {
         return $this->filterable;
     }
 
-    public function isSortable()
+    public function isSortable(): bool
     {
         return $this->sortable;
     }
 
-    public function getGroups()
+    public function getGroups(): array
     {
         return $this->groups;
     }
 
-    public function getGroupBy()
+    public function getGroupBy(): array
     {
         return $this->groupBy;
     }
