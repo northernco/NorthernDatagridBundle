@@ -1,12 +1,6 @@
-Datagrid for Symfony inspired by Zfdatagrid and Magento Grid.  
+Datagrid for Symfony inspired by Zfdatagrid and Magento Grid.
+
 This bundle was initiated by Stanislav Turza (Sorien).
-
-[![Build Status](https://secure.travis-ci.org/northernco/NorthernDataGridBundle.png?branch=master)](http://travis-ci.org/northernco/NorthernDataGridBundle) 
-[![Coverage Status](https://coveralls.io/repos/github/northernco/NorthernDataGridBundle/badge.svg?branch=test-improvement)](https://coveralls.io/github/northernco/NorthernDataGridBundle?branch=test-improvement)
-[![Stories in Ready](https://badge.waffle.io/northernco/NorthernDataGridBundle.svg?label=ready&title=Ready)](http://waffle.io/northernco/NorthernDataGridBundle)
-[![Gitter](https://badges.gitter.im/northernco/NorthernDataGridBundle.svg)](https://gitter.im/northernco/NorthernDataGridBundle?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
-
-See [CHANGELOG](https://github.com/northernco/NorthernDataGridBundle/blob/master/CHANGELOG.md) and [UPGRADE 2.0](https://github.com/northernco/NorthernDataGridBundle/blob/master/UPGRADE-2.0.md)
 
 ## Features
 
@@ -34,30 +28,31 @@ See [CHANGELOG](https://github.com/northernco/NorthernDataGridBundle/blob/master
 
 ## Documentation
 
-See the [summary](https://github.com/northernco/NorthernDataGridBundle/blob/master/Resources/doc/summary.md).
+See the [summary](https://github.com/northernco/NorthernDataGridBundle/blob/v5.0/Resources/doc/summary.md).
 
 ## Screenshot
 
-Full example with this [CSS style file](https://github.com/northernco/NorthernDataGridBundle/blob/master/Resources/doc/grid_configuration/working_example.css):
+Full example with this [CSS style file](https://github.com/northernco/NorthernDataGridBundle/blob/v5.0/Resources/doc/grid_configuration/working_example.css):
 
-![test](https://github.com/northernco/NorthernDataGridBundle/blob/master/Resources/doc/images/screenshot_full.png?raw=true)
+![test](https://github.com/northernco/NorthernDataGridBundle/blob/v5.0/Resources/doc/images/screenshot_full.png?raw=true)
 
 Simple example with the external filter box in english:
 
-![test](https://github.com/northernco/NorthernDataGridBundle/blob/master/Resources/doc/images/screenshot_en.png?raw=true)
+![test](https://github.com/northernco/NorthernDataGridBundle/blob/v5.0/Resources/doc/images/screenshot_en.png?raw=true)
 
 Same example in french:
 
-![test](https://github.com/northernco/NorthernDataGridBundle/blob/master/Resources/doc/images/screenshot_fr.png?raw=true)
+![test](https://github.com/northernco/NorthernDataGridBundle/blob/v5.0/Resources/doc/images/screenshot_fr.png?raw=true)
 
 Data used in these screenshots (this is a phpMyAdmin screenshot):
 
-![test](https://github.com/northernco/NorthernDataGridBundle/blob/master/Resources/doc/images/screenshot_database.png?raw=true)
+![test](https://github.com/northernco/NorthernDataGridBundle/blob/v5.0/Resources/doc/images/screenshot_database.png?raw=true)
 
 ## Simple grid with an ORM source
 
 ```php
 <?php
+
 namespace MyProject\MyBundle\Controller;
 
 use APY\DataGridBundle\Grid\Source\Entity;
@@ -85,13 +80,14 @@ class DefaultController extends Controller
 
 ```php
 <?php
+
 namespace MyProject\MyBundle\Entity
 
 use Doctrine\ORM\Mapping as ORM;
-use APY\DataGridBundle\Grid\Mapping as GRID;
+use APY\DataGridBundle\Grid\Mapping as Grid;
 
 /**
- * @GRID\Source(columns="id, my_datetime")
+ * @Grid\Source(columns="id, my_datetime")
  */
 class MyEntity
 {
@@ -117,4 +113,3 @@ class MyEntity
 ```
 
 And clear your cache.
-

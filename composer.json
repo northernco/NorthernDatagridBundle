@@ -6,7 +6,7 @@
     "type": "symfony-bundle",
     "license": "MIT",
     "require": {
-        "php": ">=7.3",
+        "php": ">=8.0",
         "symfony/form": "^4.4|^5.2",
         "symfony/dependency-injection": "^4.4|^5.2",
         "symfony/config": "^4.4|^5.2",
@@ -18,27 +18,28 @@
         "twig/twig": "^2.4|^3.0"
     },
     "require-dev": {
+        "ext-intl": "*",
+        "dg/bypass-finals": "^1.2",
         "symfony/framework-bundle": "^4.4|^5.2",
-        "symfony/browser-kit": "^4.4|^5.2",
-        "symfony/templating": "^4.4|^5.2",
         "symfony/expression-language": "^4.4|^5.2",
-        "phpunit/phpunit": "~5.7",
-        "friendsofphp/php-cs-fixer": "^2.0",
-        "php-coveralls/php-coveralls": "^2.0",
-        "doctrine/orm": "~2.4,>=2.4.5",
-        "doctrine/mongodb-odm": "^1.1.5"
+        "symfony/phpunit-bridge": "^4.4|^5.2",
+        "phpunit/phpunit": "^9.5",
+        "doctrine/orm": "~2.4,>=2.4.5"
     },
     "suggest": {
         "ext-intl": "Translate the grid",
         "ext-mbstring": "Convert your data with the right charset",
         "PHPExcel": "Export the grid (Excel, HTML or PDF)",
-        "doctrine/orm": "If you want to use Entity as source, please require doctrine/orm",
-        "doctrine/mongodb-odm": "If you want to use Document as source, please require doctrine/mongodb-odm"
+        "doctrine/orm": "If you want to use Entity as source, please require doctrine/orm"
     },
     "autoload": {
-        "psr-4": { "APY\\DataGridBundle\\": "" }
+        "psr-4": {
+            "APY\\DataGridBundle\\": "src"
+        }
     },
-    "provide": {
-        "ext-mongo": "1.5"
+    "autoload-dev": {
+        "psr-4": {
+            "APY\\DataGridBundle\\Tests\\": "tests"
+        }
     }
 }
